@@ -196,6 +196,41 @@ Sem essa separação, dois perfis ficariam com endereços praticamente idêntico
 
 ---
 
+## D-018 — Método de trabalho: tela por tela, e tela aprovada congela
+
+**Decisão do proprietário.** A construção é **uma tela de cada vez**. Quando o
+proprietário confirmar que a tela está boa, ela **congela** — não se mexe mais
+nela sem motivo explícito.
+
+**Como cada tela é entregue:** implementar → verificar nos seis tamanhos de
+tela (`DEFINITION_OF_DONE`) → relatar no formato do `00_MASTER_PROMPT.md` →
+**parar** e esperar a confirmação.
+
+### Tensão registrada com a regra de ouro
+
+O `CLAUDE.md §6` diz para não desenvolver tela isolada: toda funcionalidade
+precisa de dados, regras, permissões, estados e testes. Construir a interface
+antes da persistência **contraria isso**.
+
+A tensão é consciente e tem prazo: as telas de primeiro acesso estão sendo
+feitas primeiro para o proprietário ver e aprovar o fluxo visual, e **serão
+ligadas ao Firebase antes de o M1 fechar**. Nenhuma tela conta como pronta
+pela `DEFINITION_OF_DONE` enquanto não tiver persistência, regra e teste.
+
+O que **não** é aceitável: seguir para a Fase 3 com as telas da Fase 2 ainda
+sem backend. Isso seria acumular exatamente a dívida que a regra de ouro
+existe para evitar.
+
+### Regra que veio junto
+
+**Adaptação a tamanhos de tela é critério de aceite de toda tela**, não
+polimento. Os seis tamanhos e as seis verificações estão no
+`DEFINITION_OF_DONE.md`.
+
+**Status:** aprovado — 12/08/2026.
+
+---
+
 # DECISÕES PENDENTES
 
 Estas decisões devem ser confirmadas pelo proprietário antes das partes afetadas:

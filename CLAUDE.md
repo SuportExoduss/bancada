@@ -70,11 +70,18 @@ Estas decisões são consideradas aprovadas:
 
 # 4. STACK BASE
 
-Baseline atual:
+Baseline atual — **versões instaladas em 12/08/2026**:
 
-- React Native
-- Expo
-- TypeScript
+| | Versão | Observação |
+|---|---|---|
+| Expo | **57.0.12** | SDK 57 |
+| React Native | **0.86.2** | |
+| React | **19.2.3** | |
+| TypeScript | **6.0.3** | `strict` ligado |
+| React Navigation | **7.3.16** | `native-stack` 7.18.8 |
+
+Resto do baseline:
+
 - Firebase
 - Firebase Authentication
 - Cloud Firestore
@@ -125,6 +132,16 @@ src/
   theme/
   utils/
 ```
+
+**Pasta nasce quando é usada, não antes.** Diretório vazio é ruído: quem abre
+o projeto não sabe se está vazio porque não é usado ou porque alguém esqueceu.
+
+Existem hoje: `components/` · `domain/` · `hooks/` · `navigation/` ·
+`repositories/` · `screens/` · `theme/`.
+
+Faltam, e entram quando o primeiro caso de uso pedir: `app/` ·
+`application/` · `infrastructure/firebase/` · `services/` · `state/` ·
+`utils/`.
 
 ---
 

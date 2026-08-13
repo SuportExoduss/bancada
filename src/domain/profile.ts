@@ -132,7 +132,7 @@ export function sugerirApelidos(nome: string, sobrenome: string): string[] {
       .trim()
       .toLowerCase()
       .normalize('NFD')
-      .replace(/[̀-ͯ]/g, '') // tira acento
+      .replace(/[\u0300-\u036f]/g, '') // tira acento (marcas combinantes)
       .replace(/[^a-z0-9]/g, '');
 
   const n = limpar(nome);

@@ -1,39 +1,50 @@
 # BANCADA — Roadmap
 
-## FASE 0 — Especificação
-Status: inicial
+> **Status atualizado em 12/08/2026.** Legenda: ✅ pronto · 🔄 em andamento ·
+> ⬜ não começou. Uma fase só avança quando a `DEFINITION_OF_DONE` for
+> satisfeita (`CLAUDE.md §3`).
 
-- produto
-- personas
-- domínio
-- permissões
-- UX
-- arquitetura
-- decisões
+## FASE 0 — Especificação ✅
 
-## FASE 1 — Fundação
+- ✅ produto · personas · domínio · UX · arquitetura
+- ✅ decisões D-001 a D-018 registradas
+- ⬜ permissões detalhadas por papel — entram com as telas que as usam
 
-- criar projeto
-- TypeScript
-- Expo
-- Firebase
-- Emulator Suite
-- estrutura de pastas
-- tema
-- navegação
-- repositories
-- configuração de ambientes
+## FASE 1 — Fundação 🔄
 
-## FASE 2 — Auth e Perfil
+- ✅ criar projeto — Expo SDK 57, RN 0.86, React 19
+- ✅ TypeScript `strict`
+- ✅ estrutura de pastas — nasce conforme o uso (`CLAUDE.md §5`)
+- ✅ tema — paleta da marca, escala, tipografia, alvo de toque 44pt
+- ✅ navegação — React Navigation `native-stack`, tipada
+- 🔄 repositories — a **porta** existe (`ApelidoRepository`); a implementação
+  é em memória, temporária
+- ⬜ **Firebase** — não conectado
+- ⬜ **Emulator Suite** — não configurado
+- ⬜ configuração de ambientes
 
-- cadastro
-- login
-- logout
-- recuperação
-- perfil
-- avatar
-- username
-- privacidade
+## FASE 2 — Auth e Perfil 🔄
+
+**As telas existem e validam; nenhuma persiste ainda** (ver D-018).
+
+- 🔄 cadastro — tela pronta com validação completa; **não cria conta**
+- ⬜ login — tela não existe
+- ⬜ logout
+- ⬜ recuperação de senha
+- 🔄 perfil — onboarding com nome, sobrenome e apelido; **não salva**
+- ⬜ avatar
+- 🔄 apelido — regra de unicidade implementada e verificada, contra
+  repositório em memória (D-014, D-017)
+- ⬜ privacidade — padrão público decidido (D-015), não implementado
+
+### Telas construídas
+
+| Tela | Estado |
+|---|---|
+| Boas-vindas | ✅ aprovada pelo proprietário e **congelada** |
+| Criar conta | 🔄 aguardando aprovação · sem persistência |
+| Onboarding | 🔄 aguardando aprovação · sem persistência |
+| Entrar | ⬜ não existe |
 
 ## FASE 3 — Social Core
 
