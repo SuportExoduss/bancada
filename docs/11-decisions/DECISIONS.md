@@ -155,6 +155,47 @@
 
 ---
 
+## D-017 — Onboarding: nome, sobrenome e apelido
+
+**Decisão:** o cadastro fica enxuto (e-mail, senha, termos). A **segunda tela** pede **nome**, **sobrenome** e **apelido**.
+
+**Nome e sobrenome são campos separados**, e não um `displayName` único. Isto **diverge** do `DOMAIN_MODEL.md`, que previa um campo só — o documento foi atualizado.
+
+### Apelido único — regra fixa
+
+Ninguém pode ter o mesmo apelido. Não é preferência, é invariante.
+
+**Como isso é garantido, e por que não é "pesquisar todos":**
+
+O Firestore **não sabe** impor unicidade em campo. O único identificador único que existe é o **ID do documento**. Então o apelido **é** o ID:
+
+```text
+apelidos/{apelido}  →  { uid, criadoEm }
+```
+
+Consequências:
+
+1. **Verificar disponibilidade é UMA leitura por ID**, não uma varredura. `apelidos/lucas_rocha` existe ou não existe. Varrer a coleção inteira custaria uma leitura por documento e ficaria mais caro a cada usuário novo — com 10 mil usuários, cada checagem custaria 10 mil leituras.
+2. **A garantia real está na escrita, não na consulta.** A checagem enquanto a pessoa digita é uma *dica*: entre ver "disponível" e tocar em salvar, outra pessoa pode pegar. Quem decide é o `create`, que a Security Rule só autoriza se o documento **ainda não existir**.
+3. **Sem os dois, a regra falha.** Só a dica: dois usuários veem "disponível" ao mesmo tempo e o segundo quebra no salvar. Só a escrita: a pessoa só descobre depois de preencher tudo.
+
+### Maiúsculas: visíveis, mas sem efeito na unicidade
+
+O apelido tem **duas formas**, e a distinção é o coração da regra:
+
+| | Exemplo | Para quê |
+|---|---|---|
+| **Exibição** | `Lucas_Rocha` | como a pessoa escreveu; é o que aparece no perfil |
+| **Chave** | `lucas_rocha` | minúscula; é o ID em `apelidos/{chave}` e garante a unicidade |
+
+Consequência: `Lucas_Rocha`, `lucas_rocha` e `LUCAS_ROCHA` são **o mesmo apelido**, e só um pode existir. A pessoa escolhe como escreve; ninguém consegue registrar uma variação que só difere em maiúscula.
+
+Sem essa separação, dois perfis ficariam com endereços praticamente idênticos e ninguém saberia qual é qual — o que é exatamente como golpe de personificação funciona.
+
+**Status:** aprovado — 12/08/2026.
+
+---
+
 # DECISÕES PENDENTES
 
 Estas decisões devem ser confirmadas pelo proprietário antes das partes afetadas:

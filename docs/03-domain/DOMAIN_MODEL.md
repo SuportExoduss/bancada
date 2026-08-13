@@ -67,8 +67,9 @@ Não armazenar senha própria.
 Identidade social.
 
 - userId
-- displayName
-- username
+- **firstName** — nome
+- **lastName** — sobrenome
+- username — **o apelido; obrigatório e único (D-017)**
 - avatar
 - cover
 - bio
@@ -77,6 +78,29 @@ Identidade social.
 - privacy
 - createdAt
 - updatedAt
+
+> **Nome e sobrenome são separados** por decisão do proprietário (D-017). A
+> versão anterior deste documento previa um `displayName` único.
+
+### Unicidade do apelido
+
+O Firestore não impõe unicidade em campo — só o **ID do documento** é único.
+Por isso existe a coleção espelho:
+
+```text
+apelidos/{apelido}  →  { uid, criadoEm }
+```
+
+O apelido **é** o ID. Verificar disponibilidade é **uma leitura por ID**, e não
+varredura da coleção: varrer custaria uma leitura por usuário cadastrado, e
+ficaria mais caro a cada conta nova.
+
+A garantia real está na **escrita**: a Security Rule só autoriza criar
+`apelidos/{apelido}` se o documento ainda não existir. A checagem enquanto a
+pessoa digita é apenas uma dica — entre ver "disponível" e salvar, outra
+pessoa pode pegar.
+
+Guardado sempre em **minúsculas**, sem espaços nas pontas.
 
 ## 4. PlayerProfile
 

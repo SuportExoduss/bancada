@@ -1,8 +1,13 @@
 import { NavigationContainer, type Theme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { OnboardingScreen } from '../screens/OnboardingScreen';
 import { SignUpScreen } from '../screens/SignUpScreen';
 import { WelcomeScreen } from '../screens/WelcomeScreen';
+import {
+  APELIDOS_OCUPADOS_DEMO,
+  criarApelidoRepositoryMemoria,
+} from '../repositories/ApelidoRepository';
 import { colors } from '../theme';
 
 /**
@@ -15,6 +20,7 @@ import { colors } from '../theme';
 export type RootStackParamList = {
   BoasVindas: undefined;
   Cadastro: undefined;
+  Onboarding: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -43,6 +49,10 @@ const temaBancada: Theme = {
   },
 };
 
+// Temporario: sai quando o FirestoreApelidoRepository entrar. Existe para a
+// tela poder exercitar de verdade os estados de disponivel e em uso.
+const repositorioApelido = criarApelidoRepositoryMemoria(APELIDOS_OCUPADOS_DEMO);
+
 export function RootNavigator() {
   return (
     <NavigationContainer theme={temaBancada}>
@@ -65,7 +75,15 @@ export function RootNavigator() {
           )}
         </Stack.Screen>
 
-        <Stack.Screen name="Cadastro">{() => <SignUpScreen />}</Stack.Screen>
+        <Stack.Screen name="Cadastro">
+          {({ navigation }) => (
+            <SignUpScreen onSubmit={() => navigation.navigate('Onboarding')} />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="Onboarding">
+          {() => <OnboardingScreen repositorioApelido={repositorioApelido} />}
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );
