@@ -141,12 +141,26 @@
 
 ---
 
+## D-016 — Login por e-mail; apelido é identidade, não credencial
+
+**Decisão:** opção **A**. O login usa **e-mail e senha** (e Google). O **apelido** é a identidade pública: busca, exibição e URL `/@apelido`.
+
+**Motivo:** o Firebase Auth entra por e-mail. Para entrar por apelido, o app teria que resolver apelido→e-mail **antes** de a pessoa estar logada — e sem Cloud Functions (D-012) esse mapa precisaria ser público, expondo o e-mail de todos os usuários a quem varresse a lista de apelidos.
+
+**O que isso NÃO muda:** o apelido continua sendo o rastreio do perfil, exatamente como o proprietário definiu. Muda apenas o campo da tela de entrar.
+
+**Revisar quando:** se o Blaze for ativado algum dia, uma Function resolve o apelido sem expor e-mail, e a opção C passa a valer.
+
+**Status:** aprovado — 12/08/2026.
+
+---
+
 # DECISÕES PENDENTES
 
 Estas decisões devem ser confirmadas pelo proprietário antes das partes afetadas:
 
 1. plataformas da primeira publicação: Android apenas ou Android+iOS;
-2. **login por apelido ou por e-mail** — o Firebase Auth entra por e-mail; para entrar por apelido o app precisa resolver apelido→e-mail **antes do login**, e sem Functions esse mapa seria público, expondo o e-mail de todos. Opções: (A) apelido para busca/perfil e login por e-mail; (B) login por apelido aceitando os e-mails expostos; (C) login por apelido via Function, exigindo Blaze;
+2. ~~login por apelido ou por e-mail~~ → **decidido em D-016** (opção A);
 3. ~~username obrigatório ou opcional~~ → **decidido em D-014**;
 4. idade mínima e política de menores;
 5. ~~perfil público por padrão~~ → **decidido em D-015**;

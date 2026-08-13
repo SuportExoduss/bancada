@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "BANCADA",
+    "slug": "bancada",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "bancada",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#111111",
+    "primaryColor": "#6CC04A",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/marca/logo-bancada.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#111111"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "br.com.bancada.app"
+    },
+    "android": {
+      "package": "br.com.bancada.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#111111",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
