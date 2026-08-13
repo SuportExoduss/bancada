@@ -1,12 +1,11 @@
-import { WelcomeScreen } from './src/screens/WelcomeScreen';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-/**
- * Raiz do aplicativo.
- *
- * Sem navegação ainda, de propósito: existe uma tela só. A navegação entra
- * no passo em que a segunda tela nascer — instalar roteador para uma tela é
- * peça sem função, e peça sem função é dívida.
- */
+import { RootNavigator } from './src/navigation/RootNavigator';
+
 export default function App() {
-  return <WelcomeScreen />;
+  return (
+    <SafeAreaProvider>
+      <RootNavigator />
+    </SafeAreaProvider>
+  );
 }
