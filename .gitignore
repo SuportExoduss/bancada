@@ -1,0 +1,19 @@
+node_modules/
+.expo/
+dist/
+web-build/
+*.log
+.DS_Store
+
+# segredos
+.env
+.env.*
+!.env.example
+/segredos/
+*-firebase-adminsdk-*.json
+google-services.json
+GoogleService-Info.plist
+
+# firebase
+.firebase/
+*-debug.log
