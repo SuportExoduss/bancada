@@ -28,9 +28,11 @@
 **As telas existem e validam; nenhuma persiste ainda** (ver D-018).
 
 - 🔄 cadastro — tela pronta com validação completa; **não cria conta**
-- ⬜ login — tela não existe
+- 🔄 login — tela pronta, por e-mail (D-016); **não autentica**
 - ⬜ logout
-- ⬜ recuperação de senha
+- ⬜ recuperação de senha — o link "Esqueci minha senha" existe na tela e está
+  inerte: recuperação é `sendPasswordResetEmail` do Firebase Auth, que ainda
+  não está conectado
 - 🔄 perfil — onboarding com nome, sobrenome e apelido; **não salva**
 - ⬜ avatar
 - 🔄 apelido — regra de unicidade implementada e verificada, contra
@@ -44,7 +46,11 @@
 | Boas-vindas | ✅ aprovada pelo proprietário e **congelada** |
 | Criar conta | 🔄 aguardando aprovação · sem persistência |
 | Onboarding | 🔄 aguardando aprovação · sem persistência |
-| Entrar | ⬜ não existe |
+| Entrar | 🔄 aguardando aprovação · sem persistência |
+
+O fluxo visual de primeiro acesso está **fechado**: as quatro telas existem e
+se ligam entre si. Nenhuma fala com o Firebase ainda — é o próximo passo, e
+pela D-018 ele tem que acontecer antes de o M1 fechar.
 
 ## FASE 3 — Social Core
 

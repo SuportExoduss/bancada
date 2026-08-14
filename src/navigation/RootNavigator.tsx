@@ -2,6 +2,7 @@ import { NavigationContainer, type Theme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { OnboardingScreen } from '../screens/OnboardingScreen';
+import { SignInScreen } from '../screens/SignInScreen';
 import { SignUpScreen } from '../screens/SignUpScreen';
 import { WelcomeScreen } from '../screens/WelcomeScreen';
 import {
@@ -19,6 +20,7 @@ import { colors } from '../theme';
  */
 export type RootStackParamList = {
   BoasVindas: undefined;
+  Entrar: undefined;
   Cadastro: undefined;
   Onboarding: undefined;
 };
@@ -68,16 +70,28 @@ export function RootNavigator() {
           {({ navigation }) => (
             <WelcomeScreen
               onCreateAccount={() => navigation.navigate('Cadastro')}
-              // "Ja tenho conta" fica sem destino ate a tela Entrar existir.
-              // Mandar quem ja tem conta para o cadastro seria mentir para o
-              // usuario — pior que o botao nao fazer nada.
+              onSignIn={() => navigation.navigate('Entrar')}
+            />
+          )}
+        </Stack.Screen>
+
+        <Stack.Screen name="Entrar">
+          {({ navigation }) => (
+            <SignInScreen
+              // `replace` e nao `navigate`: quem esta no Entrar e vai para o
+              // Cadastro nao deveria voltar para o Entrar com o botao voltar.
+              // Sao dois caminhos alternativos, nao uma sequencia.
+              onSignUp={() => navigation.replace('Cadastro')}
             />
           )}
         </Stack.Screen>
 
         <Stack.Screen name="Cadastro">
           {({ navigation }) => (
-            <SignUpScreen onSubmit={() => navigation.navigate('Onboarding')} />
+            <SignUpScreen
+              onSubmit={() => navigation.navigate('Onboarding')}
+              onSignIn={() => navigation.replace('Entrar')}
+            />
           )}
         </Stack.Screen>
 
