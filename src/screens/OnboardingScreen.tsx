@@ -25,12 +25,22 @@ import {
   validarNome,
 } from '../domain/profile';
 import { useApelidoDisponivel, type EstadoApelido } from '../hooks/useApelidoDisponivel';
+import {
+  MENSAGENS_IDADE,
+  faixaDaData,
+  formatarData,
+  validarData,
+  type FaixaEtaria,
+} from '../domain/idade';
 import { LARGURA_MAXIMA_CONTEUDO, useLayout } from '../hooks/useLayout';
+import type { AlvoDoCadastro } from '../state/cadastroEmAndamento';
 import type { ApelidoRepository } from '../repositories/ApelidoRepository';
 import { colors, radius, spacing, typography } from '../theme';
 
 export interface OnboardingScreenProps {
   onBack?: () => void;
+  /** Muda os textos: a conta é sua, do responsável ou do menor. */
+  alvo?: AlvoDoCadastro;
   repositorioApelido: ApelidoRepository;
   onSubmit?: (dados: {
     nome: string;
@@ -39,6 +49,9 @@ export interface OnboardingScreenProps {
     apelido: string;
     /** Minúscula — é o ID em apelidos/{chave} e garante a unicidade */
     apelidoChave: string;
+    /** DD/MM/AAAA */
+    nascimento: string;
+    faixa: FaixaEtaria;
   }) => void;
   loading?: boolean;
   serverError?: string;
@@ -52,8 +65,28 @@ export interface OnboardingScreenProps {
  * apelido está tomado só depois de preencher tudo é o tipo de atrito que faz
  * gente desistir no último passo.
  */
+const TEXTOS: Record<AlvoDoCadastro, { titulo: string; subtitulo: string; rotuloData: string }> = {
+  para_mim: {
+    titulo: 'Quem é você na várzea?',
+    subtitulo:
+      'Seu apelido é como as pessoas vão te achar. Escolha com carinho — dá para trocar depois, mas não toda hora.',
+    rotuloData: 'Sua data de nascimento',
+  },
+  responsavel: {
+    titulo: 'Quem é você na várzea?',
+    subtitulo: 'Seus dados. Os do seu filho vêm na próxima etapa.',
+    rotuloData: 'Sua data de nascimento',
+  },
+  menor: {
+    titulo: 'Quem é ele na várzea?',
+    subtitulo: 'O apelido é como o time e a turma vão achar ele. Escolha junto.',
+    rotuloData: 'Data de nascimento dele',
+  },
+};
+
 export function OnboardingScreen({
   onBack,
+  alvo = 'para_mim',
   repositorioApelido,
   onSubmit,
   loading = false,
@@ -64,6 +97,7 @@ export function OnboardingScreen({
   const [nome, setNome] = useState('');
   const [sobrenome, setSobrenome] = useState('');
   const [apelido, setApelido] = useState('');
+  const [nascimento, setNascimento] = useState('');
   const [tentou, setTentou] = useState(false);
 
   const estadoApelido = useApelidoDisponivel(apelido, repositorioApelido);
@@ -73,9 +107,34 @@ export function OnboardingScreen({
       nome: validarNome(nome),
       sobrenome: validarNome(sobrenome),
       apelido: validarApelido(apelido),
+      nascimento: validarData(nascimento),
     }),
-    [nome, sobrenome, apelido],
+    [nome, sobrenome, apelido, nascimento],
   );
+
+  // A faixa etária decide se a conta pode existir deste jeito. Só é calculada
+  // quando a data está completa e válida — antes disso não há o que julgar.
+  const faixa = useMemo(() => (erros.nascimento ? null : faixaDaData(nascimento)), [
+    erros.nascimento,
+    nascimento,
+  ]);
+
+  /**
+   * A idade combina com o caminho escolhido?
+   *
+   * Fluxo próprio pede 16 ou mais: abaixo disso a conta tem que nascer da
+   * conta de um responsável (D-026). Fluxo do menor pede o contrário — de 13 a
+   * 15 —, porque a partir dos 16 a lei não exige vinculação e criar a conta
+   * pelo responsável tiraria autonomia que a pessoa já tem.
+   */
+  const erroDeFaixa = useMemo(() => {
+    if (!faixa) return null;
+    if (faixa === 'nao_permitida') return MENSAGENS_IDADE.naoPermitida;
+    if (alvo === 'menor') {
+      return faixa === 'precisa_responsavel' ? null : MENSAGENS_IDADE.menorJaPodeSozinho;
+    }
+    return faixa === 'precisa_responsavel' ? MENSAGENS_IDADE.precisaResponsavel : null;
+  }, [faixa, alvo]);
 
   const sugestoes = useMemo(
     () => (apelido.length === 0 ? sugerirApelidos(nome, sobrenome) : []),
@@ -83,7 +142,12 @@ export function OnboardingScreen({
   );
 
   const valido =
-    !erros.nome && !erros.sobrenome && !erros.apelido && estadoApelido.situacao === 'disponivel';
+    !erros.nome &&
+    !erros.sobrenome &&
+    !erros.apelido &&
+    !erros.nascimento &&
+    !erroDeFaixa &&
+    estadoApelido.situacao === 'disponivel';
 
   function enviar() {
     setTentou(true);
@@ -95,6 +159,10 @@ export function OnboardingScreen({
       // pessoa escolheu; a chave e o que garante a unicidade.
       apelido: apelidoParaExibicao(apelido),
       apelidoChave: chaveDoApelido(apelido),
+      nascimento: nascimento.trim(),
+      // `faixa` nao e nulo aqui: `valido` exige `!erros.nascimento`, e a faixa
+      // so e nula quando a data e invalida.
+      faixa: faixa as FaixaEtaria,
     });
   }
 
@@ -115,11 +183,8 @@ export function OnboardingScreen({
         >
           <View style={styles.column}>
             <View style={styles.header}>
-              <Text style={styles.title}>Quem é você na várzea?</Text>
-              <Text style={styles.subtitle}>
-                Seu apelido é como as pessoas vão te achar. Escolha com carinho — dá para
-                trocar depois, mas não toda hora.
-              </Text>
+              <Text style={styles.title}>{TEXTOS[alvo].titulo}</Text>
+              <Text style={styles.subtitle}>{TEXTOS[alvo].subtitulo}</Text>
             </View>
 
             <View style={styles.form}>
@@ -195,6 +260,34 @@ export function OnboardingScreen({
                 </View>
               ) : null}
 
+              <View style={styles.nascimentoBloco}>
+                <Input
+                  label={TEXTOS[alvo].rotuloData}
+                  value={nascimento}
+                  // A máscara é aplicada na entrada, não na saída: assim o
+                  // campo nunca mostra um estado que o app não aceitaria.
+                  onChangeText={(texto) => setNascimento(formatarData(texto))}
+                  placeholder="DD/MM/AAAA"
+                  keyboardType="number-pad"
+                  autoComplete="birthdate-full"
+                  maxLength={10}
+                  error={
+                    tentou && erros.nascimento
+                      ? MENSAGENS_IDADE.data[erros.nascimento]
+                      : undefined
+                  }
+                />
+
+                {/* O erro de faixa aparece assim que a data fica válida, sem
+                    esperar o envio: descobrir que o caminho é outro depois de
+                    preencher tudo é o pior momento possível para descobrir. */}
+                {erroDeFaixa ? (
+                  <View style={styles.avisoFaixa} accessibilityLiveRegion="polite">
+                    <Text style={styles.avisoFaixaTexto}>{erroDeFaixa}</Text>
+                  </View>
+                ) : null}
+              </View>
+
               {serverError ? (
                 <View style={styles.erroServidor} accessibilityRole="alert">
                   <Text style={styles.erroServidorTexto}>{serverError}</Text>
@@ -203,7 +296,9 @@ export function OnboardingScreen({
             </View>
 
             <View style={styles.actions}>
-              <Button label="Continuar" variant="primary" onPress={enviar} loading={loading} />
+              {/* "Criar conta" so aqui: pela D-024 e este toque que faz a
+                  conta existir. Ate ele, nada foi criado. */}
+              <Button label="Criar conta" variant="primary" onPress={enviar} loading={loading} />
               {isShortHeight ? null : (
                 <Text style={styles.rodape}>
                   Você poderá completar o perfil com foto, cidade e time do coração depois.
@@ -284,6 +379,15 @@ const styles = StyleSheet.create({
   linha: { flexDirection: 'row', gap: spacing.md },
   coluna: { gap: spacing.lg },
   meio: { flex: 1 },
+  nascimentoBloco: { gap: spacing.sm },
+  avisoFaixa: {
+    backgroundColor: 'rgba(245, 165, 36, 0.12)',
+    borderColor: colors.warning,
+    borderWidth: 1,
+    borderRadius: radius.md,
+    padding: spacing.md,
+  },
+  avisoFaixaTexto: { ...typography.caption, color: colors.warning, lineHeight: 20 },
   apelidoBloco: { gap: spacing.sm },
   aviso: {
     flexDirection: 'row',

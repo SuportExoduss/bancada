@@ -24,10 +24,13 @@ import {
   type ForcaSenha,
 } from '../domain/credentials';
 import { LARGURA_MAXIMA_CONTEUDO, useLayout } from '../hooks/useLayout';
+import type { AlvoDoCadastro } from '../state/cadastroEmAndamento';
 import { colors, radius, spacing, typography } from '../theme';
 
 export interface SignUpScreenProps {
   onBack?: () => void;
+  /** Muda os textos da tela: a conta é sua, do responsável ou do menor. */
+  alvo?: AlvoDoCadastro;
   onSubmit?: (dados: { email: string; senha: string }) => void;
   onGoogle?: () => void;
   onSignIn?: () => void;
@@ -38,8 +41,29 @@ export interface SignUpScreenProps {
   serverError?: string;
 }
 
+/**
+ * A mesma tela serve os três casos. Só o texto muda — o formulário de e-mail e
+ * senha é idêntico, e duplicar a tela para trocar duas frases só criaria duas
+ * telas para manter em vez de uma.
+ */
+const TEXTOS: Record<AlvoDoCadastro, { titulo: string; subtitulo: string }> = {
+  para_mim: {
+    titulo: 'Criar conta',
+    subtitulo: 'Leva um minuto. Depois você escolhe seu apelido.',
+  },
+  responsavel: {
+    titulo: 'Sua conta',
+    subtitulo: 'Comece pela sua. A do seu filho vem logo depois, ligada a esta.',
+  },
+  menor: {
+    titulo: 'Conta do seu filho',
+    subtitulo: 'Use um e-mail que ele tenha acesso — é por ele que ele vai entrar.',
+  },
+};
+
 export function SignUpScreen({
   onBack,
+  alvo = 'para_mim',
   onSubmit,
   onGoogle,
   onSignIn,
@@ -95,10 +119,8 @@ export function SignUpScreen({
         >
           <View style={styles.column}>
             <View style={styles.header}>
-              <Text style={styles.title}>Criar conta</Text>
-              <Text style={styles.subtitle}>
-                Leva um minuto. Depois você escolhe seu apelido.
-              </Text>
+              <Text style={styles.title}>{TEXTOS[alvo].titulo}</Text>
+              <Text style={styles.subtitle}>{TEXTOS[alvo].subtitulo}</Text>
             </View>
 
             <View style={styles.form}>
@@ -172,7 +194,7 @@ export function SignUpScreen({
 
               {tentou && !aceitou ? (
                 <Text style={styles.erroGeral} accessibilityRole="alert">
-                  Para criar a conta, você precisa aceitar os termos.
+                  Para continuar, você precisa aceitar os termos.
                 </Text>
               ) : null}
 
@@ -185,10 +207,14 @@ export function SignUpScreen({
 
             <View style={styles.actions}>
               <Button
-                label="Criar conta"
+                label="Continuar"
                 variant="primary"
                 onPress={enviar}
                 loading={loading}
+                // "Continuar", nao "Criar conta": pela D-024 nada e criado
+                // aqui. A conta nasce no botao final do onboarding, e o rotulo
+                // precisa dizer a verdade sobre o que o toque faz.
+                //
                 // Nao desabilitado quando invalido, de proposito: botao morto
                 // nao explica o que falta. Ao tocar, os erros aparecem.
               />
