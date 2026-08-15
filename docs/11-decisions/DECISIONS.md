@@ -403,4 +403,51 @@ Estas decisões devem ser confirmadas pelo proprietário antes das partes afetad
 21. ~~transmissão exige anuência dos dois times?~~ → **decidido em D-023**: sim,
     no modelo de convite de partida.
 
+22. **supervisão da conta do menor — o que o responsável enxerga.** O fluxo
+    proposto em 15/08/2026 (responsável cria a conta, vincula, bloqueia
+    conteúdo) está certo e é melhor que o da maioria das plataformas. A parte
+    a decidir é o **alcance da supervisão**. Avaliação registrada:
+
+    **O que recomendo manter sem ressalva:** vinculação obrigatória · bloquear
+    conteúdo e temas · ver e aprovar quem segue e quem manda mensagem ·
+    bloquear contato · limite de tempo · receber aviso de denúncia envolvendo
+    o menor.
+
+    **Onde tenho reserva: ler o conteúdo das mensagens.** Três motivos.
+
+    *Primeiro, o risco que ninguém quer nomear.* Em boa parte dos casos de
+    violência contra criança e adolescente o agressor está dentro de casa. Uma
+    conta em que o responsável lê tudo remove justamente o canal pelo qual o
+    menor pediria ajuda. A ferramenta feita para proteger vira a que isola.
+
+    *Segundo, está invertido.* A proposta deixa a postagem livre e a mensagem
+    aberta. É o contrário do que protege: o dano à reputação e o assédio
+    público acontecem na **postagem**; a **mensagem** é onde o menor procura
+    socorro. Se for para escolher onde o responsável enxerga mais, é no que é
+    público.
+
+    *Terceiro, o ECA protege a intimidade do próprio adolescente* (art. 17).
+    Supervisão é legítima; vigilância total de 15 anos é outra coisa, e a lei
+    não exige. A Lei 15.211/2025 pede vinculação e controle parental — não pede
+    leitura de conversa.
+
+    **Proposta:** o responsável vê **com quem** o menor conversa e pode
+    bloquear qualquer contato, mas não lê o conteúdo por padrão. Alertas
+    automáticos de risco (contato adulto desconhecido, palavra-chave de perigo)
+    chegam ao responsável. Em risco concreto, há um pedido de acesso ao
+    conteúdo que fica **registrado e visível para o menor**.
+
+    **Regra que vale em qualquer cenário escolhido: o menor precisa saber o que
+    o responsável enxerga.** Supervisão às escondidas é pior que supervisão
+    ampla e declarada — eticamente e juridicamente.
+
+    **Faixas etárias:** abaixo de 16 a vinculação é obrigatória por lei; de 16 a
+    18 a lei não exige, e manter supervisão total nessa faixa é decisão de
+    produto, não obrigação.
+
+    **Nada disso trava o cronograma:** mensagens são Fase 13. Dá para lançar a
+    vinculação e o bloqueio de conteúdo agora e decidir a supervisão de
+    mensagem quando a mensagem existir — desde que a arquitetura não feche a
+    porta.
+
 Quando uma pendência for decidida, registrar aqui com data e motivo.
