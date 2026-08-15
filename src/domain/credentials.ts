@@ -18,7 +18,7 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 export const SENHA_MINIMA = 8;
 
 export type ErroEmail = 'vazio' | 'formato';
-export type ErroSenha = 'vazio' | 'curta' | 'so_numeros';
+export type ErroSenha = 'vazio' | 'curta' | 'sem_letra' | 'sem_numero';
 export type ErroConfirmacao = 'vazio' | 'diferente';
 
 export function validarEmail(bruto: string): ErroEmail | null {
@@ -28,12 +28,22 @@ export function validarEmail(bruto: string): ErroEmail | null {
   return null;
 }
 
+/**
+ * Senha alfanumérica de no mínimo 8 caracteres (D-019).
+ *
+ * "Alfanumérica" aqui **exige** letra e número; não **proíbe** símbolo.
+ * Proibir símbolo rejeitaria `Minha$enha123` — mais forte que muita senha que
+ * a regra aceita. A regra existe para elevar o piso, não para baixar o teto.
+ *
+ * Data de nascimento e telefone são as senhas mais comuns e as primeiras que
+ * um ataque tenta; exigir letra as elimina. Exigir número elimina a palavra
+ * única de dicionário.
+ */
 export function validarSenha(senha: string): ErroSenha | null {
   if (senha.length === 0) return 'vazio';
   if (senha.length < SENHA_MINIMA) return 'curta';
-  // Data de nascimento e telefone são as senhas mais comuns e as primeiras
-  // que um ataque tenta.
-  if (/^\d+$/.test(senha)) return 'so_numeros';
+  if (!/[a-zA-Z]/.test(senha)) return 'sem_letra';
+  if (!/\d/.test(senha)) return 'sem_numero';
   return null;
 }
 
@@ -52,7 +62,8 @@ export const MENSAGENS = {
   senha: {
     vazio: 'Crie uma senha.',
     curta: `Use pelo menos ${SENHA_MINIMA} caracteres.`,
-    so_numeros: 'Misture letras com os números.',
+    sem_letra: 'Inclua pelo menos uma letra.',
+    sem_numero: 'Inclua pelo menos um número.',
   },
   confirmacao: {
     vazio: 'Repita a senha.',
@@ -70,7 +81,9 @@ export type ForcaSenha = 'fraca' | 'media' | 'forte';
  * e isso não cabe no cliente.
  */
 export function forcaDaSenha(senha: string): ForcaSenha {
-  if (senha.length < SENHA_MINIMA) return 'fraca';
+  // Enquanto não passar na regra, é fraca — o medidor não pode dizer "média"
+  // para uma senha que o botão vai recusar. Uma fonte de verdade só.
+  if (validarSenha(senha) !== null) return 'fraca';
 
   let variedade = 0;
   if (/[a-z]/.test(senha)) variedade++;

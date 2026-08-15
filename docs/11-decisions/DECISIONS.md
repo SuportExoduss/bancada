@@ -231,6 +231,54 @@ polimento. Os seis tamanhos e as seis verificações estão no
 
 ---
 
+## D-019 — Senha: alfanumérica, mínimo 8 caracteres
+
+**Decisão do proprietário — 14/08/2026.** A senha deve ser **alfanumérica com
+no mínimo 8 caracteres**.
+
+### Como foi interpretado
+
+"Alfanumérica" **exige** letra e número; **não proíbe** símbolo. Proibir
+símbolo rejeitaria `Minha$enha123`, que é mais forte que muita senha que a
+regra aceita — a regra existe para levantar o piso, não para baixar o teto.
+
+Regra anterior (mais fraca) recusava apenas senha só de números; `minhasenha`
+passava. Agora não passa.
+
+| Senha | Antes | Agora |
+|---|---|---|
+| `12345678` | recusada | recusada — "Inclua pelo menos uma letra." |
+| `minhasenha` | **aceita** | recusada — "Inclua pelo menos um número." |
+| `abc12` | recusada | recusada — "Use pelo menos 8 caracteres." |
+| `senha123` | aceita | aceita |
+| `Minha$enha123` | aceita | aceita |
+
+O medidor de força passou a usar `validarSenha` como piso: enquanto a senha não
+passar na regra, ele mostra "fraca". O medidor não pode dizer "razoável" para
+uma senha que o botão vai recusar.
+
+### Limitação conhecida: esta regra vive só no cliente
+
+O `CLAUDE.md §3` manda aplicar segurança no servidor, nunca só no cliente. Esta
+regra **não** cumpre isso, e a causa é externa:
+
+- o mínimo do Firebase Auth é de 6 caracteres, sem exigência de composição;
+- política de senha customizada é recurso do **Identity Platform**, cujo
+  upgrade a D-013 proíbe (derruba a cota de 50k MAU para 3k DAU).
+
+Consequência real: quem chamar a API REST do Firebase Auth direto, sem passar
+pela tela, consegue criar conta com senha fraca. O que **não** está em risco é
+autorização — quem pode ler e escrever o quê continua decidido pelas Security
+Rules, no servidor. Isto aqui é proteção do usuário contra a própria senha, não
+controle de acesso.
+
+Fica registrado como aceito até que se decida pagar o Identity Platform ou
+adotar outro mecanismo.
+
+**Status:** aprovado — 14/08/2026.
+
+---
+
 # DECISÕES PENDENTES
 
 Estas decisões devem ser confirmadas pelo proprietário antes das partes afetadas:
