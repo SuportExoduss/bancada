@@ -2,8 +2,9 @@
 
 **Versão 1.0 — rascunho de 15/08/2026. Ainda não publicado.**
 
-> **Pendências antes de publicar:** dados de registro da Exoduss Tec, nome e
-> contato do Encarregado (DPO), e revisão por advogado. Campos `[A DEFINIR]`.
+> **Não publicável ainda.** Falta identificar a controladora: o CNPJ da Exoduss
+> Tec não foi aberto até 15/08/2026 (ver D-020). Também falta a revisão por
+> advogado. É o que os campos `[A DEFINIR]` marcam.
 >
 > **Este documento não é um contrato e você não precisa "aceitar" ele.** Ele
 > existe para te contar o que fazemos com seus dados — é o seu direito de saber,
@@ -32,8 +33,8 @@
 **Exoduss Tec**, `[A DEFINIR: razão social]`, CNPJ `[A DEFINIR]`, com sede em
 `[A DEFINIR]`, é a **controladora** dos dados pessoais tratados na BANCADA.
 
-**Encarregado pelo Tratamento de Dados Pessoais (DPO):** `[A DEFINIR: nome]` —
-`[A DEFINIR: e-mail]`.
+**Encarregado pelo Tratamento de Dados Pessoais (DPO):**
+suportexoduss333@gmail.com
 
 ---
 
@@ -159,16 +160,23 @@ Respondemos em até **15 dias**. Se um pedido não puder ser atendido, dizemos
 Esta seção é a mais importante para nós, e vale a leitura mesmo de quem não tem
 filho na plataforma.
 
-**Menor de 16 anos não cria conta sozinho.** A conta é criada pelo responsável
-legal, a partir da conta dele, e fica vinculada a ela. A idade não é apenas
-declarada — a Lei 15.211/2025 proíbe isso.
+**A idade mínima na BANCADA é 13 anos.**
 
-**O responsável pode acompanhar** a conta do menor e bloquear conteúdo que
-considerar impróprio.
+**De 13 a 15, a conta é criada pelo responsável legal**, a partir da conta dele,
+e fica vinculada a ela. A idade não é apenas declarada — a Lei 15.211/2025
+proíbe isso. De 16 anos em diante a pessoa cria a própria conta.
 
-**O menor sabe que a conta é acompanhada.** Acompanhamento às escondidas não
-protege ninguém — deixamos claro para o menor, na própria conta, o que o
-responsável enxerga.
+**O responsável enxerga o contato, não o conteúdo.** Ele vê com quem o menor
+conversa e pode bloquear qualquer contato, mas não lê as mensagens. Alertas
+automáticos de risco chegam a ele; em risco concreto há um pedido de acesso ao
+conteúdo, que fica registrado e visível para o menor.
+
+Fizemos assim de propósito. Uma conta lida por inteiro tira do menor o canal
+por onde ele pediria ajuda — e é justamente na mensagem privada que um pedido
+de socorro costuma sair.
+
+**O menor sabe o que o responsável enxerga.** Está escrito na conta dele, em
+linguagem que ele entende. Acompanhamento escondido não protege ninguém.
 
 **Coletamos o mínimo.** Dado de menor não vira estatística de uso, não alimenta
 recomendação e não sai da plataforma.
@@ -205,7 +213,7 @@ Versões anteriores ficam disponíveis, com a data em que valeram.
 
 ## 11. Falar sobre privacidade
 
-- **Encarregado (DPO):** `[A DEFINIR: nome e e-mail]`
+- **Encarregado (DPO):** suportexoduss333@gmail.com
 - **Dentro do app:** Configurações → Privacidade → Falar com o Encarregado
 - **ANPD:** [gov.br/anpd](https://www.gov.br/anpd) — você pode reclamar
   diretamente à autoridade, sem passar por nós.

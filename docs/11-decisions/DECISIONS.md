@@ -286,8 +286,27 @@ adotar outro mecanismo.
 a marca do app é BANCADA, a pessoa jurídica por trás é a Exoduss Tec.
 
 Consequências: a Exoduss Tec é a **controladora** dos dados para efeito de LGPD
-e é a parte contratante nos Termos de Uso. Razão social completa, CNPJ,
-endereço e comarca ainda precisam ser informados para fechar os documentos.
+e é a parte contratante nos Termos de Uso.
+
+**O CNPJ ainda não foi aberto** (confirmado em 15/08/2026). Hoje "Exoduss Tec"
+é nome de marca sem existência jurídica própria. Isso **não trava o
+desenvolvimento** — trava a **publicação**, e só ela.
+
+Enquanto não houver CNPJ, os Termos não podem ser publicados sem que a parte
+contratante seja identificada. As duas saídas possíveis, a decidir mais perto do
+lançamento:
+
+- **abrir o CNPJ antes de publicar** — caminho recomendado, porque separa o
+  patrimônio pessoal do proprietário do risco da plataforma e evita expor CPF e
+  endereço residencial num documento público. A modalidade adequada
+  (MEI, ME, Simples) precisa ser confirmada com contador: atividades de
+  desenvolvimento de software têm restrições no MEI que mudam com frequência, e
+  não é assunto que eu deva afirmar de cor;
+- **publicar como pessoa física**, com CPF e endereço do proprietário nos
+  Termos. Funciona juridicamente, mas expõe dado pessoal e não separa
+  patrimônio.
+
+A comarca do foro depende do endereço que resultar dessa escolha.
 
 **Status:** aprovado — 15/08/2026.
 
@@ -365,6 +384,74 @@ tem que ser projetado junto com a ligação do Firebase, não depois.
 
 ---
 
+## D-025 — Supervisão da conta do menor: por contato, não por conteúdo
+
+**Decisão do proprietário — 15/08/2026.** Aprovado o modelo proposto na
+avaliação da pendência 22.
+
+**O responsável vê e controla:**
+
+- vinculação obrigatória da conta do menor à dele;
+- **com quem** o menor conversa, e pode bloquear qualquer contato;
+- quem segue e quem pode mandar mensagem;
+- bloqueio de conteúdo e de temas que considerar impróprios;
+- limite de tempo de uso;
+- aviso de qualquer denúncia envolvendo o menor.
+
+**O responsável não lê o conteúdo das mensagens por padrão.** Alertas
+automáticos de risco — adulto desconhecido puxando conversa, palavra-chave de
+perigo — chegam ao responsável. Em risco concreto existe um pedido de acesso ao
+conteúdo, que fica **registrado e visível para o menor**.
+
+**Regra transversal, e ela não é negociável:** o menor sempre sabe o que o
+responsável enxerga. Supervisão às escondidas é pior que supervisão ampla e
+declarada, ética e juridicamente.
+
+### O motivo, registrado para não se perder
+
+Em boa parte dos casos de violência contra criança e adolescente o agressor está
+dentro de casa. Uma conta lida por inteiro remove justamente o canal pelo qual o
+menor pediria ajuda — a ferramenta feita para proteger vira a que isola.
+
+E a leitura completa estava invertida: assédio e dano à reputação acontecem na
+**postagem**, que é pública e permanente; a **mensagem** é onde se pede socorro.
+Onde o responsável enxerga mais deve ser no que é público.
+
+A Lei 15.211/2025 exige vinculação e controle parental. **Não** exige leitura de
+conversa. O ECA (art. 17) protege a intimidade do próprio adolescente.
+
+**Faixa 16–17:** a lei não exige vinculação. Manter supervisão nessa faixa é
+decisão de produto, ainda em aberto.
+
+**Cronograma:** mensagens são Fase 13. A vinculação e o bloqueio de conteúdo
+podem sair antes; o que não pode é a arquitetura fechar a porta para este
+modelo.
+
+**Status:** aprovado — 15/08/2026.
+
+---
+
+## D-026 — Idade mínima: 13 anos
+
+**Decisão do proprietário — 15/08/2026.** A idade mínima para ter conta na
+BANCADA é **13 anos**.
+
+Fica acima da faixa "criança" da LGPD (art. 14 trata menor de 12 com o regime
+mais rígido) e acompanha a convenção que Meta e a maioria das plataformas usam.
+
+**As faixas resultantes:**
+
+| Idade | Como funciona |
+|---|---|
+| Abaixo de 13 | Não pode ter conta |
+| 13 a 15 | Conta criada **pelo responsável**, vinculada à dele (D-025). Exigência da Lei 15.211/2025 |
+| 16 e 17 | Conta própria. A lei não exige vinculação |
+| 18 ou mais | Conta própria, sem supervisão |
+
+**Status:** aprovado — 15/08/2026.
+
+---
+
 # DECISÕES PENDENTES
 
 Estas decisões devem ser confirmadas pelo proprietário antes das partes afetadas:
@@ -372,14 +459,8 @@ Estas decisões devem ser confirmadas pelo proprietário antes das partes afetad
 1. plataformas da primeira publicação: Android apenas ou Android+iOS;
 2. ~~login por apelido ou por e-mail~~ → **decidido em D-016** (opção A);
 3. ~~username obrigatório ou opcional~~ → **decidido em D-014**;
-4. **idade mínima e política de menores** — deixou de ser escolha livre.
-   A Lei 15.211/2025 (ECA Digital) está em vigor desde 17/03/2026 e alcança
-   serviço "de acesso provável" por menores, o que inclui a BANCADA. Restam
-   dois caminhos, ambos legítimos: **(A)** 18+, mais simples, mas exclui o
-   adolescente que joga várzea; **(B)** 13+ com conta de menor de 16 vinculada
-   a responsável, que atende o público real e exige construir verificação de
-   idade e vinculação. Autodeclaração está **vedada** nos dois casos.
-   Detalhes em `docs/12-legal/TERMOS_PESQUISA.md`, Parte 5;
+4. ~~idade mínima e política de menores~~ → **decidido em D-026**
+   (13 anos) e **D-025** (supervisão por contato, não por conteúdo);
 5. ~~perfil público por padrão~~ → **decidido em D-015**;
 6. sistema de amizade além de seguir;
 7. feed cronológico ou híbrido;
@@ -392,7 +473,7 @@ Estas decisões devem ser confirmadas pelo proprietário antes das partes afetad
 14. chat da live;
 15. sistema de denúncia;
 16. monetização;
-17. região inicial do lançamento.
+17. região inicial do lançamento;
 
 18. ~~personalidade jurídica da BANCADA~~ → **decidido em D-020** (Exoduss
     Tec). Faltam apenas os dados de registro: razão social, CNPJ e endereço;
@@ -403,51 +484,7 @@ Estas decisões devem ser confirmadas pelo proprietário antes das partes afetad
 21. ~~transmissão exige anuência dos dois times?~~ → **decidido em D-023**: sim,
     no modelo de convite de partida.
 
-22. **supervisão da conta do menor — o que o responsável enxerga.** O fluxo
-    proposto em 15/08/2026 (responsável cria a conta, vincula, bloqueia
-    conteúdo) está certo e é melhor que o da maioria das plataformas. A parte
-    a decidir é o **alcance da supervisão**. Avaliação registrada:
-
-    **O que recomendo manter sem ressalva:** vinculação obrigatória · bloquear
-    conteúdo e temas · ver e aprovar quem segue e quem manda mensagem ·
-    bloquear contato · limite de tempo · receber aviso de denúncia envolvendo
-    o menor.
-
-    **Onde tenho reserva: ler o conteúdo das mensagens.** Três motivos.
-
-    *Primeiro, o risco que ninguém quer nomear.* Em boa parte dos casos de
-    violência contra criança e adolescente o agressor está dentro de casa. Uma
-    conta em que o responsável lê tudo remove justamente o canal pelo qual o
-    menor pediria ajuda. A ferramenta feita para proteger vira a que isola.
-
-    *Segundo, está invertido.* A proposta deixa a postagem livre e a mensagem
-    aberta. É o contrário do que protege: o dano à reputação e o assédio
-    público acontecem na **postagem**; a **mensagem** é onde o menor procura
-    socorro. Se for para escolher onde o responsável enxerga mais, é no que é
-    público.
-
-    *Terceiro, o ECA protege a intimidade do próprio adolescente* (art. 17).
-    Supervisão é legítima; vigilância total de 15 anos é outra coisa, e a lei
-    não exige. A Lei 15.211/2025 pede vinculação e controle parental — não pede
-    leitura de conversa.
-
-    **Proposta:** o responsável vê **com quem** o menor conversa e pode
-    bloquear qualquer contato, mas não lê o conteúdo por padrão. Alertas
-    automáticos de risco (contato adulto desconhecido, palavra-chave de perigo)
-    chegam ao responsável. Em risco concreto, há um pedido de acesso ao
-    conteúdo que fica **registrado e visível para o menor**.
-
-    **Regra que vale em qualquer cenário escolhido: o menor precisa saber o que
-    o responsável enxerga.** Supervisão às escondidas é pior que supervisão
-    ampla e declarada — eticamente e juridicamente.
-
-    **Faixas etárias:** abaixo de 16 a vinculação é obrigatória por lei; de 16 a
-    18 a lei não exige, e manter supervisão total nessa faixa é decisão de
-    produto, não obrigação.
-
-    **Nada disso trava o cronograma:** mensagens são Fase 13. Dá para lançar a
-    vinculação e o bloqueio de conteúdo agora e decidir a supervisão de
-    mensagem quando a mensagem existir — desde que a arquitetura não feche a
-    porta.
+22. ~~supervisão da conta do menor~~ → **decidido em D-025**. Resta apenas
+    definir se a faixa **16–17** terá supervisão, já que a lei não exige.
 
 Quando uma pendência for decidida, registrar aqui com data e motivo.

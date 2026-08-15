@@ -2,9 +2,14 @@
 
 **Versão 1.0 — rascunho de 15/08/2026. Ainda não publicado.**
 
-> **Pendências antes de publicar:** razão social, CNPJ e endereço da Exoduss Tec
-> (§2 e §14), comarca do foro (§13), idade mínima confirmada (§3) e revisão por
-> advogado. Os campos marcados `[A DEFINIR]` são exatamente esses.
+> **Não publicável ainda.** Falta a identificação da parte contratante: o CNPJ
+> da Exoduss Tec não foi aberto até 15/08/2026 (ver D-020). Sem parte
+> identificada não há contrato válido, e é o que os campos `[A DEFINIR]`
+> marcam — razão social, CNPJ, endereço (§2 e §14) e comarca do foro (§13).
+>
+> Isso **não atrasa o desenvolvimento**: o app está em 7% e a publicação é a
+> Fase 17. O que precisa é estar resolvido **antes de publicar**, junto com a
+> revisão por advogado.
 
 ---
 
@@ -23,8 +28,9 @@ seguintes, mas nada nelas contradiz o que está aqui.
   entram em material de divulgação da BANCADA.
 - **Seu apelido é único** e é como as pessoas te acham. Ele é público.
 - **Transmitir um jogo depende dos dois times.** Quem convida e quem aceita.
-- **Menor de idade só entra pela mão do responsável**, que cria e acompanha a
-  conta.
+- **A idade mínima é 13 anos.** De 13 a 15, quem cria e acompanha a conta é o
+  responsável — que vê **com quem** o menor conversa, não o que ele escreve.
+  E o menor sempre sabe o que o responsável enxerga.
 - Se você desrespeitar as pessoas, a gente age. E se a gente errar com você,
   você pode recorrer.
 - **Você pode sair quando quiser** e levar seus dados com você.
@@ -48,7 +54,14 @@ mesma relação que existe entre um aplicativo e a empresa que o desenvolve.
 
 ### 3.1 Idade
 
-A idade mínima para ter conta na BANCADA é **`[A DEFINIR: 13]` anos**.
+A idade mínima para ter conta na BANCADA é **13 anos**.
+
+| Sua idade | Como funciona |
+|---|---|
+| Menos de 13 | Não é possível ter conta |
+| **13 a 15** | A conta é criada pelo seu responsável e fica ligada à dele |
+| **16 e 17** | Você cria sua própria conta |
+| **18 ou mais** | Conta própria, sem supervisão |
 
 ### 3.2 Menores de 16 anos
 
@@ -56,12 +69,25 @@ Quem tem menos de 16 anos **não cria a própria conta**. A conta é criada pelo
 responsável legal — mãe, pai ou tutor — a partir da conta dele, e fica
 **vinculada** a ela.
 
-O responsável pode acompanhar a conta do menor e bloquear conteúdo que
-considerar impróprio. O que o menor publica é responsabilidade do menor e de
-quem responde por ele.
+**O que o responsável enxerga e controla:** com quem o menor conversa, podendo
+bloquear qualquer contato · quem segue e quem pode mandar mensagem · bloqueio de
+conteúdo e temas · limite de tempo de uso · aviso de qualquer denúncia
+envolvendo o menor.
 
-Isso não é escolha nossa: a Lei 15.211/2025 exige a vinculação e **proíbe** que
-a idade seja apenas declarada por quem se cadastra.
+**O que o responsável não faz:** ler o conteúdo das mensagens. Alertas
+automáticos de risco chegam a ele, e em caso de risco concreto existe um pedido
+de acesso ao conteúdo — que fica **registrado e visível para o menor**.
+
+**O menor sempre sabe o que o responsável enxerga.** Isso está escrito na conta
+dele, em linguagem que ele entende. Não existe acompanhamento escondido na
+BANCADA, e essa regra não tem exceção.
+
+O que o menor publica é responsabilidade do menor e de quem responde por ele.
+
+A vinculação não é escolha nossa: a Lei 15.211/2025 a exige e **proíbe** que a
+idade seja apenas declarada por quem se cadastra. Já o limite da supervisão é
+escolha nossa — a lei pede controle parental, não pede leitura de conversa, e o
+ECA (art. 17) protege também a intimidade do adolescente.
 
 ### 3.3 Uma conta por pessoa
 
@@ -321,9 +347,9 @@ Toda versão anterior fica disponível para consulta, com a data em que valeu.
 ## 14. Como falar com a gente
 
 - **Dentro do app:** Ajuda → Falar com a BANCADA
-- **E-mail:** `[A DEFINIR]`
-- **Encarregado de dados (DPO):** `[A DEFINIR]` — para assuntos de privacidade,
-  ver a Política de Privacidade
+- **E-mail:** suportexoduss333@gmail.com
+- **Encarregado de dados (DPO):** suportexoduss333@gmail.com — para assuntos de
+  privacidade, ver a Política de Privacidade
 - **Endereço:** `[A DEFINIR]`
 
 Respondemos toda denúncia e todo recurso. Não deixamos mensagem sem resposta.
