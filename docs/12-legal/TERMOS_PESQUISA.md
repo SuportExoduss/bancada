@@ -21,7 +21,6 @@ A pergunta era "quais termos precisam ser aceitos". A resposta curta é:
 | **Uso de imagem em divulgação** | **Consentimento separado, opcional** | Finalidade específica, prazo, revogável. Nunca embutido. |
 | **Comunicações de marketing** | **Opt-in separado** | Não é necessário para o serviço funcionar. |
 | **Autorização de transmissão de jogo** | **No momento do jogo**, pelos times | Direito de arena. Ver Parte 4. |
-| **Termos de aposta** | Não existe, e não deve existir tão cedo | Ver Parte 6. |
 
 O erro que quase todo app brasileiro comete é juntar tudo numa caixa só:
 "li e aceito os Termos e a Política de Privacidade". Parece mais seguro. É
@@ -185,47 +184,15 @@ dois legítimos — ver Parte 8.
 
 ---
 
-## PARTE 6 — Apostas: a conclusão é "não", e por um bom tempo
+## PARTE 6 — Removida
 
-Registrado porque foi perguntado, e para não voltar à pauta por engano.
+A parte sobre apostas foi **removida por decisão do proprietário em
+15/08/2026**. Apostas não são caminho da BANCADA e não voltam à pauta.
 
-**Lei 14.790/2023** e Portaria SPA/MF 827/2024 exigem, para operar aposta de
-quota fixa:
-
-- autorização prévia da Secretaria de Prêmios e Apostas do Ministério da
-  Fazenda;
-- **outorga de até R$ 30 milhões**;
-- comprovação de experiência prévia em jogos/apostas no grupo de controle;
-- serviço de atendimento ao apostador e **ouvidoria** estruturados;
-- infraestrutura de tecnologia robusta;
-- proibição absoluta de menores de 18 anos;
-- ações de prevenção ao jogo patológico.
-
-Isso não é "uma feature". É outra empresa, outro CNPJ, outro capital.
-
-**Mas há uma consequência que atinge a BANCADA hoje, mesmo sem apostar.**
-
-Desde **17/07/2026** valem novas regras de publicidade de apostas. Entre as
-vedações:
-
-- promover operador **não autorizado**, inclusive por link, código promocional
-  ou **mecanismo de afiliação**;
-- apresentar aposta como renda, investimento ou solução de dificuldade;
-- e — o que mais interessa aqui — **comentaristas, especialistas e analistas
-  não podem usar autoridade técnica para recomendar apostas específicas durante
-  eventos esportivos**, sendo vedada a divulgação de estratégias e análises
-  capazes de influenciar aposta em determinado jogo ou mercado.
-
-A BANCADA vai ter transmissão, estatística e comentário de usuário sobre jogo
-acontecendo. É exatamente o cenário descrito. Multas de até R$ 14 milhões pela
-Senacon para quem veicula publicidade irregular.
-
-**Conclusão:** os Termos precisam **proibir expressamente** que o usuário
-promova casas de aposta, publique link de afiliado ou dê palpite de aposta em
-jogo da plataforma. Não é sobre um dia apostar — é sobre não ser corresponsável
-pela publicidade de outra pessoa.
-
----
+Sobrou daqui uma única linha, e ela não é sobre apostar: as Diretrizes da
+Comunidade proíbem o usuário de usar a BANCADA para promover casa de aposta ou
+publicar link de afiliado. É regra de convivência, do mesmo tipo que proibir
+spam — e sustenta a promessa de plataforma familiar.
 
 ## PARTE 7 — O que as plataformas pesquisadas fazem
 
@@ -324,7 +291,7 @@ TERMOS DE USO DA BANCADA
  4. Sua conta e seu apelido
  5. O que é seu e o que você nos autoriza a fazer  ← licença
  6. Imagem, jogo e transmissão                      ← específico da BANCADA
- 7. O que não pode                                  ← inclui aposta e afiliado
+ 7. O que não pode
  8. Conteúdo de outras pessoas e denúncia
  9. Como moderamos e como você recorre              ← exigência do STF
 10. Encerrar sua conta
@@ -352,24 +319,11 @@ e não só formalmente.
 
 ---
 
-## PARTE 10 — Decisões que dependem do proprietário
+## PARTE 10 — Decisões tomadas em 15/08/2026
 
-A pesquisa fecha aqui. O que falta não é informação, é escolha. Estas cinco
-travam a redação:
-
-1. **Idade mínima.** Caminho A: 18+, verificação simples, sem ECA Digital na
-   prática — mas exclui o adolescente que joga várzea, que é público real.
-   Caminho B: 13+ com conta de menor de 16 vinculada a responsável — atende o
-   público certo e exige construir vinculação e verificação de idade.
-2. **Quem é a BANCADA juridicamente** — pessoa física ou CNPJ. Sem isso não há
-   parte no contrato. É pré-requisito de qualquer publicação.
-3. **Uso de imagem em divulgação da própria BANCADA** — vai existir? Se sim,
-   precisa de consentimento separado, com prazo.
-4. **Transmissão exige aceite dos dois times?** A lei aponta que sim. Confirmar
-   que o produto vai funcionar assim.
-5. **Foro** — comarca da sede. Depende do item 2.
-
----
+Todas as travas desta pesquisa foram resolvidas pelo proprietário. Ver D-020 a
+D-024 em `DECISIONS.md`. Falta apenas o dado cadastral da Exoduss Tec (CNPJ,
+endereço e comarca) para fechar as cláusulas de identificação e foro.
 
 ## Fontes
 
@@ -383,10 +337,6 @@ travam a redação:
 - [Lei Geral do Esporte e exploração da imagem do atleta — CSMV](https://www.csmv.com.br/lei-geral-do-esporte-e-exploracao-da-imagem-do-atleta/)
 - [Súmula 403 do STJ](https://www.stj.jus.br/docs_internet/revista/eletronica/stj-revista-sumulas-2014_38_capSumula403.pdf)
 - [Uso de imagens de crianças na internet sem autorização — Âmbito Jurídico](https://ambitojuridico.com.br/uso-de-imagens-de-criancas-na-internet-sem-autorizacao/)
-- [Lei 14.790/23 e a proteção do consumidor diante das apostas — ConJur](https://conjur.com.br/2024-abr-29/lei-14-790-23-protege-os-consumidores-diante-das-apostas-esportivas-e-da-ludopatia/)
-- [Apostas de Quota Fixa — Ministério da Fazenda](https://www.gov.br/fazenda/pt-br/composicao/orgaos/secretaria-de-premios-e-apostas/apostas-de-quota-fixa)
-- [Novas portarias alteram regras de publicidade de bets — Cescon Barrieu](https://cesconbarrieu.com.br/novas-portarias-bets/)
-- [Regras que exigem alertas em anúncios de bets — Agência Brasil](https://agenciabrasil.ebc.com.br/politica/noticia/2026-07/comecam-vigorar-hoje-regras-que-exigem-alertas-em-anuncios-de-bets)
 - [Art. 54 do CDC comentado — Aurum](https://www.aurum.com.br/blog/cdc-comentado/art-54-cdc/)
 - [Os contratos de adesão e as cláusulas abusivas — IDEC](https://idec.org.br/em-acao/artigo/os-contratos-de-adeso-e-as-clausulas-abusivas)
 - [Consentimento na LGPD: quando utilizar essa base legal — Camargo e Vieira](https://blog.camargoevieira.adv.br/consentimento-na-lgpd/)

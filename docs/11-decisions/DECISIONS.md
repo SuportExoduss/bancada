@@ -279,6 +279,92 @@ adotar outro mecanismo.
 
 ---
 
+## D-020 — A BANCADA é da Exoduss Tec
+
+**Decisão do proprietário — 15/08/2026.** A BANCADA é um produto da
+**Exoduss Tec**, na mesma relação que o Facebook e o Instagram têm com a Meta:
+a marca do app é BANCADA, a pessoa jurídica por trás é a Exoduss Tec.
+
+Consequências: a Exoduss Tec é a **controladora** dos dados para efeito de LGPD
+e é a parte contratante nos Termos de Uso. Razão social completa, CNPJ,
+endereço e comarca ainda precisam ser informados para fechar os documentos.
+
+**Status:** aprovado — 15/08/2026.
+
+---
+
+## D-021 — Apostas estão fora do escopo, em definitivo
+
+**Decisão do proprietário — 15/08/2026.** A BANCADA não terá apostas. O assunto
+sai da documentação e não volta à pauta.
+
+Permanece **uma** regra que nasceu dessa análise e não é sobre apostar: as
+Diretrizes da Comunidade proíbem o usuário de promover casa de aposta ou
+publicar link de afiliado dentro da plataforma. É regra de convivência, do
+mesmo tipo que proibir spam, e sustenta a promessa de ambiente familiar.
+
+**Status:** aprovado — 15/08/2026.
+
+---
+
+## D-022 — Divulgação da BANCADA não usa dados nem imagem dos usuários
+
+**Decisão do proprietário — 15/08/2026.** O marketing da BANCADA é feito com
+material próprio. A plataforma **não** usa dados, fotos, vídeos ou imagem dos
+usuários em benefício da própria divulgação.
+
+Esta decisão é mais forte do que parece. Ela **elimina** a necessidade do
+consentimento de imagem para marketing que a pesquisa apontava (Parte 4.2), e
+com ele elimina o risco da Súmula 403 do STJ — que presume o dano quando há uso
+comercial de imagem sem autorização. Onde não há uso comercial, não há a
+presunção.
+
+Também simplifica o cadastro: some uma caixa de consentimento da tela.
+
+**Status:** aprovado — 15/08/2026.
+
+---
+
+## D-023 — Transmissão exige aceite do time adversário
+
+**Decisão do proprietário — 15/08/2026.** Transmitir um jogo funciona como
+**convite de partida**: o time que quer transmitir convida, e a transmissão só
+existe depois que o time adversário aceita.
+
+Ao aceitar, o adversário é perguntado se também quer abrir a própria
+transmissão. Quem for transmitir recebe orientação de **posicionamento e
+distância** para a captação ficar boa.
+
+Isto atende a Lei 14.597/2023, art. 160, §6º: sem mando de jogo definido — o
+caso normal da várzea — a captação e a transmissão dependem da anuência das
+organizações participantes. A regra legal e a mecânica de produto coincidem, o
+que é raro e conveniente.
+
+**Status:** aprovado — 15/08/2026.
+
+---
+
+## D-024 — A conta só é criada no botão final
+
+**Decisão do proprietário — 15/08/2026.** Nada é criado enquanto o fluxo não
+termina. E-mail, senha, nome, sobrenome e apelido são coletados pelas telas e
+**só viram conta** quando a pessoa confirma no botão final.
+
+Ganho concreto: não existe conta órfã — autenticação criada sem perfil, sem
+apelido, sem nome. Quem abandona no meio não deixa rastro e pode recomeçar com
+o mesmo e-mail.
+
+**Consequência de implementação a resolver:** sem Cloud Functions (D-012), criar
+a autenticação e gravar o perfil são duas operações de cliente que não podem
+ser uma transação só. Se a segunda falhar, sobra a autenticação sem perfil —
+exatamente o que esta decisão quer evitar. O tratamento precisa ser: detectar,
+no login seguinte, a conta sem perfil e retomar o fluxo de onde parou. Isso
+tem que ser projetado junto com a ligação do Firebase, não depois.
+
+**Status:** aprovado — 15/08/2026.
+
+---
+
 # DECISÕES PENDENTES
 
 Estas decisões devem ser confirmadas pelo proprietário antes das partes afetadas:
@@ -308,15 +394,13 @@ Estas decisões devem ser confirmadas pelo proprietário antes das partes afetad
 16. monetização;
 17. região inicial do lançamento.
 
-18. **personalidade jurídica da BANCADA** — pessoa física ou CNPJ. Sem isso
-    não há parte no contrato e nenhum termo pode ser publicado. Pré-requisito
-    dos itens 19 e 20;
-19. **foro e comarca** — depende do item 18;
-20. **uso da imagem do usuário em divulgação da própria BANCADA** — se vai
-    existir. Exige consentimento separado, com finalidade e prazo; autorização
-    genérica e por prazo indeterminado é nula (`TERMOS_PESQUISA.md`, 4.3);
-21. **transmissão de jogo exige anuência dos dois times?** A Lei 14.597/2023,
-    art. 160 §6º, aponta que sim quando não há mando definido — o caso normal
-    da várzea. Confirmar que o produto vai funcionar assim.
+18. ~~personalidade jurídica da BANCADA~~ → **decidido em D-020** (Exoduss
+    Tec). Faltam apenas os dados de registro: razão social, CNPJ e endereço;
+19. **foro e comarca** — depende do endereço da Exoduss Tec (D-020);
+20. ~~uso da imagem do usuário em divulgação da BANCADA~~ → **decidido em
+    D-022**: não haverá. O consentimento de imagem para marketing deixa de ser
+    necessário;
+21. ~~transmissão exige anuência dos dois times?~~ → **decidido em D-023**: sim,
+    no modelo de convite de partida.
 
 Quando uma pendência for decidida, registrar aqui com data e motivo.
