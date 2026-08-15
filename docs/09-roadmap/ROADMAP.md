@@ -1,13 +1,72 @@
 # BANCADA — Roadmap
 
-> **Status atualizado em 12/08/2026.** Legenda: ✅ pronto · 🔄 em andamento ·
+> **Status atualizado em 14/08/2026.** Legenda: ✅ pronto · 🔄 em andamento ·
 > ⬜ não começou. Uma fase só avança quando a `DEFINITION_OF_DONE` for
 > satisfeita (`CLAUDE.md §3`).
+
+## Onde estamos: **7% do caminho até a publicação**
+
+O número é ponderado por **esforço**, não por contagem de fases — a Fase 0 tem
+19 fases depois dela, mas pesa muito menos que a Fase 6 sozinha.
+
+| Fase | Peso | Feito | Contribui |
+|---|---:|---:|---:|
+| 0 · Especificação | 3 | 95% | 2,9 |
+| 1 · Fundação | 5 | 50% | 2,5 |
+| 2 · Auth e Perfil | 7 | 30% | 2,1 |
+| 3 · Social Core | 9 | 0% | 0 |
+| 4 · Jogador | 5 | 0% | 0 |
+| 5 · Time | 8 | 0% | 0 |
+| 6 · Jogo | 9 | 0% | 0 |
+| 7 · Motor esportivo | 9 | 0% | 0 |
+| 8 · Campeonato | 9 | 0% | 0 |
+| 9 · Campos e árbitros | 4 | 0% | 0 |
+| 10 · Mídia | 5 | 0% | 0 |
+| 11 · Live Simulator | 6 | 0% | 0 |
+| 13 · Chat | 4 | 0% | 0 |
+| 14 · Administração | 5 | 0% | 0 |
+| 15 · Segurança e produção | 6 | 0% | 0 |
+| 16 · Beta | 4 | 0% | 0 |
+| 17 · Publicação | 2 | 0% | 0 |
+| **Total** | **100** | | **≈ 7,5** |
+
+Fase 12 (live real) está fora do MVP por decisão. Fases 18 e 19 são posteriores
+à publicação e não entram na conta.
+
+**Por que 7% e não mais, se existem quatro telas prontas?** Porque nenhuma
+delas persiste nada. A parte visível do trabalho é a que engana: o fluxo de
+primeiro acesso inteiro pesa 7 dos 100 pontos, e está em 30% deles. O motor
+esportivo, o time, o jogo e o campeonato somam 35 pontos e não começaram.
+
+### Estado hoje, em números
+
+10 commits · 19 arquivos de código · ~2.100 linhas · 12 documentos · 4 telas ·
+0 conexões com o Firebase.
+
+### O que falta que **não** estava no roadmap
+
+A pesquisa jurídica de 14/08/2026 (`docs/12-legal/TERMOS_PESQUISA.md`)
+encontrou obrigações que o roadmap não previa e que precisam existir **antes da
+publicação**, não na Fase 14:
+
+- ⬜ **denúncia de conteúdo** e **canal de atendimento** — exigência estrutural
+  da tese do STF de 26/06/2025, não depende de porte;
+- ⬜ **verificação de idade** sem autodeclaração e **vinculação de conta de
+  menor de 16 a responsável** — Lei 15.211/2025, em vigor desde 17/03/2026;
+- ⬜ **anuência dos dois times** para transmitir jogo — Lei 14.597/2023,
+  art. 160 §6º;
+- ⬜ **telas de Termos e Política** legíveis dentro do app — CDC art. 46: termo
+  que a pessoa não teve como conhecer não vincula;
+- ⬜ **caminho para exercer direitos LGPD** (acesso, correção, eliminação,
+  portabilidade).
+
+Esses itens estão computados como parte das Fases 2, 6, 10 e 15 e já estão
+refletidos no percentual acima.
 
 ## FASE 0 — Especificação ✅
 
 - ✅ produto · personas · domínio · UX · arquitetura
-- ✅ decisões D-001 a D-018 registradas
+- ✅ decisões D-001 a D-019 registradas
 - ⬜ permissões detalhadas por papel — entram com as telas que as usam
 
 ## FASE 1 — Fundação 🔄

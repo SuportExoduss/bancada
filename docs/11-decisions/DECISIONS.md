@@ -286,7 +286,14 @@ Estas decisões devem ser confirmadas pelo proprietário antes das partes afetad
 1. plataformas da primeira publicação: Android apenas ou Android+iOS;
 2. ~~login por apelido ou por e-mail~~ → **decidido em D-016** (opção A);
 3. ~~username obrigatório ou opcional~~ → **decidido em D-014**;
-4. idade mínima e política de menores;
+4. **idade mínima e política de menores** — deixou de ser escolha livre.
+   A Lei 15.211/2025 (ECA Digital) está em vigor desde 17/03/2026 e alcança
+   serviço "de acesso provável" por menores, o que inclui a BANCADA. Restam
+   dois caminhos, ambos legítimos: **(A)** 18+, mais simples, mas exclui o
+   adolescente que joga várzea; **(B)** 13+ com conta de menor de 16 vinculada
+   a responsável, que atende o público real e exige construir verificação de
+   idade e vinculação. Autodeclaração está **vedada** nos dois casos.
+   Detalhes em `docs/12-legal/TERMOS_PESQUISA.md`, Parte 5;
 5. ~~perfil público por padrão~~ → **decidido em D-015**;
 6. sistema de amizade além de seguir;
 7. feed cronológico ou híbrido;
@@ -300,5 +307,16 @@ Estas decisões devem ser confirmadas pelo proprietário antes das partes afetad
 15. sistema de denúncia;
 16. monetização;
 17. região inicial do lançamento.
+
+18. **personalidade jurídica da BANCADA** — pessoa física ou CNPJ. Sem isso
+    não há parte no contrato e nenhum termo pode ser publicado. Pré-requisito
+    dos itens 19 e 20;
+19. **foro e comarca** — depende do item 18;
+20. **uso da imagem do usuário em divulgação da própria BANCADA** — se vai
+    existir. Exige consentimento separado, com finalidade e prazo; autorização
+    genérica e por prazo indeterminado é nula (`TERMOS_PESQUISA.md`, 4.3);
+21. **transmissão de jogo exige anuência dos dois times?** A Lei 14.597/2023,
+    art. 160 §6º, aponta que sim quando não há mando definido — o caso normal
+    da várzea. Confirmar que o produto vai funcionar assim.
 
 Quando uma pendência for decidida, registrar aqui com data e motivo.
