@@ -142,3 +142,40 @@ A logo é um PNG de **1,3 MB** — mais da metade do peso do app. Na primeira
 abertura por rede móvel ela demora a pintar e a tela de boas-vindas aparece
 com um vazio no lugar dela por um instante. Comprovado na versão publicada.
 Resolver com redimensionamento e compressão antes do beta.
+
+---
+
+## Documentos legais dentro do app
+
+Os Termos de Uso e a Política de Privacidade são lidos **dentro** do aplicativo,
+tocando nos links da tela de cadastro.
+
+Isso não é conforto de interface: o **art. 46 do CDC** diz que o consumidor não
+se vincula a contrato cujo conteúdo não teve oportunidade de conhecer. Termo
+atrás de link que não abre é termo que não vale — e quem fica sem contrato é a
+plataforma, não o usuário.
+
+### Fonte única
+
+O Markdown de `docs/12-legal/` é a **única fonte de verdade**. O app lê uma
+versão gerada a partir dele:
+
+```bash
+node scripts/gerar-documentos-legais.mjs
+```
+
+**Rode isso sempre que editar um documento legal**, senão o app continua
+mostrando a versão anterior. O arquivo gerado
+(`src/content/documentosLegais.ts`) não deve ser editado à mão.
+
+O gerador corta o cabeçalho interno — versão, pendências, avisos de equipe —
+no primeiro `---`. Tudo acima dele é nota de trabalho e não vai para o app.
+
+### Aviso de rascunho
+
+Enquanto o texto contiver `[A DEFINIR]`, o gerador marca o documento como
+rascunho e o app exibe um aviso no topo dizendo que o texto não está em vigor.
+Documento com buraco exibido como se fosse final é pior que documento ausente:
+a pessoa sai achando que leu o contrato inteiro.
+
+O aviso some sozinho quando a última lacuna for preenchida.

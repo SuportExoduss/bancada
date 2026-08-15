@@ -1,6 +1,7 @@
 import { NavigationContainer, type Theme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { LegalDocumentScreen } from '../screens/LegalDocumentScreen';
 import { OnboardingScreen } from '../screens/OnboardingScreen';
 import { SignInScreen } from '../screens/SignInScreen';
 import { SignUpScreen } from '../screens/SignUpScreen';
@@ -9,6 +10,7 @@ import {
   APELIDOS_OCUPADOS_DEMO,
   criarApelidoRepositoryMemoria,
 } from '../repositories/ApelidoRepository';
+import type { ChaveDocumento } from '../content/documentosLegais';
 import { colors } from '../theme';
 
 /**
@@ -23,6 +25,8 @@ export type RootStackParamList = {
   Entrar: undefined;
   Cadastro: undefined;
   Onboarding: undefined;
+  /** Termos de Uso e Politica de Privacidade, lidos dentro do app */
+  Documento: { documento: ChaveDocumento };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -97,6 +101,10 @@ export function RootNavigator() {
               onBack={navigation.canGoBack() ? () => navigation.goBack() : undefined}
               onSubmit={() => navigation.navigate('Onboarding')}
               onSignIn={() => navigation.replace('Entrar')}
+              onOpenTerms={() => navigation.navigate('Documento', { documento: 'termos' })}
+              onOpenPrivacy={() =>
+                navigation.navigate('Documento', { documento: 'privacidade' })
+              }
             />
           )}
         </Stack.Screen>
@@ -106,6 +114,16 @@ export function RootNavigator() {
             <OnboardingScreen
               onBack={navigation.canGoBack() ? () => navigation.goBack() : undefined}
               repositorioApelido={repositorioApelido}
+            />
+          )}
+        </Stack.Screen>
+        {/* `slide_from_bottom`: ler os termos e uma pausa na leitura do
+            cadastro, nao um passo adiante no fluxo. A animacao diz isso. */}
+        <Stack.Screen name="Documento" options={{ animation: 'slide_from_bottom' }}>
+          {({ navigation, route }) => (
+            <LegalDocumentScreen
+              documento={route.params.documento}
+              onBack={() => navigation.goBack()}
             />
           )}
         </Stack.Screen>

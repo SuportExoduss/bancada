@@ -150,14 +150,19 @@ export function SignUpScreen({
               <Checkbox
                 checked={aceitou}
                 onChange={setAceitou}
-                accessibilityLabel="Li e aceito os Termos de Uso e a Política de Privacidade"
+                accessibilityLabel="Li e aceito os Termos de Uso e declaro ter lido a Política de Privacidade"
               >
                 <Text style={styles.termos}>
+                  {/* A Política de Privacidade NÃO é aceita, é lida. A base
+                      legal do que o app faz é execução de contrato (LGPD
+                      art. 7º, V); transformar isso em consentimento daria ao
+                      usuário um botão de desligar que a lei não obrigava a
+                      dar — e consentimento é revogável a qualquer momento. */}
                   Li e aceito os{' '}
                   <Text style={styles.link} onPress={onOpenTerms}>
                     Termos de Uso
                   </Text>{' '}
-                  e a{' '}
+                  e declaro ter lido a{' '}
                   <Text style={styles.link} onPress={onOpenPrivacy}>
                     Política de Privacidade
                   </Text>
