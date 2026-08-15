@@ -3,21 +3,23 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
+import { TopBar } from '../components/TopBar';
 import { MENSAGENS, validarEmail } from '../domain/credentials';
 import { LARGURA_MAXIMA_CONTEUDO, useLayout } from '../hooks/useLayout';
 import { colors, radius, spacing, typography } from '../theme';
 
 export interface SignInScreenProps {
+  onBack?: () => void;
   onSubmit?: (dados: { email: string; senha: string }) => void;
   onGoogle?: () => void;
   onForgotPassword?: () => void;
@@ -38,6 +40,7 @@ export interface SignInScreenProps {
  * O apelido continua sendo a identidade pública. Ele só não é credencial.
  */
 export function SignInScreen({
+  onBack,
   onSubmit,
   onGoogle,
   onForgotPassword,
@@ -70,8 +73,10 @@ export function SignInScreen({
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       <StatusBar barStyle="light-content" backgroundColor={colors.black} />
+
+      <TopBar onBack={onBack} />
 
       <KeyboardAvoidingView
         style={styles.flex}
@@ -168,7 +173,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     paddingHorizontal: spacing.xl,
-    paddingTop: spacing.xl,
+    // Menor que o lateral porque a TopBar já dá 44px de respiro acima.
+    paddingTop: spacing.md,
     paddingBottom: spacing.xxl,
   },
   // Sem `flex: 1`: dentro de ScrollView ele trava a altura no tamanho da tela

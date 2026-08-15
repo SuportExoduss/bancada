@@ -3,17 +3,18 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '../components/Button';
 import { Checkbox } from '../components/Checkbox';
 import { Input } from '../components/Input';
+import { TopBar } from '../components/TopBar';
 import {
   MENSAGENS,
   forcaDaSenha,
@@ -26,6 +27,7 @@ import { LARGURA_MAXIMA_CONTEUDO, useLayout } from '../hooks/useLayout';
 import { colors, radius, spacing, typography } from '../theme';
 
 export interface SignUpScreenProps {
+  onBack?: () => void;
   onSubmit?: (dados: { email: string; senha: string }) => void;
   onGoogle?: () => void;
   onSignIn?: () => void;
@@ -37,6 +39,7 @@ export interface SignUpScreenProps {
 }
 
 export function SignUpScreen({
+  onBack,
   onSubmit,
   onGoogle,
   onSignIn,
@@ -74,8 +77,10 @@ export function SignUpScreen({
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       <StatusBar barStyle="light-content" backgroundColor={colors.black} />
+
+      <TopBar onBack={onBack} />
 
       {/* Sem isto o teclado cobre o botao de enviar — o defeito mais comum
           de formulario em celular. */}
@@ -233,7 +238,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     paddingHorizontal: spacing.xl,
-    paddingTop: spacing.xl,
+    // Menor que o lateral porque a TopBar ja da 44px de respiro acima.
+    paddingTop: spacing.md,
     paddingBottom: spacing.xxl,
   },
   column: {

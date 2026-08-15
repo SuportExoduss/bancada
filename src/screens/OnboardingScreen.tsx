@@ -4,16 +4,17 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
+import { TopBar } from '../components/TopBar';
 import {
   APELIDO_MAX,
   MENSAGENS_PERFIL,
@@ -29,6 +30,7 @@ import type { ApelidoRepository } from '../repositories/ApelidoRepository';
 import { colors, radius, spacing, typography } from '../theme';
 
 export interface OnboardingScreenProps {
+  onBack?: () => void;
   repositorioApelido: ApelidoRepository;
   onSubmit?: (dados: {
     nome: string;
@@ -51,6 +53,7 @@ export interface OnboardingScreenProps {
  * gente desistir no último passo.
  */
 export function OnboardingScreen({
+  onBack,
   repositorioApelido,
   onSubmit,
   loading = false,
@@ -96,8 +99,10 @@ export function OnboardingScreen({
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       <StatusBar barStyle="light-content" backgroundColor={colors.black} />
+
+      <TopBar onBack={onBack} />
 
       <KeyboardAvoidingView
         style={styles.flex}
@@ -219,7 +224,27 @@ export function OnboardingScreen({
  * senão a tela parece travada em conexão lenta.
  */
 function AvisoApelido({ estado, apelido }: { estado: EstadoApelido; apelido: string }) {
-  if (estado.situacao === 'vazio' || estado.situacao === 'invalido') return null;
+  if (estado.situacao === 'vazio') return null;
+
+  if (estado.situacao === 'invalido') {
+    // `curto` e `longo` ficam calados enquanto a pessoa digita: "use pelo
+    // menos 3 caracteres" na primeira letra é implicância, não ajuda — o
+    // apelido ainda está sendo escrito. Esses dois só aparecem no envio.
+    //
+    // `caracteres` e `reservado` falam na hora, porque não são estado de
+    // passagem: digitar um ponto ou escolher "admin" nunca vai dar certo, e
+    // ficar em silêncio faz a pessoa apertar Continuar sem entender por que
+    // nada acontece.
+    if (estado.erro !== 'caracteres' && estado.erro !== 'reservado') return null;
+
+    return (
+      <View style={styles.aviso} accessibilityLiveRegion="polite">
+        <Text style={[styles.avisoTexto, { color: colors.danger }]}>
+          {MENSAGENS_PERFIL.apelido[estado.erro]}
+        </Text>
+      </View>
+    );
+  }
 
   const conteudo = {
     verificando: { texto: 'Verificando…', cor: colors.textMuted, girando: true },
@@ -243,7 +268,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     paddingHorizontal: spacing.xl,
-    paddingTop: spacing.xl,
+    // Menor que o lateral porque a TopBar ja da 44px de respiro acima.
+    paddingTop: spacing.md,
     paddingBottom: spacing.xxl,
   },
   column: {

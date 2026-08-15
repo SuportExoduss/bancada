@@ -78,6 +78,11 @@ export function RootNavigator() {
         <Stack.Screen name="Entrar">
           {({ navigation }) => (
             <SignInScreen
+              // `canGoBack` antes de voltar: se a tela for a primeira da pilha
+              // (link direto, futuro deep link), voltar nao existe e a seta
+              // sai. Chamar `goBack` numa pilha vazia nao faz nada, e seta
+              // que nao faz nada e pior que seta nenhuma.
+              onBack={navigation.canGoBack() ? () => navigation.goBack() : undefined}
               // `replace` e nao `navigate`: quem esta no Entrar e vai para o
               // Cadastro nao deveria voltar para o Entrar com o botao voltar.
               // Sao dois caminhos alternativos, nao uma sequencia.
@@ -89,6 +94,7 @@ export function RootNavigator() {
         <Stack.Screen name="Cadastro">
           {({ navigation }) => (
             <SignUpScreen
+              onBack={navigation.canGoBack() ? () => navigation.goBack() : undefined}
               onSubmit={() => navigation.navigate('Onboarding')}
               onSignIn={() => navigation.replace('Entrar')}
             />
@@ -96,7 +102,12 @@ export function RootNavigator() {
         </Stack.Screen>
 
         <Stack.Screen name="Onboarding">
-          {() => <OnboardingScreen repositorioApelido={repositorioApelido} />}
+          {({ navigation }) => (
+            <OnboardingScreen
+              onBack={navigation.canGoBack() ? () => navigation.goBack() : undefined}
+              repositorioApelido={repositorioApelido}
+            />
+          )}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

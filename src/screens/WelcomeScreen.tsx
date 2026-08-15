@@ -1,4 +1,5 @@
-import { Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Image, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '../components/Button';
 import { LARGURA_MAXIMA_CONTEUDO, alturaDaMarca, useLayout } from '../hooks/useLayout';
@@ -26,7 +27,7 @@ export function WelcomeScreen({ onCreateAccount, onSignIn }: WelcomeScreenProps)
   const { isLandscape, isShortHeight, isCompactWidth } = layout;
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       <StatusBar barStyle="light-content" backgroundColor={colors.black} />
 
       {/* ScrollView com flexGrow: centraliza quando sobra espaco e rola
