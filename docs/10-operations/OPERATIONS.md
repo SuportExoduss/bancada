@@ -103,9 +103,13 @@ Checklist obrigatório:
 
 ## Publicação web para teste (Firebase Hosting)
 
-**Desde 14/08/2026** as telas ficam acessíveis em
-**https://bancada-2ce451.web.app** — para o proprietário testar de qualquer
-lugar, sem depender de IP e porta na rede local.
+**Desde 18/08/2026** o endereço é **https://bancada.web.app**.
+
+O `bancada` estava livre no Firebase Hosting e foi registrado. O antigo
+`bancada-2ce451.web.app` continua no ar servindo o mesmo build, para não
+quebrar link já salvo — o `firebase.json` publica nos dois de uma vez.
+
+Também responde em `bancada.firebaseapp.com`, que o Firebase cria junto.
 
 ```bash
 npx expo export -p web && npx firebase deploy --only hosting
@@ -222,3 +226,13 @@ extensão.
 `assets/marca/logo-bancada.png` não foi apagado de propósito: o `app.json` o usa
 para gerar a tela de abertura, e essa geração acontece no build e espera PNG. O
 app em si usa o `.webp`.
+
+### Sobre um endereço ainda mais curto
+
+`bancada.web.app` é o menor endereço possível **sem custo**. Encurtar mais
+exigiria domínio próprio — `bancada.com.br` ou `bancada.app` — que é pago
+(registro anual) e depende de o nome estar disponível.
+
+Se um dia houver domínio, o Firebase Hosting aceita domínio próprio **sem
+cobrar nada a mais**, com certificado HTTPS automático, inclusive no plano
+Spark. O que se paga é o registro do domínio, não a hospedagem.
