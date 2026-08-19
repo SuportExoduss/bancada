@@ -148,6 +148,10 @@ Componentes reutilizáveis devem formar o sistema visual.
 | Todo o resto — feed, perfil, jogo, documentos | Arte da marca, em duas proporções: retrato no celular em pé, paisagem deitado |
 
 O componente é `src/components/Fundo.tsx`, com `variante="auth"` ou `"app"`.
+
+> **Tela nova nasce com `variante="app"`.** A foto é exceção, reservada ao
+> primeiro acesso. Feed, perfil, time, jogo, campeonato, mensagens e
+> configurações usam a arte (D-027).
 A orientação é medida pela **própria caixa** (`onLayout`), não pela janela: num
 tablet em tela dividida as duas não coincidem.
 

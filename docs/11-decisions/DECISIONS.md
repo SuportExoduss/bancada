@@ -452,6 +452,35 @@ mais rígido) e acompanha a convenção que Meta e a maioria das plataformas usa
 
 ---
 
+## D-027 — Qual fundo em qual tela
+
+**Decisão do proprietário — 18/08/2026, reforçada em 19/08/2026.**
+
+| Grupo | Fundo |
+|---|---|
+| Telas iniciais e de cadastro | **Foto da quadra**, trocando com a hora |
+| **Todo o resto** | **Arte de feed**, retrato ou paisagem conforme a tela |
+
+Hoje isso significa: boas-vindas, entrar, "para quem é a conta", "primeiro a
+sua conta", cadastro e onboarding com a foto; termos, política e **tudo o que
+vier daqui em diante** — feed, perfil, time, jogo, campeonato, mensagens,
+configurações — com a arte de feed.
+
+**A regra padrão para tela nova é `variante="app"`.** A foto é a exceção, não o
+contrário. Tela nova que não seja parte do primeiro acesso nasce com a arte.
+
+### Um caso de fronteira, registrado
+
+A tela **"Conta criada"** está hoje com a foto, por ser o último passo do
+cadastro — o fluxo termina com a mesma imagem em que começou. Dá para
+defender o contrário: a conta já existe, a pessoa já é usuária, e trocar para a
+arte ali sinalizaria "você chegou". Fica como está até haver decisão em
+contrário; é uma linha de código.
+
+**Status:** aprovado — 18/08/2026.
+
+---
+
 # DECISÕES PENDENTES
 
 Estas decisões devem ser confirmadas pelo proprietário antes das partes afetadas:
