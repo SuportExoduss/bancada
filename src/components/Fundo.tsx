@@ -114,7 +114,7 @@ export function Fundo({ variante = 'app', children, style }: FundoProps) {
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
       />
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: veu }]} pointerEvents="none" />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: veu, pointerEvents: 'none' }]} />
       {children}
     </View>
   );
