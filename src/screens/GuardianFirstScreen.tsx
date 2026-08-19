@@ -1,6 +1,7 @@
 import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Fundo } from '../components/Fundo';
 import { Button } from '../components/Button';
 import { TopBar } from '../components/TopBar';
 import { LARGURA_MAXIMA_CONTEUDO, useLayout } from '../hooks/useLayout';
@@ -31,54 +32,56 @@ export function GuardianFirstScreen({
   const { isShortHeight } = useLayout();
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.black} />
+    <Fundo variante="auth">
+      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
+        <StatusBar barStyle="light-content" backgroundColor={colors.black} />
 
-      <TopBar onBack={onBack} />
+        <TopBar onBack={onBack} />
 
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        <View style={styles.coluna}>
-          <View style={styles.cabecalho}>
-            <Text style={styles.titulo}>Primeiro, a sua conta</Text>
-            <Text style={styles.subtitulo}>
-              A conta do seu filho fica ligada à sua. Por isso a sua precisa existir antes — é
-              ela que vai acompanhar.
-            </Text>
-          </View>
-
-          {isShortHeight ? null : (
-            <View style={styles.promessa}>
-              <Text style={styles.promessaTitulo}>O que você vai poder fazer</Text>
-              <Item texto="Ver com quem seu filho conversa e bloquear qualquer contato" />
-              <Item texto="Escolher quem pode segui-lo e mandar mensagem" />
-              <Item texto="Bloquear conteúdos e assuntos" />
-              <Item texto="Definir limite de tempo de uso" />
-              <Item texto="Receber aviso de qualquer denúncia envolvendo ele" />
-
-              <Text style={[styles.promessaTitulo, styles.promessaTituloSegundo]}>
-                O que você não vai fazer
-              </Text>
-              <Item texto="Ler o conteúdo das mensagens dele" negativo />
-
-              <Text style={styles.explicacao}>
-                Alertas de risco chegam até você, e em caso de perigo concreto existe um pedido de
-                acesso — que fica registrado e visível para ele. Uma conta lida por inteiro tira da
-                criança o canal por onde ela pediria ajuda, e é justamente ali que um pedido de
-                socorro costuma sair.
-              </Text>
-              <Text style={styles.explicacao}>
-                Ele sempre vai saber o que você enxerga. Sem acompanhamento escondido.
+        <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+          <View style={styles.coluna}>
+            <View style={styles.cabecalho}>
+              <Text style={styles.titulo}>Primeiro, a sua conta</Text>
+              <Text style={styles.subtitulo}>
+                A conta do seu filho fica ligada à sua. Por isso a sua precisa existir antes — é
+                ela que vai acompanhar.
               </Text>
             </View>
-          )}
 
-          <View style={styles.acoes}>
-            <Button label="Já tenho conta" variant="primary" onPress={onEntrar} />
-            <Button label="Criar minha conta" variant="secondary" onPress={onCriarMinhaConta} />
+            {isShortHeight ? null : (
+              <View style={styles.promessa}>
+                <Text style={styles.promessaTitulo}>O que você vai poder fazer</Text>
+                <Item texto="Ver com quem seu filho conversa e bloquear qualquer contato" />
+                <Item texto="Escolher quem pode segui-lo e mandar mensagem" />
+                <Item texto="Bloquear conteúdos e assuntos" />
+                <Item texto="Definir limite de tempo de uso" />
+                <Item texto="Receber aviso de qualquer denúncia envolvendo ele" />
+
+                <Text style={[styles.promessaTitulo, styles.promessaTituloSegundo]}>
+                  O que você não vai fazer
+                </Text>
+                <Item texto="Ler o conteúdo das mensagens dele" negativo />
+
+                <Text style={styles.explicacao}>
+                  Alertas de risco chegam até você, e em caso de perigo concreto existe um pedido de
+                  acesso — que fica registrado e visível para ele. Uma conta lida por inteiro tira da
+                  criança o canal por onde ela pediria ajuda, e é justamente ali que um pedido de
+                  socorro costuma sair.
+                </Text>
+                <Text style={styles.explicacao}>
+                  Ele sempre vai saber o que você enxerga. Sem acompanhamento escondido.
+                </Text>
+              </View>
+            )}
+
+            <View style={styles.acoes}>
+              <Button label="Já tenho conta" variant="primary" onPress={onEntrar} />
+              <Button label="Criar minha conta" variant="secondary" onPress={onCriarMinhaConta} />
+            </View>
           </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </Fundo>
   );
 }
 
@@ -94,7 +97,8 @@ function Item({ texto, negativo = false }: { texto: string; negativo?: boolean }
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.black },
+  // Transparente: quem pinta o fundo agora e o <Fundo>.
+  safe: { flex: 1, backgroundColor: 'transparent' },
   scroll: {
     flexGrow: 1,
     alignItems: 'center',
@@ -106,7 +110,7 @@ const styles = StyleSheet.create({
 
   cabecalho: { gap: spacing.xs },
   titulo: { ...typography.title, color: colors.text },
-  subtitulo: { ...typography.body, color: colors.textMuted },
+  subtitulo: { ...typography.body, color: colors.textOverPhoto },
 
   promessa: {
     backgroundColor: colors.surface,

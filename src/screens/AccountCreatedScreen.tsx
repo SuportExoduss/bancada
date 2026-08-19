@@ -1,6 +1,7 @@
 import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Fundo } from '../components/Fundo';
 import { Button } from '../components/Button';
 import { LARGURA_MAXIMA_CONTEUDO } from '../hooks/useLayout';
 import type { AlvoDoCadastro } from '../state/cadastroEmAndamento';
@@ -34,59 +35,62 @@ export function AccountCreatedScreen({
   const ehMenor = alvo === 'menor';
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.black} />
+    <Fundo variante="auth">
+      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
+        <StatusBar barStyle="light-content" backgroundColor={colors.black} />
 
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        <View style={styles.coluna}>
-          <View style={styles.selo}>
-            <Text style={styles.seloTexto}>✓</Text>
+        <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+          <View style={styles.coluna}>
+            <View style={styles.selo}>
+              <Text style={styles.seloTexto}>✓</Text>
+            </View>
+
+            <View style={styles.cabecalho}>
+              <Text style={styles.titulo}>
+                {ehMenor ? 'Conta criada e ligada à sua' : 'Conta criada'}
+              </Text>
+              {apelido ? <Text style={styles.apelido}>@{apelido}</Text> : null}
+            </View>
+
+            {ehResponsavel ? (
+              <>
+                <Text style={styles.texto}>
+                  Agora que a sua conta existe, dá para criar a do seu filho ou filha ligada a ela.
+                </Text>
+                <View style={styles.acoes}>
+                  <Button
+                    label="Continuar e criar a conta dele"
+                    variant="primary"
+                    onPress={onContinuarParaMenor}
+                  />
+                  <Button label="Agora não" variant="ghost" onPress={onAgoraNao} />
+                </View>
+                <Text style={styles.rodape}>
+                  Se deixar para depois, dá para criar a qualquer momento em Configurações → Família.
+                </Text>
+              </>
+            ) : (
+              <>
+                <Text style={styles.texto}>
+                  {ehMenor
+                    ? 'Ele já pode entrar. Você acompanha os contatos e pode ajustar tudo em Configurações → Família — e ele sabe o que você enxerga.'
+                    : 'Tudo pronto. Bem-vindo à várzea.'}
+                </Text>
+                <View style={styles.acoes}>
+                  <Button label="Entrar na BANCADA" variant="primary" onPress={onEntrarNoApp} />
+                </View>
+              </>
+            )}
           </View>
-
-          <View style={styles.cabecalho}>
-            <Text style={styles.titulo}>
-              {ehMenor ? 'Conta criada e ligada à sua' : 'Conta criada'}
-            </Text>
-            {apelido ? <Text style={styles.apelido}>@{apelido}</Text> : null}
-          </View>
-
-          {ehResponsavel ? (
-            <>
-              <Text style={styles.texto}>
-                Agora que a sua conta existe, dá para criar a do seu filho ou filha ligada a ela.
-              </Text>
-              <View style={styles.acoes}>
-                <Button
-                  label="Continuar e criar a conta dele"
-                  variant="primary"
-                  onPress={onContinuarParaMenor}
-                />
-                <Button label="Agora não" variant="ghost" onPress={onAgoraNao} />
-              </View>
-              <Text style={styles.rodape}>
-                Se deixar para depois, dá para criar a qualquer momento em Configurações → Família.
-              </Text>
-            </>
-          ) : (
-            <>
-              <Text style={styles.texto}>
-                {ehMenor
-                  ? 'Ele já pode entrar. Você acompanha os contatos e pode ajustar tudo em Configurações → Família — e ele sabe o que você enxerga.'
-                  : 'Tudo pronto. Bem-vindo à várzea.'}
-              </Text>
-              <View style={styles.acoes}>
-                <Button label="Entrar na BANCADA" variant="primary" onPress={onEntrarNoApp} />
-              </View>
-            </>
-          )}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </Fundo>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.black },
+  // Transparente: quem pinta o fundo agora e o <Fundo>.
+  safe: { flex: 1, backgroundColor: 'transparent' },
   scroll: {
     flexGrow: 1,
     alignItems: 'center',
@@ -115,8 +119,8 @@ const styles = StyleSheet.create({
   titulo: { ...typography.title, color: colors.text, textAlign: 'center' },
   apelido: { ...typography.bodyStrong, color: colors.green },
 
-  texto: { ...typography.body, color: colors.textMuted, textAlign: 'center', lineHeight: 23 },
+  texto: { ...typography.body, color: colors.textOverPhoto, textAlign: 'center', lineHeight: 23 },
 
   acoes: { gap: spacing.md, width: '100%', marginTop: spacing.sm },
-  rodape: { ...typography.caption, color: colors.textMuted, textAlign: 'center', lineHeight: 19 },
+  rodape: { ...typography.caption, color: colors.textOverPhoto, textAlign: 'center', lineHeight: 19 },
 });

@@ -1,11 +1,12 @@
 import { Image, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Fundo } from '../components/Fundo';
 import { Button } from '../components/Button';
 import { LARGURA_MAXIMA_CONTEUDO, alturaDaMarca, useLayout } from '../hooks/useLayout';
 import { colors, spacing, typography } from '../theme';
 
-const logo = require('../../assets/marca/logo-bancada.png');
+const logo = require('../../assets/marca/logo-bancada.webp');
 
 export interface WelcomeScreenProps {
   onCreateAccount?: () => void;
@@ -27,55 +28,58 @@ export function WelcomeScreen({ onCreateAccount, onSignIn }: WelcomeScreenProps)
   const { isLandscape, isShortHeight, isCompactWidth } = layout;
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.black} />
+    <Fundo variante="auth">
+      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
+        <StatusBar barStyle="light-content" backgroundColor={colors.black} />
 
-      {/* ScrollView com flexGrow: centraliza quando sobra espaco e rola
-          quando falta. Sem ela, paisagem de celular corta a logo. */}
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        showsVerticalScrollIndicator={false}
-        bounces={false}
-      >
-        <View style={styles.column}>
-          <View style={[styles.brand, isShortHeight && styles.brandTight]}>
-            <Image
-              source={logo}
-              style={{ width: '100%', height: alturaDaMarca(layout) }}
-              resizeMode="contain"
-              accessible
-              accessibilityRole="image"
-              accessibilityLabel="BANCADA — Conecta, Organiza, Transforma"
-            />
+        {/* ScrollView com flexGrow: centraliza quando sobra espaco e rola
+            quando falta. Sem ela, paisagem de celular corta a logo. */}
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+        >
+          <View style={styles.column}>
+            <View style={[styles.brand, isShortHeight && styles.brandTight]}>
+              <Image
+                source={logo}
+                style={{ width: '100%', height: alturaDaMarca(layout) }}
+                resizeMode="contain"
+                accessible
+                accessibilityRole="image"
+                accessibilityLabel="BANCADA — Conecta, Organiza, Transforma"
+              />
 
-            <Text style={[styles.pitch, isCompactWidth && styles.pitchCompact]}>
-              A várzea inteira{'\n'}
-              <Text style={styles.pitchAccent}>num só lugar.</Text>
-            </Text>
-
-            {/* Em paisagem a altura e escassa: a frase de apoio e o primeiro
-                elemento a sair, porque os botoes nao podem sair. */}
-            {isLandscape ? null : (
-              <Text style={styles.support}>
-                Seu time, seus jogos, seus campeonatos e sua torcida — conectados.
+              <Text style={[styles.pitch, isCompactWidth && styles.pitchCompact]}>
+                A várzea inteira{'\n'}
+                <Text style={styles.pitchAccent}>num só lugar.</Text>
               </Text>
-            )}
-          </View>
 
-          <View style={styles.actions}>
-            <Button label="Criar conta" variant="primary" onPress={onCreateAccount} />
-            <Button label="Já tenho conta" variant="secondary" onPress={onSignIn} />
+              {/* Em paisagem a altura e escassa: a frase de apoio e o primeiro
+                  elemento a sair, porque os botoes nao podem sair. */}
+              {isLandscape ? null : (
+                <Text style={styles.support}>
+                  Seu time, seus jogos, seus campeonatos e sua torcida — conectados.
+                </Text>
+              )}
+            </View>
+
+            <View style={styles.actions}>
+              <Button label="Criar conta" variant="primary" onPress={onCreateAccount} />
+              <Button label="Já tenho conta" variant="secondary" onPress={onSignIn} />
+            </View>
           </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+    </Fundo>
   );
 }
 
 const styles = StyleSheet.create({
+  // Transparente: quem pinta o fundo agora e o <Fundo>.
   safe: {
     flex: 1,
-    backgroundColor: colors.black,
+    backgroundColor: 'transparent',
   },
   scroll: {
     flexGrow: 1,
@@ -113,11 +117,11 @@ const styles = StyleSheet.create({
     lineHeight: 27,
   },
   pitchAccent: {
-    color: colors.green,
+    color: colors.greenOverPhoto,
   },
   support: {
     ...typography.body,
-    color: colors.textMuted,
+    color: colors.textOverPhoto,
     textAlign: 'center',
     maxWidth: 320,
   },

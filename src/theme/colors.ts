@@ -22,6 +22,27 @@ export const colors = {
 
   text: '#FFFFFF',
   textMuted: '#9A9A9A',
+  /**
+   * Texto secundario quando o fundo e imagem, nao cor solida.
+   *
+   * Nao e capricho: medindo os pixels das fotos de fundo com o veu aplicado,
+   * o #9A9A9A fica em 2,3:1 de contraste -- muito abaixo dos 4,5:1 que a
+   * WCAG pede para texto corrido. Para ele passar, o veu teria que ir a 0,84
+   * e a foto sumiria. Este tom passa com o veu em 0,66, que ainda deixa a
+   * imagem viva.
+   */
+  textOverPhoto: '#D6D6D6',
+  /**
+   * Verde da marca clareado, para LINK sobre imagem.
+   *
+   * O #6CC04A e otimo como fundo de botao, com texto escuro por cima. Como
+   * texto sobre foto ele fica em 2,9:1 -- reprova. Mesma matiz, mais claro,
+   * medido em 4,8:1 sobre as quatro imagens de fundo.
+   *
+   * Nao substitui o verde da marca: botao, borda e destaque continuam com o
+   * `green`.
+   */
+  greenOverPhoto: '#B8E9A6',
   textOnGreen: '#111111',
 
   /** Semânticas */

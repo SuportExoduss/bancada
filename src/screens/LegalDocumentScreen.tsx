@@ -1,6 +1,7 @@
 import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Fundo } from '../components/Fundo';
 import { TextoRico } from '../components/TextoRico';
 import { TopBar } from '../components/TopBar';
 import { documentosLegais, type Bloco, type ChaveDocumento } from '../content/documentosLegais';
@@ -27,40 +28,42 @@ export function LegalDocumentScreen({ documento, onBack }: LegalDocumentScreenPr
   const { titulo, blocos, rascunho } = documentosLegais[documento];
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.black} />
+    <Fundo variante="app">
+      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
+        <StatusBar barStyle="light-content" backgroundColor={colors.black} />
 
-      <TopBar onBack={onBack} title={titulo} />
+        <TopBar onBack={onBack} title={titulo} />
 
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        showsVerticalScrollIndicator={true}
-        accessibilityLabel={titulo}
-      >
-        <View style={styles.coluna}>
-          {/* Enquanto o texto tiver lacuna, quem lê precisa saber. Exibir um
-              documento incompleto como se fosse final é pior que não exibir:
-              a pessoa sai achando que leu o contrato inteiro. */}
-          {rascunho ? (
-            <View style={styles.rascunho} accessibilityRole="alert">
-              <Text style={styles.rascunhoTexto}>
-                Este texto ainda é um rascunho e não está em vigor. Alguns trechos estão marcados
-                como <Text style={styles.rascunhoForte}>[A DEFINIR]</Text> porque dependem de dados
-                que ainda não existem.
-              </Text>
-            </View>
-          ) : null}
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          showsVerticalScrollIndicator={true}
+          accessibilityLabel={titulo}
+        >
+          <View style={styles.coluna}>
+            {/* Enquanto o texto tiver lacuna, quem lê precisa saber. Exibir um
+                documento incompleto como se fosse final é pior que não exibir:
+                a pessoa sai achando que leu o contrato inteiro. */}
+            {rascunho ? (
+              <View style={styles.rascunho} accessibilityRole="alert">
+                <Text style={styles.rascunhoTexto}>
+                  Este texto ainda é um rascunho e não está em vigor. Alguns trechos estão marcados
+                  como <Text style={styles.rascunhoForte}>[A DEFINIR]</Text> porque dependem de dados
+                  que ainda não existem.
+                </Text>
+              </View>
+            ) : null}
 
-          {blocos.map((bloco, i) => (
-            <BlocoRenderizado key={i} bloco={bloco} />
-          ))}
+            {blocos.map((bloco, i) => (
+              <BlocoRenderizado key={i} bloco={bloco} />
+            ))}
 
-          <Text style={styles.rodape}>
-            Ficou com dúvida sobre alguma parte? Fale com a gente — respondemos.
-          </Text>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+            <Text style={styles.rodape}>
+              Ficou com dúvida sobre alguma parte? Fale com a gente — respondemos.
+            </Text>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </Fundo>
   );
 }
 
@@ -122,7 +125,8 @@ function BlocoRenderizado({ bloco }: { bloco: Bloco }) {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.black },
+  // Transparente: quem pinta o fundo agora e o <Fundo>.
+  safe: { flex: 1, backgroundColor: 'transparent' },
   scroll: {
     alignItems: 'center',
     paddingHorizontal: spacing.xl,
@@ -140,7 +144,7 @@ const styles = StyleSheet.create({
   },
   h3: {
     ...typography.bodyStrong,
-    color: colors.green,
+    color: colors.greenOverPhoto,
     marginTop: spacing.lg,
     marginBottom: spacing.xs,
   },
@@ -148,11 +152,11 @@ const styles = StyleSheet.create({
 
   // `lineHeight` generoso: são textos longos lidos em tela pequena, e linha
   // apertada é o que faz a pessoa desistir na metade.
-  p: { ...typography.body, color: colors.textMuted, lineHeight: 23, marginBottom: spacing.md },
+  p: { ...typography.body, color: colors.textOverPhoto, lineHeight: 23, marginBottom: spacing.md },
 
   item: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.sm, paddingRight: spacing.sm },
   marcador: { ...typography.body, color: colors.green },
-  itemTexto: { ...typography.body, color: colors.textMuted, lineHeight: 23, flex: 1 },
+  itemTexto: { ...typography.body, color: colors.textOverPhoto, lineHeight: 23, flex: 1 },
 
   regua: { height: 1, backgroundColor: colors.border, marginVertical: spacing.lg },
 
@@ -190,7 +194,7 @@ const styles = StyleSheet.create({
 
   rodape: {
     ...typography.caption,
-    color: colors.textMuted,
+    color: colors.textOverPhoto,
     textAlign: 'center',
     marginTop: spacing.xxl,
   },

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Fundo } from '../components/Fundo';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { TopBar } from '../components/TopBar';
@@ -167,148 +168,150 @@ export function OnboardingScreen({
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.black} />
+    <Fundo variante="auth">
+      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
+        <StatusBar barStyle="light-content" backgroundColor={colors.black} />
 
-      <TopBar onBack={onBack} />
+        <TopBar onBack={onBack} />
 
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <ScrollView
-          contentContainerStyle={styles.scroll}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+        <KeyboardAvoidingView
+          style={styles.flex}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          <View style={styles.column}>
-            <View style={styles.header}>
-              <Text style={styles.title}>{TEXTOS[alvo].titulo}</Text>
-              <Text style={styles.subtitle}>{TEXTOS[alvo].subtitulo}</Text>
-            </View>
-
-            <View style={styles.form}>
-              {/* Em tela estreita os campos empilham: lado a lado sobram 130px
-                  cada, e nome comprido nao cabe. */}
-              <View style={isCompactWidth ? styles.coluna : styles.linha}>
-                <Input
-                  label="Nome"
-                  value={nome}
-                  onChangeText={setNome}
-                  placeholder="Lucas"
-                  autoCapitalize="words"
-                  autoComplete="given-name"
-                  containerStyle={styles.meio}
-                  error={tentou && erros.nome ? MENSAGENS_PERFIL.nome[erros.nome] : undefined}
-                />
-                <Input
-                  label="Sobrenome"
-                  value={sobrenome}
-                  onChangeText={setSobrenome}
-                  placeholder="Rocha"
-                  autoCapitalize="words"
-                  autoComplete="family-name"
-                  containerStyle={styles.meio}
-                  error={
-                    tentou && erros.sobrenome
-                      ? MENSAGENS_PERFIL.sobrenome[erros.sobrenome]
-                      : undefined
-                  }
-                />
+          <ScrollView
+            contentContainerStyle={styles.scroll}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.column}>
+              <View style={styles.header}>
+                <Text style={styles.title}>{TEXTOS[alvo].titulo}</Text>
+                <Text style={styles.subtitle}>{TEXTOS[alvo].subtitulo}</Text>
               </View>
 
-              <View style={styles.apelidoBloco}>
-                <Input
-                  label="Apelido"
-                  value={apelido}
-                  // Maiuscula PRESERVADA na tela: @Lucas_Rocha aparece como foi
-                  // escrito. Para unicidade ela nao conta — @Lucas_Rocha e
-                  // @lucas_rocha sao o mesmo apelido, e so um pode existir.
-                  onChangeText={setApelido}
-                  placeholder="lucas_rocha"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  maxLength={APELIDO_MAX}
-                  hint="Letras, números e _ · maiúscula não cria apelido diferente"
-                  error={
-                    tentou && erros.apelido
-                      ? MENSAGENS_PERFIL.apelido[erros.apelido]
-                      : undefined
-                  }
-                  onSubmitEditing={enviar}
-                  returnKeyType="go"
-                />
-                <AvisoApelido estado={estadoApelido} apelido={apelido} />
-              </View>
-
-              {sugestoes.length > 0 ? (
-                <View style={styles.sugestoes}>
-                  <Text style={styles.sugestoesTitulo}>Sugestões</Text>
-                  <View style={styles.sugestoesLista}>
-                    {sugestoes.map((s) => (
-                      <Pressable
-                        key={s}
-                        onPress={() => setApelido(s)}
-                        style={styles.chip}
-                        accessibilityRole="button"
-                        accessibilityLabel={`Usar o apelido ${s}`}
-                      >
-                        <Text style={styles.chipTexto}>@{s}</Text>
-                      </Pressable>
-                    ))}
-                  </View>
+              <View style={styles.form}>
+                {/* Em tela estreita os campos empilham: lado a lado sobram 130px
+                    cada, e nome comprido nao cabe. */}
+                <View style={isCompactWidth ? styles.coluna : styles.linha}>
+                  <Input
+                    label="Nome"
+                    value={nome}
+                    onChangeText={setNome}
+                    placeholder="Lucas"
+                    autoCapitalize="words"
+                    autoComplete="given-name"
+                    containerStyle={styles.meio}
+                    error={tentou && erros.nome ? MENSAGENS_PERFIL.nome[erros.nome] : undefined}
+                  />
+                  <Input
+                    label="Sobrenome"
+                    value={sobrenome}
+                    onChangeText={setSobrenome}
+                    placeholder="Rocha"
+                    autoCapitalize="words"
+                    autoComplete="family-name"
+                    containerStyle={styles.meio}
+                    error={
+                      tentou && erros.sobrenome
+                        ? MENSAGENS_PERFIL.sobrenome[erros.sobrenome]
+                        : undefined
+                    }
+                  />
                 </View>
-              ) : null}
 
-              <View style={styles.nascimentoBloco}>
-                <Input
-                  label={TEXTOS[alvo].rotuloData}
-                  value={nascimento}
-                  // A máscara é aplicada na entrada, não na saída: assim o
-                  // campo nunca mostra um estado que o app não aceitaria.
-                  onChangeText={(texto) => setNascimento(formatarData(texto))}
-                  placeholder="DD/MM/AAAA"
-                  keyboardType="number-pad"
-                  autoComplete="birthdate-full"
-                  maxLength={10}
-                  error={
-                    tentou && erros.nascimento
-                      ? MENSAGENS_IDADE.data[erros.nascimento]
-                      : undefined
-                  }
-                />
+                <View style={styles.apelidoBloco}>
+                  <Input
+                    label="Apelido"
+                    value={apelido}
+                    // Maiuscula PRESERVADA na tela: @Lucas_Rocha aparece como foi
+                    // escrito. Para unicidade ela nao conta — @Lucas_Rocha e
+                    // @lucas_rocha sao o mesmo apelido, e so um pode existir.
+                    onChangeText={setApelido}
+                    placeholder="lucas_rocha"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    maxLength={APELIDO_MAX}
+                    hint="Letras, números e _ · maiúscula não cria apelido diferente"
+                    error={
+                      tentou && erros.apelido
+                        ? MENSAGENS_PERFIL.apelido[erros.apelido]
+                        : undefined
+                    }
+                    onSubmitEditing={enviar}
+                    returnKeyType="go"
+                  />
+                  <AvisoApelido estado={estadoApelido} apelido={apelido} />
+                </View>
 
-                {/* O erro de faixa aparece assim que a data fica válida, sem
-                    esperar o envio: descobrir que o caminho é outro depois de
-                    preencher tudo é o pior momento possível para descobrir. */}
-                {erroDeFaixa ? (
-                  <View style={styles.avisoFaixa} accessibilityLiveRegion="polite">
-                    <Text style={styles.avisoFaixaTexto}>{erroDeFaixa}</Text>
+                {sugestoes.length > 0 ? (
+                  <View style={styles.sugestoes}>
+                    <Text style={styles.sugestoesTitulo}>Sugestões</Text>
+                    <View style={styles.sugestoesLista}>
+                      {sugestoes.map((s) => (
+                        <Pressable
+                          key={s}
+                          onPress={() => setApelido(s)}
+                          style={styles.chip}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Usar o apelido ${s}`}
+                        >
+                          <Text style={styles.chipTexto}>@{s}</Text>
+                        </Pressable>
+                      ))}
+                    </View>
+                  </View>
+                ) : null}
+
+                <View style={styles.nascimentoBloco}>
+                  <Input
+                    label={TEXTOS[alvo].rotuloData}
+                    value={nascimento}
+                    // A máscara é aplicada na entrada, não na saída: assim o
+                    // campo nunca mostra um estado que o app não aceitaria.
+                    onChangeText={(texto) => setNascimento(formatarData(texto))}
+                    placeholder="DD/MM/AAAA"
+                    keyboardType="number-pad"
+                    autoComplete="birthdate-full"
+                    maxLength={10}
+                    error={
+                      tentou && erros.nascimento
+                        ? MENSAGENS_IDADE.data[erros.nascimento]
+                        : undefined
+                    }
+                  />
+
+                  {/* O erro de faixa aparece assim que a data fica válida, sem
+                      esperar o envio: descobrir que o caminho é outro depois de
+                      preencher tudo é o pior momento possível para descobrir. */}
+                  {erroDeFaixa ? (
+                    <View style={styles.avisoFaixa} accessibilityLiveRegion="polite">
+                      <Text style={styles.avisoFaixaTexto}>{erroDeFaixa}</Text>
+                    </View>
+                  ) : null}
+                </View>
+
+                {serverError ? (
+                  <View style={styles.erroServidor} accessibilityRole="alert">
+                    <Text style={styles.erroServidorTexto}>{serverError}</Text>
                   </View>
                 ) : null}
               </View>
 
-              {serverError ? (
-                <View style={styles.erroServidor} accessibilityRole="alert">
-                  <Text style={styles.erroServidorTexto}>{serverError}</Text>
-                </View>
-              ) : null}
+              <View style={styles.actions}>
+                {/* "Criar conta" so aqui: pela D-024 e este toque que faz a
+                    conta existir. Ate ele, nada foi criado. */}
+                <Button label="Criar conta" variant="primary" onPress={enviar} loading={loading} />
+                {isShortHeight ? null : (
+                  <Text style={styles.rodape}>
+                    Você poderá completar o perfil com foto, cidade e time do coração depois.
+                  </Text>
+                )}
+              </View>
             </View>
-
-            <View style={styles.actions}>
-              {/* "Criar conta" so aqui: pela D-024 e este toque que faz a
-                  conta existir. Ate ele, nada foi criado. */}
-              <Button label="Criar conta" variant="primary" onPress={enviar} loading={loading} />
-              {isShortHeight ? null : (
-                <Text style={styles.rodape}>
-                  Você poderá completar o perfil com foto, cidade e time do coração depois.
-                </Text>
-              )}
-            </View>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </Fundo>
   );
 }
 
@@ -342,22 +345,23 @@ function AvisoApelido({ estado, apelido }: { estado: EstadoApelido; apelido: str
   }
 
   const conteudo = {
-    verificando: { texto: 'Verificando…', cor: colors.textMuted, girando: true },
-    disponivel: { texto: `@${apelido} está livre`, cor: colors.green, girando: false },
+    verificando: { texto: 'Verificando…', cor: colors.textOverPhoto, girando: true },
+    disponivel: { texto: `@${apelido} está livre`, cor: colors.greenOverPhoto, girando: false },
     em_uso: { texto: MENSAGENS_PERFIL.apelido.em_uso, cor: colors.danger, girando: false },
     falhou: { texto: 'Não deu para verificar agora.', cor: colors.warning, girando: false },
   }[estado.situacao];
 
   return (
     <View style={styles.aviso} accessibilityLiveRegion="polite">
-      {conteudo.girando ? <ActivityIndicator size="small" color={colors.textMuted} /> : null}
+      {conteudo.girando ? <ActivityIndicator size="small" color={colors.textOverPhoto} /> : null}
       <Text style={[styles.avisoTexto, { color: conteudo.cor }]}>{conteudo.texto}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.black },
+  // Transparente: quem pinta o fundo agora e o <Fundo>.
+  safe: { flex: 1, backgroundColor: 'transparent' },
   flex: { flex: 1 },
   scroll: {
     flexGrow: 1,
@@ -374,7 +378,7 @@ const styles = StyleSheet.create({
   },
   header: { gap: spacing.sm },
   title: { ...typography.title, color: colors.text },
-  subtitle: { ...typography.body, color: colors.textMuted },
+  subtitle: { ...typography.body, color: colors.textOverPhoto },
   form: { gap: spacing.lg },
   linha: { flexDirection: 'row', gap: spacing.md },
   coluna: { gap: spacing.lg },
@@ -398,7 +402,7 @@ const styles = StyleSheet.create({
   },
   avisoTexto: { ...typography.caption },
   sugestoes: { gap: spacing.sm },
-  sugestoesTitulo: { ...typography.caption, color: colors.textMuted, marginLeft: spacing.xs },
+  sugestoesTitulo: { ...typography.caption, color: colors.textOverPhoto, marginLeft: spacing.xs },
   sugestoesLista: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   chip: {
     backgroundColor: colors.greenSoft,
@@ -410,7 +414,7 @@ const styles = StyleSheet.create({
     minHeight: 36,
     justifyContent: 'center',
   },
-  chipTexto: { ...typography.caption, color: colors.green, fontWeight: '600' },
+  chipTexto: { ...typography.caption, color: colors.greenOverPhoto, fontWeight: '600' },
   erroServidor: {
     backgroundColor: 'rgba(229, 72, 77, 0.12)',
     borderColor: colors.danger,
@@ -420,5 +424,5 @@ const styles = StyleSheet.create({
   },
   erroServidorTexto: { ...typography.caption, color: colors.danger },
   actions: { gap: spacing.md },
-  rodape: { ...typography.caption, color: colors.textMuted, textAlign: 'center' },
+  rodape: { ...typography.caption, color: colors.textOverPhoto, textAlign: 'center' },
 });

@@ -179,3 +179,46 @@ Documento com buraco exibido como se fosse final é pior que documento ausente:
 a pessoa sai achando que leu o contrato inteiro.
 
 O aviso some sozinho quando a última lacuna for preenchida.
+
+---
+
+## Imagens
+
+Os originais ficam em `IMAGENS/` e **não vão para o app**. O que o app usa são
+as versões WebP em `assets/`, geradas por:
+
+```bash
+node scripts/gerar-imagens.mjs
+```
+
+Rode depois de trocar qualquer original.
+
+### Por que converter
+
+Os cinco originais somavam **9,9 MB**. Em WebP somam **732 KB** — 93% a menos,
+sem diferença visível. Num app aberto na beira do campo com 4G ruim, isso é a
+diferença entre a tela pintar e a pessoa achar que travou.
+
+| Arquivo | Antes | Depois |
+|---|---:|---:|
+| Fundo login dia | 2.892 KB | 286 KB |
+| Fundo login noite | 2.245 KB | 240 KB |
+| Fundo app retrato | 1.650 KB | 30 KB |
+| Fundo app paisagem | 1.883 KB | 92 KB |
+| Logo | 1.275 KB | 84 KB |
+
+A logo caiu junto e isso fechou uma pendência antiga: ela era o item mais
+pesado do app e aparecia com atraso na primeira abertura por rede móvel.
+
+### Nomes
+
+Os originais têm espaço e ponto duplo no nome (`fundo bancada todos os
+feeds ..png`). O gerador renomeia para kebab-case: empacotador trata caminho
+com espaço de forma imprevisível, e nome com dois pontos confunde a detecção de
+extensão.
+
+### O PNG da logo continua no repositório
+
+`assets/marca/logo-bancada.png` não foi apagado de propósito: o `app.json` o usa
+para gerar a tela de abertura, e essa geração acontece no build e espera PNG. O
+app em si usa o `.webp`.

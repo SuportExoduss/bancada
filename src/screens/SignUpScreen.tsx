@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Fundo } from '../components/Fundo';
 import { Button } from '../components/Button';
 import { Checkbox } from '../components/Checkbox';
 import { Input } from '../components/Input';
@@ -101,144 +102,146 @@ export function SignUpScreen({
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.black} />
+    <Fundo variante="auth">
+      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
+        <StatusBar barStyle="light-content" backgroundColor={colors.black} />
 
-      <TopBar onBack={onBack} />
+        <TopBar onBack={onBack} />
 
-      {/* Sem isto o teclado cobre o botao de enviar — o defeito mais comum
-          de formulario em celular. */}
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <ScrollView
-          contentContainerStyle={styles.scroll}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+        {/* Sem isto o teclado cobre o botao de enviar — o defeito mais comum
+            de formulario em celular. */}
+        <KeyboardAvoidingView
+          style={styles.flex}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          <View style={styles.column}>
-            <View style={styles.header}>
-              <Text style={styles.title}>{TEXTOS[alvo].titulo}</Text>
-              <Text style={styles.subtitle}>{TEXTOS[alvo].subtitulo}</Text>
-            </View>
+          <ScrollView
+            contentContainerStyle={styles.scroll}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.column}>
+              <View style={styles.header}>
+                <Text style={styles.title}>{TEXTOS[alvo].titulo}</Text>
+                <Text style={styles.subtitle}>{TEXTOS[alvo].subtitulo}</Text>
+              </View>
 
-            <View style={styles.form}>
-              <Input
-                label="E-mail"
-                value={email}
-                onChangeText={setEmail}
-                placeholder="voce@exemplo.com"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoComplete="email"
-                textContentType="emailAddress"
-                error={tentou && erros.email ? MENSAGENS.email[erros.email] : undefined}
-              />
-
-              <View style={styles.senhaBloco}>
+              <View style={styles.form}>
                 <Input
-                  label="Senha"
-                  value={senha}
-                  onChangeText={setSenha}
-                  placeholder="Pelo menos 8 caracteres"
+                  label="E-mail"
+                  value={email}
+                  onChangeText={setEmail}
+                  placeholder="voce@exemplo.com"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  textContentType="emailAddress"
+                  error={tentou && erros.email ? MENSAGENS.email[erros.email] : undefined}
+                />
+
+                <View style={styles.senhaBloco}>
+                  <Input
+                    label="Senha"
+                    value={senha}
+                    onChangeText={setSenha}
+                    placeholder="Pelo menos 8 caracteres"
+                    secret
+                    autoCapitalize="none"
+                    autoComplete="new-password"
+                    textContentType="newPassword"
+                    error={tentou && erros.senha ? MENSAGENS.senha[erros.senha] : undefined}
+                  />
+                  {forca ? <MedidorDeForca forca={forca} /> : null}
+                </View>
+
+                <Input
+                  label="Repetir senha"
+                  value={confirmacao}
+                  onChangeText={setConfirmacao}
+                  placeholder="Digite de novo"
                   secret
                   autoCapitalize="none"
                   autoComplete="new-password"
                   textContentType="newPassword"
-                  error={tentou && erros.senha ? MENSAGENS.senha[erros.senha] : undefined}
+                  error={
+                    tentou && erros.confirmacao
+                      ? MENSAGENS.confirmacao[erros.confirmacao]
+                      : undefined
+                  }
+                  onSubmitEditing={enviar}
+                  returnKeyType="go"
                 />
-                {forca ? <MedidorDeForca forca={forca} /> : null}
+
+                <Checkbox
+                  checked={aceitou}
+                  onChange={setAceitou}
+                  accessibilityLabel="Li e aceito os Termos de Uso e declaro ter lido a Política de Privacidade"
+                >
+                  <Text style={styles.termos}>
+                    {/* A Política de Privacidade NÃO é aceita, é lida. A base
+                        legal do que o app faz é execução de contrato (LGPD
+                        art. 7º, V); transformar isso em consentimento daria ao
+                        usuário um botão de desligar que a lei não obrigava a
+                        dar — e consentimento é revogável a qualquer momento. */}
+                    Li e aceito os{' '}
+                    <Text style={styles.link} onPress={onOpenTerms}>
+                      Termos de Uso
+                    </Text>{' '}
+                    e declaro ter lido a{' '}
+                    <Text style={styles.link} onPress={onOpenPrivacy}>
+                      Política de Privacidade
+                    </Text>
+                    .
+                  </Text>
+                </Checkbox>
+
+                {tentou && !aceitou ? (
+                  <Text style={styles.erroGeral} accessibilityRole="alert">
+                    Para continuar, você precisa aceitar os termos.
+                  </Text>
+                ) : null}
+
+                {serverError ? (
+                  <View style={styles.erroServidor} accessibilityRole="alert">
+                    <Text style={styles.erroServidorTexto}>{serverError}</Text>
+                  </View>
+                ) : null}
               </View>
 
-              <Input
-                label="Repetir senha"
-                value={confirmacao}
-                onChangeText={setConfirmacao}
-                placeholder="Digite de novo"
-                secret
-                autoCapitalize="none"
-                autoComplete="new-password"
-                textContentType="newPassword"
-                error={
-                  tentou && erros.confirmacao
-                    ? MENSAGENS.confirmacao[erros.confirmacao]
-                    : undefined
-                }
-                onSubmitEditing={enviar}
-                returnKeyType="go"
-              />
+              <View style={styles.actions}>
+                <Button
+                  label="Continuar"
+                  variant="primary"
+                  onPress={enviar}
+                  loading={loading}
+                  // "Continuar", nao "Criar conta": pela D-024 nada e criado
+                  // aqui. A conta nasce no botao final do onboarding, e o rotulo
+                  // precisa dizer a verdade sobre o que o toque faz.
+                  //
+                  // Nao desabilitado quando invalido, de proposito: botao morto
+                  // nao explica o que falta. Ao tocar, os erros aparecem.
+                />
 
-              <Checkbox
-                checked={aceitou}
-                onChange={setAceitou}
-                accessibilityLabel="Li e aceito os Termos de Uso e declaro ter lido a Política de Privacidade"
-              >
-                <Text style={styles.termos}>
-                  {/* A Política de Privacidade NÃO é aceita, é lida. A base
-                      legal do que o app faz é execução de contrato (LGPD
-                      art. 7º, V); transformar isso em consentimento daria ao
-                      usuário um botão de desligar que a lei não obrigava a
-                      dar — e consentimento é revogável a qualquer momento. */}
-                  Li e aceito os{' '}
-                  <Text style={styles.link} onPress={onOpenTerms}>
-                    Termos de Uso
-                  </Text>{' '}
-                  e declaro ter lido a{' '}
-                  <Text style={styles.link} onPress={onOpenPrivacy}>
-                    Política de Privacidade
+                {isShortHeight ? null : (
+                  <View style={styles.divisor}>
+                    <View style={styles.linha} />
+                    <Text style={styles.divisorTexto}>ou</Text>
+                    <View style={styles.linha} />
+                  </View>
+                )}
+
+                <Button label="Continuar com Google" variant="secondary" onPress={onGoogle} />
+
+                <Pressable onPress={onSignIn} hitSlop={8} style={styles.rodape}>
+                  <Text style={styles.rodapeTexto}>
+                    Já tem conta? <Text style={styles.link}>Entrar</Text>
                   </Text>
-                  .
-                </Text>
-              </Checkbox>
-
-              {tentou && !aceitou ? (
-                <Text style={styles.erroGeral} accessibilityRole="alert">
-                  Para continuar, você precisa aceitar os termos.
-                </Text>
-              ) : null}
-
-              {serverError ? (
-                <View style={styles.erroServidor} accessibilityRole="alert">
-                  <Text style={styles.erroServidorTexto}>{serverError}</Text>
-                </View>
-              ) : null}
+                </Pressable>
+              </View>
             </View>
-
-            <View style={styles.actions}>
-              <Button
-                label="Continuar"
-                variant="primary"
-                onPress={enviar}
-                loading={loading}
-                // "Continuar", nao "Criar conta": pela D-024 nada e criado
-                // aqui. A conta nasce no botao final do onboarding, e o rotulo
-                // precisa dizer a verdade sobre o que o toque faz.
-                //
-                // Nao desabilitado quando invalido, de proposito: botao morto
-                // nao explica o que falta. Ao tocar, os erros aparecem.
-              />
-
-              {isShortHeight ? null : (
-                <View style={styles.divisor}>
-                  <View style={styles.linha} />
-                  <Text style={styles.divisorTexto}>ou</Text>
-                  <View style={styles.linha} />
-                </View>
-              )}
-
-              <Button label="Continuar com Google" variant="secondary" onPress={onGoogle} />
-
-              <Pressable onPress={onSignIn} hitSlop={8} style={styles.rodape}>
-                <Text style={styles.rodapeTexto}>
-                  Já tem conta? <Text style={styles.link}>Entrar</Text>
-                </Text>
-              </Pressable>
-            </View>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </Fundo>
   );
 }
 
@@ -263,7 +266,8 @@ function MedidorDeForca({ forca }: { forca: ForcaSenha }) {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.black },
+  // Transparente: quem pinta o fundo agora e o <Fundo>.
+  safe: { flex: 1, backgroundColor: 'transparent' },
   flex: { flex: 1 },
   scroll: {
     flexGrow: 1,
@@ -283,15 +287,15 @@ const styles = StyleSheet.create({
   },
   header: { gap: spacing.xs },
   title: { ...typography.title, color: colors.text },
-  subtitle: { ...typography.body, color: colors.textMuted },
+  subtitle: { ...typography.body, color: colors.textOverPhoto },
   form: { gap: spacing.lg },
   senhaBloco: { gap: spacing.sm },
   forca: { gap: spacing.xs, marginLeft: spacing.xs },
   forcaBarras: { flexDirection: 'row', gap: spacing.xs },
   forcaBarra: { flex: 1, height: 3, borderRadius: radius.sm },
   forcaTexto: { ...typography.caption },
-  termos: { ...typography.caption, color: colors.textMuted, lineHeight: 19 },
-  link: { color: colors.green, fontWeight: '600' },
+  termos: { ...typography.caption, color: colors.textOverPhoto, lineHeight: 19 },
+  link: { color: colors.greenOverPhoto, fontWeight: '600' },
   erroGeral: { ...typography.caption, color: colors.danger, marginLeft: spacing.xs },
   erroServidor: {
     backgroundColor: 'rgba(229, 72, 77, 0.12)',
@@ -306,7 +310,7 @@ const styles = StyleSheet.create({
   actions: { gap: spacing.md },
   divisor: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   linha: { flex: 1, height: 1, backgroundColor: colors.border },
-  divisorTexto: { ...typography.caption, color: colors.textMuted },
+  divisorTexto: { ...typography.caption, color: colors.textOverPhoto },
   rodape: { alignItems: 'center', paddingVertical: spacing.sm },
-  rodapeTexto: { ...typography.body, color: colors.textMuted },
+  rodapeTexto: { ...typography.body, color: colors.textOverPhoto },
 });

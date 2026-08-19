@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   container: { gap: spacing.xs },
   label: {
     ...typography.caption,
-    color: colors.textMuted,
+    color: colors.textOverPhoto,
     marginLeft: spacing.xs,
   },
   field: {
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   hint: {
     ...typography.caption,
-    color: colors.textMuted,
+    color: colors.textOverPhoto,
     marginLeft: spacing.xs,
   },
 });

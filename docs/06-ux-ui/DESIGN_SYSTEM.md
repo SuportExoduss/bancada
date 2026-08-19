@@ -135,3 +135,54 @@ Considerar:
 Não criar estilos isolados sem necessidade.
 
 Componentes reutilizáveis devem formar o sistema visual.
+
+---
+
+## Fundos de tela
+
+**Decidido em 18/08/2026.** As telas não têm mais fundo de cor sólida.
+
+| Onde | Imagem |
+|---|---|
+| Entrar, cadastro e todo o primeiro acesso | Foto da quadra — **troca com a hora**: dia das 6h às 17h59, noite das 18h às 5h59 |
+| Todo o resto — feed, perfil, jogo, documentos | Arte da marca, em duas proporções: retrato no celular em pé, paisagem deitado |
+
+O componente é `src/components/Fundo.tsx`, com `variante="auth"` ou `"app"`.
+A orientação é medida pela **própria caixa** (`onLayout`), não pela janela: num
+tablet em tela dividida as duas não coincidem.
+
+### O véu, e por que estes números
+
+Cada imagem recebe um véu escuro por cima. Os valores **foram medidos**, não
+escolhidos a olho — amostrando os pixels de cada imagem e procurando o menor
+véu em que o texto secundário ainda alcança os 4,5:1 que a WCAG exige, contra
+o **pixel mais claro** da imagem.
+
+| Imagem | Véu | Branco | Secundário | Link verde |
+|---|---:|---:|---:|---:|
+| Login dia | 0,66 | 6,56 | 4,51 | 4,76 |
+| Login noite | 0,66 | 6,69 | 4,60 | 4,86 |
+| App retrato | 0,46 | 6,97 | 4,79 | 5,06 |
+| App paisagem | 0,67 | 6,75 | 4,64 | 4,90 |
+
+Duas descobertas que a medição trouxe e que a intuição erraria:
+
+**A foto da noite precisa do mesmo véu da foto de dia.** Ela parece escura,
+mas os refletores da quadra são quase brancos, e é sobre eles que uma frase
+pode cair. Com véu leve o texto ficava em 2,99:1 — ilegível justamente em cima
+da luz.
+
+**A arte de paisagem precisa de bem mais véu que a de retrato** (0,67 contra
+0,46), pelo mesmo motivo: ela tem o estouro do refletor no canto superior.
+
+### Duas cores nasceram daí
+
+| Token | Valor | Para quê |
+|---|---|---|
+| `textOverPhoto` | `#D6D6D6` | Texto secundário **sobre imagem**. O `textMuted` (#9A9A9A) fica em 2,3:1 ali; para ele passar o véu teria que ir a 0,84 e a foto sumiria |
+| `greenOverPhoto` | `#B8E9A6` | **Link** sobre imagem. O verde da marca fica em 2,9:1 como texto |
+
+**Nenhuma delas substitui o par original.** Sobre `surface` opaco — dentro de
+cartão, campo, caixa de destaque — continuam valendo `textMuted` e `green`, que
+lá dão 5,7:1 e mantêm a hierarquia visual. A regra é: *texto sobre imagem usa o
+par claro; texto sobre superfície usa o par normal.*
