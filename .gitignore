@@ -21,3 +21,9 @@ GoogleService-Info.plist
 # originais pesados das imagens; o app usa os .webp de assets/
 # (mantidos fora do repositorio para nao carregar 9MB de PNG)
 IMAGENS/
+
+# emulador do firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log

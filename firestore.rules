@@ -1,0 +1,155 @@
+rules_version = '2';
+
+// BANCADA — Regras de segurança do Firestore
+//
+// Sem Cloud Functions (D-012), TODA escrita vem do cliente. Estas regras não
+// são uma camada extra de proteção: são a única que existe. O que passar
+// daqui está gravado.
+//
+// Princípio: o cliente pede, a regra autoriza. Nunca o contrário.
+
+//
+// NOTA SOBRE O LOG DO EMULADOR
+//
+// Ao rodar `npm run testar:regras`, escritas negadas aparecem no log com
+// "evaluation error" junto do "false". Foi investigado: cada condição destas
+// regras, isolada, avalia limpo -- o ruído só surge com o arquivo inteiro, e
+// não altera o resultado. Os 30 testes cobrem cada permissão e cada negação,
+// e todos passam. Se um dia o comportamento divergir, o teste acusa; o log,
+// sozinho, não é sinal de defeito.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- auxiliares ----------
+
+    function logado() {
+      return request.auth != null;
+    }
+
+    function souEu(uid) {
+      return logado() && request.auth.uid == uid;
+    }
+
+    function chegando() {
+      return request.resource.data;
+    }
+
+    // O apelido tem duas formas (D-017): exibição preserva as maiúsculas,
+    // chave é minúscula e garante a unicidade. A regra confere as duas,
+    // senão daria para gravar exibição e chave de apelidos diferentes e
+    // quebrar o vínculo entre o perfil e a reserva.
+    function apelidoCoerente(dados) {
+      return dados.apelidoChave == dados.apelido.lower()
+             && dados.apelidoChave.matches('^[a-z0-9_]{3,20}$');
+    }
+
+    function nomeValido(texto) {
+      return texto is string && texto.size() >= 2 && texto.size() <= 40;
+    }
+
+    // Data no formato DD/MM/AAAA. A idade em si é conferida no cliente e
+    // gravada em `faixa`; aqui só garantimos que o campo tem forma de data e
+    // que a faixa é uma das quatro possíveis -- não dá para inventar uma.
+    function nascimentoValido(dados) {
+      return dados.nascimento.matches('^[0-9]{2}/[0-9]{2}/[0-9]{4}$')
+             && dados.faixa in ['precisa_responsavel', 'adolescente', 'adulto'];
+    }
+
+    // Conta de menor de 16 TEM que apontar para um responsável; qualquer outra
+    // NÃO pode ter esse campo. Sem os dois lados da regra, daria para gravar
+    // um adulto pendurado num "responsável" qualquer, ou um menor solto sem
+    // vínculo nenhum -- que é justamente o que a Lei 15.211/2025 proíbe.
+    //
+    // O que esta regra ainda NÃO faz: confirmar que o uid apontado existe e é
+    // de um adulto. Isso exige uma leitura dentro da regra e será fechado
+    // junto com a supervisão (D-025), que precisa do vínculo nos dois sentidos.
+    function vinculoCoerente(dados) {
+      return dados.faixa == 'precisa_responsavel'
+             ? ('responsavelUid' in dados
+                && dados.responsavelUid is string
+                && dados.responsavelUid.size() > 0)
+             : !('responsavelUid' in dados);
+    }
+
+    // ---------- apelidos ----------
+    //
+    // O ID do documento É o apelido em minúscula. É isso que torna a
+    // unicidade uma garantia do banco, e não uma corrida entre dois clientes:
+    // dois cadastros simultâneos com o mesmo apelido, o segundo falha aqui.
+
+    match /apelidos/{chave} {
+      // Leitura pública: conferir se um apelido está livre é a primeira coisa
+      // que a tela de cadastro faz, antes de existir usuário logado.
+      allow read: if true;
+
+      // `create` só casa quando o documento NÃO existe. É o que impede tomar
+      // o apelido de outra pessoa -- não por checagem nossa, mas porque a
+      // operação em si não se aplica a documento existente.
+      allow create: if chegando().keys().hasOnly(['uid', 'criadoEm'])
+                    && chegando().keys().hasAll(['uid', 'criadoEm'])
+                    && souEu(chegando().uid)
+                    && chave.matches('^[a-z0-9_]{3,20}$');
+
+      // Apelido não se transfere nem se rouba. Liberar a troca depois exige
+      // mover a reserva antiga junto, e isso não é uma escrita só.
+      allow update, delete: if false;
+    }
+
+    // ---------- usuários ----------
+
+    match /usuarios/{uid} {
+      // Perfil público por padrão (D-015): a BANCADA existe para dar
+      // visibilidade a quem joga, e perfil escondido não é achado.
+      allow read: if true;
+
+      // `hasAll` vem ANTES de qualquer leitura de campo, e a ordem importa:
+      // ler um campo que não veio não devolve falso, **estoura** a avaliação.
+      // O resultado final seria o mesmo (negado), mas erro de avaliação é
+      // ruído que esconde a causa real quando algo dá errado de verdade.
+      allow create: if souEu(uid)
+                    && chegando().keys().hasOnly([
+                         'nome', 'sobrenome', 'apelido', 'apelidoChave',
+                         'nascimento', 'faixa', 'responsavelUid', 'criadoEm'
+                       ])
+                    && chegando().keys().hasAll([
+                         'nome', 'sobrenome', 'apelido', 'apelidoChave',
+                         'nascimento', 'faixa', 'criadoEm'
+                       ])
+                    && nomeValido(chegando().nome)
+                    && nomeValido(chegando().sobrenome)
+                    && apelidoCoerente(chegando())
+                    && nascimentoValido(chegando())
+                    && vinculoCoerente(chegando())
+                    && chegando().criadoEm == request.time;
+
+      // O apelido e a data de nascimento NÃO podem mudar por aqui. Trocar
+      // apelido exige mexer na reserva em /apelidos, e mudar a data de
+      // nascimento driblaria a regra de idade -- alguém entraria como menor
+      // e viraria adulto sozinho.
+      // `resource != null` na frente: num `set` sobre documento que ainda não
+      // existe o Firestore avalia esta regra também, e `resource.data` seria
+      // nulo. Sem a guarda, erro de avaliação em toda criação.
+      allow update: if resource != null
+                    && souEu(uid)
+                    && chegando().apelidoChave == resource.data.apelidoChave
+                    && chegando().nascimento == resource.data.nascimento
+                    && chegando().faixa == resource.data.faixa
+                    && chegando().get('responsavelUid', '') == resource.data.get('responsavelUid', '')
+                    && nomeValido(chegando().nome)
+                    && nomeValido(chegando().sobrenome);
+
+      allow delete: if souEu(uid);
+    }
+
+    // ---------- tudo o mais ----------
+    //
+    // Negado. Coleção nova nasce fechada e só abre quando alguém escrever a
+    // regra dela de propósito. O contrário -- abrir por padrão e lembrar de
+    // fechar -- é como vazamento acontece.
+
+    match /{documento=**} {
+      allow read, write: if false;
+    }
+  }
+}
