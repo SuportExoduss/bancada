@@ -512,6 +512,48 @@ reservado por alguns minutos antes de poder ser reusado.
 
 ---
 
+## D-029 — Apelido não pode ser liberado pelo cliente (lacuna aberta)
+
+**Descoberto em 23/08/2026**, ao limpar dados de teste da produção.
+
+As regras negam `update` e `delete` em `/apelidos` — foi de propósito, para
+que ninguém tome o apelido de outra pessoa. A consequência que passou
+despercebida: **ninguém consegue liberar um apelido, nem o próprio dono.**
+
+Quem encerra a conta consegue apagar o próprio perfil (`usuarios/{uid}` permite
+delete), mas a reserva em `/apelidos/{chave}` fica para sempre, apontando para
+um uid que não existe mais.
+
+### Por que isso importa
+
+A Política de Privacidade promete, na seção 6:
+
+> Apelido após o encerramento: bloqueado por um período de segurança, depois
+> liberado.
+
+**Hoje o app não consegue cumprir isso.** O texto promete algo que a
+implementação impede. Uma das duas coisas precisa mudar antes de publicar.
+
+### Os caminhos
+
+1. **Cloud Function** que libera o apelido ao encerrar a conta. É a solução
+   limpa e a D-012 a proíbe (exige Blaze);
+2. **Rule que permite delete quando o dono é quem pede** —
+   `allow delete: if request.auth.uid == resource.data.uid`. Resolve sem
+   Function, mas abre uma porta: quem for coagido a apagar libera o apelido
+   para quem o coagiu. Em plataforma com menor de idade isso não é hipótese
+   confortável;
+3. **Mudar a promessa**: apelido de conta encerrada não volta a circular.
+   Simples, honesto, e custa apenas apelidos parados.
+
+Recomendação: **3 para agora**, e reavaliar se um dia houver Blaze. Um apelido
+que nunca volta é um custo pequeno; um apelido que pode ser arrancado do dono é
+um risco.
+
+**Status:** aberto — precisa de decisão do proprietário.
+
+---
+
 # DECISÕES PENDENTES
 
 Estas decisões devem ser confirmadas pelo proprietário antes das partes afetadas:
@@ -546,5 +588,9 @@ Estas decisões devem ser confirmadas pelo proprietário antes das partes afetad
 
 22. ~~supervisão da conta do menor~~ → **decidido em D-025**. Resta apenas
     definir se a faixa **16–17** terá supervisão, já que a lei não exige.
+
+23. **liberação de apelido de conta encerrada** — ver D-029. A Política promete
+    que o apelido volta a circular; as regras impedem. Escolher entre mudar a
+    regra, mudar a promessa, ou esperar por Cloud Functions.
 
 Quando uma pendência for decidida, registrar aqui com data e motivo.
