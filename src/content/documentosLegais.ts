@@ -486,7 +486,11 @@ export const documentosLegais = {
           },
           {
                 "t": "p",
-                "x": "Ao encerrar: seu perfil sai do ar · seu conteúdo é retirado de circulação · seu apelido volta a ficar disponível depois de um período de segurança."
+                "x": "Ao encerrar: seu perfil sai do ar · seu conteúdo é retirado de circulação."
+          },
+          {
+                "t": "p",
+                "x": "**Seu apelido não volta a circular.** Ele fica reservado para sempre, e ninguém mais pode usá-lo — nem nós. Fizemos assim de propósito: se um apelido encerrado voltasse para a fila, alguém poderia esperar a sua conta sumir para tomar o seu nome, e quem te procurasse pelo apelido antigo encontraria outra pessoa. Numa plataforma onde o apelido é como as pessoas te acham, isso vale mais que reaproveitar nome."
           },
           {
                 "t": "p",
@@ -906,7 +910,7 @@ export const documentosLegais = {
                 "t": "linha",
                 "c": [
                       "Apelido após o encerramento",
-                      "Bloqueado por um período de segurança, depois liberado"
+                      "**Reservado para sempre.** Não volta a circular e ninguém mais pode usá-lo"
                 ]
           },
           {
@@ -919,6 +923,10 @@ export const documentosLegais = {
           {
                 "t": "p",
                 "x": "Prazo legal maior prevalece sobre esta tabela quando existir."
+          },
+          {
+                "t": "p",
+                "x": "**Por que o apelido fica reservado para sempre:** se um apelido encerrado voltasse para a fila, alguém poderia esperar uma conta sumir para tomar aquele nome, e quem procurasse pelo apelido antigo encontraria outra pessoa. O apelido é como as pessoas te acham na várzea; mantê-lo fora de circulação protege quem saiu e quem procura."
           },
           {
                 "t": "hr"

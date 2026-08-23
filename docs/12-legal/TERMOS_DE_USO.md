@@ -283,8 +283,14 @@ histórico. Errar acontece. Não corrigir é que não pode.
 Você pode encerrar quando quiser, pelo próprio app, sem precisar dar
 explicação e sem falar com ninguém.
 
-Ao encerrar: seu perfil sai do ar · seu conteúdo é retirado de circulação · seu
-apelido volta a ficar disponível depois de um período de segurança.
+Ao encerrar: seu perfil sai do ar · seu conteúdo é retirado de circulação.
+
+**Seu apelido não volta a circular.** Ele fica reservado para sempre, e ninguém
+mais pode usá-lo — nem nós. Fizemos assim de propósito: se um apelido
+encerrado voltasse para a fila, alguém poderia esperar a sua conta sumir para
+tomar o seu nome, e quem te procurasse pelo apelido antigo encontraria outra
+pessoa. Numa plataforma onde o apelido é como as pessoas te acham, isso vale
+mais que reaproveitar nome.
 
 Antes de encerrar, você pode **baixar seus dados**.
 

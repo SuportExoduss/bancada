@@ -128,10 +128,16 @@ fora do Brasil), ela se dá com as garantias exigidas pelo capítulo V da LGPD.
 | Perfil e conteúdo | Enquanto a conta existir |
 | Registros de acesso | 6 meses, por exigência do art. 15 do Marco Civil |
 | Dados após você encerrar a conta | Removidos em até 30 dias |
-| Apelido após o encerramento | Bloqueado por um período de segurança, depois liberado |
+| Apelido após o encerramento | **Reservado para sempre.** Não volta a circular e ninguém mais pode usá-lo |
 | Registro de denúncia e moderação | Enquanto durar a apuração e o prazo de recurso |
 
 Prazo legal maior prevalece sobre esta tabela quando existir.
+
+**Por que o apelido fica reservado para sempre:** se um apelido encerrado
+voltasse para a fila, alguém poderia esperar uma conta sumir para tomar aquele
+nome, e quem procurasse pelo apelido antigo encontraria outra pessoa. O apelido
+é como as pessoas te acham na várzea; mantê-lo fora de circulação protege quem
+saiu e quem procura.
 
 ---
 

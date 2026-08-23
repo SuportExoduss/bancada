@@ -546,11 +546,24 @@ implementação impede. Uma das duas coisas precisa mudar antes de publicar.
 3. **Mudar a promessa**: apelido de conta encerrada não volta a circular.
    Simples, honesto, e custa apenas apelidos parados.
 
-Recomendação: **3 para agora**, e reavaliar se um dia houver Blaze. Um apelido
-que nunca volta é um custo pequeno; um apelido que pode ser arrancado do dono é
-um risco.
+**Decisão do proprietário — 23/08/2026: caminho 3.** O apelido de conta
+encerrada **não volta a circular**. Fica reservado para sempre.
 
-**Status:** aberto — precisa de decisão do proprietário.
+Os dois documentos foram corrigidos para dizer isso, com o motivo escrito para
+quem lê: se um apelido encerrado voltasse para a fila, alguém poderia esperar
+uma conta sumir para tomar aquele nome, e quem procurasse pelo apelido antigo
+encontraria outra pessoa.
+
+A regra que nega `delete` em `/apelidos` deixa de ser uma lacuna e passa a ser
+a implementação correta da promessa. Nada muda no código — muda o texto, que
+estava prometendo o contrário.
+
+**Reavaliar se um dia houver Blaze:** com Cloud Functions daria para liberar o
+apelido de forma controlada, sem abrir a porta de alguém coagir o dono a
+apagar a conta para tomar o nome. Enquanto não houver, o custo de um apelido
+parado é menor que esse risco.
+
+**Status:** aprovado — 23/08/2026.
 
 ---
 
@@ -589,8 +602,7 @@ Estas decisões devem ser confirmadas pelo proprietário antes das partes afetad
 22. ~~supervisão da conta do menor~~ → **decidido em D-025**. Resta apenas
     definir se a faixa **16–17** terá supervisão, já que a lei não exige.
 
-23. **liberação de apelido de conta encerrada** — ver D-029. A Política promete
-    que o apelido volta a circular; as regras impedem. Escolher entre mudar a
-    regra, mudar a promessa, ou esperar por Cloud Functions.
+23. ~~liberação de apelido de conta encerrada~~ → **decidido em D-029**: não
+    volta a circular. Os documentos foram corrigidos.
 
 Quando uma pendência for decidida, registrar aqui com data e motivo.
