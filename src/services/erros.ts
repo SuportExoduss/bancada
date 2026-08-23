@@ -28,12 +28,37 @@ const MENSAGENS: Record<string, string> = {
   'auth/network-request-failed': 'Sem conexão. Confira a internet e tente de novo.',
   'auth/requires-recent-login': 'Por segurança, entre de novo antes de fazer isso.',
 
+  // Estes dois nao sao erro de quem usa -- sao configuracao nossa faltando. A
+  // mensagem diz isso em vez de culpar a pessoa por algo que ela nao pode
+  // resolver, e o console.error abaixo aponta o caminho para quem cuida.
+  'auth/unauthorized-domain': 'Este endereço ainda não está liberado para entrar. Já estamos vendo isso.',
+  'auth/operation-not-allowed': 'Entrar por e-mail está desativado no momento. Já estamos vendo isso.',
+  'auth/configuration-not-found': 'Falta uma configuração do nosso lado. Já estamos vendo isso.',
+
   'permission-denied': 'Você não tem permissão para isso.',
   unavailable: 'O serviço está fora do ar no momento. Tente de novo em instantes.',
 };
 
+/** Erros que sao configuracao faltando, nao acao errada de quem usa. */
+const DE_CONFIGURACAO = new Set([
+  'auth/unauthorized-domain',
+  'auth/operation-not-allowed',
+  'auth/configuration-not-found',
+]);
+
 export function mensagemDoErro(erro: unknown): string {
   if (erro instanceof FirebaseError && MENSAGENS[erro.code]) {
+    // Configuracao faltando precisa gritar no console: a pessoa nao tem como
+    // resolver, e sem este aviso o problema so aparece como "nao funciona".
+    if (DE_CONFIGURACAO.has(erro.code)) {
+      console.error(
+        `[BANCADA] Configuracao do Firebase faltando: ${erro.code}.` +
+          (erro.code === 'auth/unauthorized-domain'
+            ? ` Adicione "${typeof location !== 'undefined' ? location.hostname : '?'}" em` +
+              ' Authentication > Settings > Authorized domains.'
+            : ''),
+      );
+    }
     return MENSAGENS[erro.code];
   }
   if (erro instanceof ApelidoTomadoNaCorrida) {
