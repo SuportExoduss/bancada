@@ -1,5 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
 
+import type { FaixaEtaria } from '../domain/idade';
+
 /**
  * Para quem a conta que está sendo criada agora.
  *
@@ -10,6 +12,14 @@ export type AlvoDoCadastro = 'para_mim' | 'responsavel' | 'menor';
 
 export interface DadosDoCadastro {
   alvo: AlvoDoCadastro;
+  /**
+   * Uid do responsável, guardado quando a conta do menor vai ser criada.
+   *
+   * Precisa ser capturado **antes** de criar a conta do filho: o Firebase
+   * entra na conta recém-criada, e depois disso perguntar "quem está logado?"
+   * devolveria o filho.
+   */
+  responsavelUid?: string;
   email?: string;
   senha?: string;
   aceitouTermos?: boolean;
@@ -17,6 +27,7 @@ export interface DadosDoCadastro {
   sobrenome?: string;
   apelido?: string;
   nascimento?: string;
+  faixa?: FaixaEtaria;
 }
 
 interface Contexto {

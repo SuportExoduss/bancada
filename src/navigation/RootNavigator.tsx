@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { NavigationContainer, type Theme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -10,10 +12,10 @@ import { OnboardingScreen } from '../screens/OnboardingScreen';
 import { SignInScreen } from '../screens/SignInScreen';
 import { SignUpScreen } from '../screens/SignUpScreen';
 import { WelcomeScreen } from '../screens/WelcomeScreen';
-import {
-  APELIDOS_OCUPADOS_DEMO,
-  criarApelidoRepositoryMemoria,
-} from '../repositories/ApelidoRepository';
+import { criarApelidoRepositoryFirestore } from '../repositories/FirestoreApelidoRepository';
+import { criarConta, entrar, recuperarSenha, usuarioAtual } from '../services/contaService';
+import { mensagemDoErro } from '../services/erros';
+import { useSessao } from '../hooks/useSessao';
 import { CadastroProvider, useCadastro } from '../state/cadastroEmAndamento';
 import { colors } from '../theme';
 
@@ -67,9 +69,9 @@ const temaBancada: Theme = {
   },
 };
 
-// Temporario: sai quando o FirestoreApelidoRepository entrar. Existe para a
-// tela poder exercitar de verdade os estados de disponivel e em uso.
-const repositorioApelido = criarApelidoRepositoryMemoria(APELIDOS_OCUPADOS_DEMO);
+// Agora consulta o Firestore de verdade: uma leitura por ID em apelidos/{chave},
+// nao uma varredura da colecao.
+const repositorioApelido = criarApelidoRepositoryFirestore();
 
 export function RootNavigator() {
   return (
@@ -83,10 +85,30 @@ export function RootNavigator() {
 
 function Rotas() {
   const { dados, iniciar, guardar, limpar } = useCadastro();
+  const sessao = useSessao();
+
+  /**
+   * Terceira camada da D-024: alguém autenticado **sem perfil**.
+   *
+   * Acontece se a gravação do perfil falhar E a exclusão da autenticação
+   * também falhar — janela estreita, mas real. Deixar essa pessoa entrar num
+   * app sem nome e sem apelido seria pior que pedir para terminar o cadastro,
+   * então a rota inicial passa a ser o onboarding.
+   *
+   * Não é um erro para mostrar: do ponto de vista de quem usa, o cadastro
+   * simplesmente continua de onde parou.
+   */
+  const contaSemPerfil = sessao.situacao === 'sem_perfil';
+
+  // Um estado de "trabalhando" e um de erro por vez: so existe um formulario
+  // em curso, e dois indicadores independentes so criariam a chance de a tela
+  // mostrar carregando e erro ao mesmo tempo.
+  const [ocupado, setOcupado] = useState(false);
+  const [erro, setErro] = useState<string | undefined>();
 
   return (
     <Stack.Navigator
-      initialRouteName="BoasVindas"
+      initialRouteName={contaSemPerfil ? 'Onboarding' : 'BoasVindas'}
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: colors.black },
@@ -110,6 +132,39 @@ function Rotas() {
             // sai. Chamar `goBack` numa pilha vazia nao faz nada, e seta
             // que nao faz nada e pior que seta nenhuma.
             onBack={navigation.canGoBack() ? () => navigation.goBack() : undefined}
+            loading={ocupado}
+            serverError={erro}
+            onSubmit={async ({ email, senha }) => {
+              setErro(undefined);
+              setOcupado(true);
+              try {
+                const perfil = await entrar(email, senha);
+
+                // Fluxo do responsavel: ele entrou justamente para criar a
+                // conta do filho. Emenda direto, sem passar pelo inicio.
+                if (dados.alvo === 'responsavel') {
+                  // `iniciar` zera o estado, entao o `guardar` vem DEPOIS.
+                  // Na ordem inversa o uid seria apagado logo em seguida.
+                  iniciar('menor');
+                  guardar({ responsavelUid: perfil.uid });
+                  navigation.reset({ index: 0, routes: [{ name: 'Cadastro' }] });
+                  return;
+                }
+
+                limpar();
+                navigation.reset({ index: 0, routes: [{ name: 'ContaCriada' }] });
+              } catch (e) {
+                setErro(mensagemDoErro(e));
+              } finally {
+                setOcupado(false);
+              }
+            }}
+            onForgotPassword={async () => {
+              setErro(undefined);
+              // Nao diz se o e-mail existe -- ver `recuperarSenha`.
+              await recuperarSenha(dados.email ?? '');
+              setErro('Se existir conta com esse e-mail, o link de recuperacao foi enviado.');
+            }}
             onSignUp={() => navigation.replace('ParaQuem')}
           />
         )}
@@ -166,12 +221,33 @@ function Rotas() {
             onBack={navigation.canGoBack() ? () => navigation.goBack() : undefined}
             alvo={dados.alvo}
             repositorioApelido={repositorioApelido}
-            onSubmit={(perfil) => {
-              // AQUI a conta nasce (D-024). Enquanto o Firebase nao entra, o
-              // que existe e o registro do que seria gravado -- e e de
-              // proposito que so exista um lugar onde isso acontece.
-              guardar(perfil);
-              navigation.navigate('ContaCriada');
+            loading={ocupado}
+            serverError={erro}
+            onSubmit={async (perfil) => {
+              // AQUI a conta nasce (D-024). Antes deste toque nada existe:
+              // nem autenticacao, nem apelido reservado, nem perfil.
+              setErro(undefined);
+              setOcupado(true);
+              try {
+                await criarConta({
+                  email: dados.email ?? '',
+                  senha: dados.senha ?? '',
+                  nome: perfil.nome,
+                  sobrenome: perfil.sobrenome,
+                  apelido: perfil.apelido,
+                  nascimento: perfil.nascimento,
+                  faixa: perfil.faixa,
+                  ...(dados.alvo === 'menor' && dados.responsavelUid
+                    ? { responsavelUid: dados.responsavelUid }
+                    : {}),
+                });
+                guardar(perfil);
+                navigation.reset({ index: 0, routes: [{ name: 'ContaCriada' }] });
+              } catch (e) {
+                setErro(mensagemDoErro(e));
+              } finally {
+                setOcupado(false);
+              }
             }}
           />
         )}
@@ -183,11 +259,17 @@ function Rotas() {
             alvo={dados.alvo}
             apelido={dados.apelido}
             onContinuarParaMenor={() => {
+              // O uid do responsavel e capturado AGORA, enquanto ele ainda e
+              // quem esta logado. Criar a conta do filho troca a sessao, e
+              // perguntar depois devolveria o uid errado.
+              const uidDoResponsavel = usuarioAtual()?.uid;
               // Segunda volta pelo mesmo par de telas, agora para o menor.
               // `reset` e nao `navigate`: a pilha do cadastro do responsavel
               // ja cumpriu o papel, e deixa-la embaixo faria o botao voltar
               // reabrir um formulario que ja virou conta.
               iniciar('menor');
+              guardar({ responsavelUid: uidDoResponsavel });
+              setErro(undefined);
               navigation.reset({ index: 0, routes: [{ name: 'Cadastro' }] });
             }}
             onAgoraNao={() => {

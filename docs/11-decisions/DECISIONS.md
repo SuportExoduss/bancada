@@ -481,6 +481,37 @@ contrário; é uma linha de código.
 
 ---
 
+## D-028 — Firestore em São Paulo, e por que foi refeito
+
+**23/08/2026.** O banco Firestore foi criado pela primeira vez em **`nam5`
+(Estados Unidos)** — o valor que já vem preenchido na tela do console. Como
+estava vazio e sem proteção de exclusão, foi **apagado e recriado** em
+`southamerica-east1` (São Paulo) no mesmo dia.
+
+A região de um banco Firestore **não muda depois**. A janela para corrigir
+existia porque não havia nada dentro; uma semana depois, com usuários, o custo
+seria outro.
+
+**Por que São Paulo:**
+
+- ~150ms a menos por operação para quem está no Brasil. Num app que registra
+  gol ao vivo, isso é a diferença entre o placar parecer instantâneo e parecer
+  atrasado;
+- dado guardado no Brasil simplifica a história da LGPD — a transferência
+  internacional continua declarada na Política, mas deixa de ser a regra;
+- região simples custa menos que multirregião se um dia houver Blaze.
+
+**O que se perde:** multirregião oferece 99,999% de disponibilidade contra
+99,99% da região simples. Cerca de 43 minutos de indisponibilidade a mais por
+ano, no pior caso. Aceito.
+
+**Detalhe operacional:** depois de apagar um banco, o ID `(default)` fica
+reservado por alguns minutos antes de poder ser reusado.
+
+**Status:** aprovado — 23/08/2026.
+
+---
+
 # DECISÕES PENDENTES
 
 Estas decisões devem ser confirmadas pelo proprietário antes das partes afetadas:
