@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { View } from 'react-native';
 
 import { NavigationContainer, type Theme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -7,13 +8,14 @@ import type { ChaveDocumento } from '../content/documentosLegais';
 import { AccountChoiceScreen } from '../screens/AccountChoiceScreen';
 import { AccountCreatedScreen } from '../screens/AccountCreatedScreen';
 import { GuardianFirstScreen } from '../screens/GuardianFirstScreen';
+import { HomeScreen } from '../screens/HomeScreen';
 import { LegalDocumentScreen } from '../screens/LegalDocumentScreen';
 import { OnboardingScreen } from '../screens/OnboardingScreen';
 import { SignInScreen } from '../screens/SignInScreen';
 import { SignUpScreen } from '../screens/SignUpScreen';
 import { WelcomeScreen } from '../screens/WelcomeScreen';
 import { criarApelidoRepositoryFirestore } from '../repositories/FirestoreApelidoRepository';
-import { criarConta, entrar, recuperarSenha, usuarioAtual } from '../services/contaService';
+import { criarConta, entrar, recuperarSenha, sair, usuarioAtual } from '../services/contaService';
 import { mensagemDoErro } from '../services/erros';
 import { useSessao } from '../hooks/useSessao';
 import { CadastroProvider, useCadastro } from '../state/cadastroEmAndamento';
@@ -39,6 +41,7 @@ export type RootStackParamList = {
   Cadastro: undefined;
   Onboarding: undefined;
   ContaCriada: undefined;
+  Inicio: undefined;
   /** Termos de Uso e Política de Privacidade, lidos dentro do app */
   Documento: { documento: ChaveDocumento };
 };
@@ -84,8 +87,19 @@ export function RootNavigator() {
 }
 
 function Rotas() {
+  // TODOS os hooks vêm antes de qualquer `return` antecipado. React identifica
+  // hook pela ORDEM de chamada, não pelo nome: um `return` no meio faz a
+  // próxima renderização chamar um número diferente deles, e aí o estado de um
+  // vira o do outro. Foi exatamente o que quebrou aqui quando o `if` de
+  // carregamento ficou acima destes dois `useState`.
   const { dados, iniciar, guardar, limpar } = useCadastro();
   const sessao = useSessao();
+
+  // Um estado de "trabalhando" e um de erro por vez: só existe um formulário
+  // em curso, e dois indicadores independentes só criariam a chance de a tela
+  // mostrar carregando e erro ao mesmo tempo.
+  const [ocupado, setOcupado] = useState(false);
+  const [erro, setErro] = useState<string | undefined>();
 
   /**
    * Terceira camada da D-024: alguém autenticado **sem perfil**.
@@ -100,15 +114,27 @@ function Rotas() {
    */
   const contaSemPerfil = sessao.situacao === 'sem_perfil';
 
-  // Um estado de "trabalhando" e um de erro por vez: so existe um formulario
-  // em curso, e dois indicadores independentes so criariam a chance de a tela
-  // mostrar carregando e erro ao mesmo tempo.
-  const [ocupado, setOcupado] = useState(false);
-  const [erro, setErro] = useState<string | undefined>();
+  /**
+   * Quem já está logado não vê a tela de boas-vindas.
+   *
+   * Sem isto a sessão persistia (o Firebase guarda) mas o app abria em
+   * "Criar conta / Já tenho conta" mesmo assim — quem já tem conta era
+   * recebido toda vez como se fosse a primeira.
+   */
+  const jaEstaDentro = sessao.situacao === 'dentro';
+
+  /**
+   * Enquanto o SDK restaura a sessão do disco, não dá para saber a rota
+   * inicial. Renderizar boas-vindas nesse instante faria a tela piscar e
+   * pular para Início — pior que esperar um piscar de olhos.
+   */
+  if (sessao.situacao === 'carregando') {
+    return <View style={{ flex: 1, backgroundColor: colors.black }} />;
+  }
 
   return (
     <Stack.Navigator
-      initialRouteName={contaSemPerfil ? 'Onboarding' : 'BoasVindas'}
+      initialRouteName={contaSemPerfil ? 'Onboarding' : jaEstaDentro ? 'Inicio' : 'BoasVindas'}
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: colors.black },
@@ -151,8 +177,11 @@ function Rotas() {
                   return;
                 }
 
+                // Início, e não "Conta criada": quem está entrando não acabou
+                // de criar conta nenhuma, e dizer o contrário é mentir para
+                // quem só estava voltando.
                 limpar();
-                navigation.reset({ index: 0, routes: [{ name: 'ContaCriada' }] });
+                navigation.reset({ index: 0, routes: [{ name: 'Inicio' }] });
               } catch (e) {
                 setErro(mensagemDoErro(e));
               } finally {
@@ -272,16 +301,42 @@ function Rotas() {
               setErro(undefined);
               navigation.reset({ index: 0, routes: [{ name: 'Cadastro' }] });
             }}
+            // Nos dois casos a pessoa ESTA logada -- a conta dela acabou de
+            // nascer. Mandar para boas-vindas seria expulsar quem entrou.
             onAgoraNao={() => {
               limpar();
-              navigation.reset({ index: 0, routes: [{ name: 'BoasVindas' }] });
+              navigation.reset({ index: 0, routes: [{ name: 'Inicio' }] });
             }}
             onEntrarNoApp={() => {
               limpar();
-              navigation.reset({ index: 0, routes: [{ name: 'BoasVindas' }] });
+              navigation.reset({ index: 0, routes: [{ name: 'Inicio' }] });
             }}
           />
         )}
+      </Stack.Screen>
+
+      <Stack.Screen name="Inicio" options={{ animation: 'fade' }}>
+        {({ navigation }) => {
+          // A rota so e alcancada com sessao valida; o `if` e para o
+          // TypeScript, que nao sabe disso.
+          if (sessao.situacao !== 'dentro') return <View />;
+          return (
+            <HomeScreen
+              perfil={sessao.perfil}
+              saindo={ocupado}
+              onSair={async () => {
+                setOcupado(true);
+                try {
+                  await sair();
+                  limpar();
+                  navigation.reset({ index: 0, routes: [{ name: 'BoasVindas' }] });
+                } finally {
+                  setOcupado(false);
+                }
+              }}
+            />
+          );
+        }}
       </Stack.Screen>
 
       {/* `slide_from_bottom`: ler os termos e uma pausa na leitura do
