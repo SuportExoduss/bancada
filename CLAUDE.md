@@ -205,6 +205,21 @@ Para cada tarefa:
 
 Não reescrever módulos estáveis sem motivo.
 
+## 8.1 Ciclo de conclusão (D-031)
+
+Concluir um item **não** é o fim dele. Ao terminar qualquer coisa:
+
+1. **perguntar ao proprietário se está testado** — verificação da IA não
+   substitui teste no aparelho dele;
+2. **marcar no roadmap** com o estado real;
+3. **varrer o projeto contra regressão**: `npx tsc --noEmit`, `npm run testar`,
+   e conferir se a documentação continua verdadeira sobre o código;
+4. **só então seguir**.
+
+O passo 3 é o que escapa: os testes passam com a documentação mentindo. Já
+aconteceu de o roadmap afirmar "nenhuma tela fala com o Firebase" seis dias
+depois de todas falarem.
+
 ---
 
 # 9. NÃO ASSUMIR

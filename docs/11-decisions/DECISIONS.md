@@ -628,6 +628,42 @@ cabe antes do beta.
 
 ---
 
+## D-031 — Ciclo de conclusão: nada avança sem varredura
+
+**Decisão do proprietário — 29/08/2026.** Concluir um item **não** é o fim dele.
+Ao terminar qualquer coisa, nesta ordem:
+
+1. **Perguntar ao proprietário se está testado.** Não presumir. Verificação
+   feita pela IA não substitui teste no aparelho dele e com o grupo.
+2. **Marcar no roadmap** com o estado real, não com o otimista.
+3. **Reverificar o projeto inteiro contra regressão** — `npx tsc --noEmit`,
+   `npm run testar`, e conferir se a documentação não passou a mentir sobre o
+   código.
+4. **Só então seguir** para o próximo item.
+
+### Por que esta regra nasceu
+
+Duas coisas aconteceram e as duas eram deriva entre o que se sabia e o que
+estava escrito ou publicado:
+
+- o `ROADMAP.md` afirmou "nenhuma tela fala com o Firebase" durante seis dias
+  depois de todas falarem;
+- o proprietário relatou que o botão Entrar não fazia nada. Era verdade: o que
+  estava publicado era anterior ao Firebase, e ninguém tinha republicado.
+
+Nos dois casos o código estava certo. O que estava errado era o que se dizia
+sobre ele.
+
+### O passo que mais escapa
+
+O passo 3. Rodar `tsc` e os testes é metade — eles passam com a documentação
+mentindo. A outra metade é reler o que os documentos prometem e conferir se
+ainda é verdade.
+
+**Status:** aprovado — 29/08/2026.
+
+---
+
 # DECISÕES PENDENTES
 
 Estas decisões devem ser confirmadas pelo proprietário antes das partes afetadas:
