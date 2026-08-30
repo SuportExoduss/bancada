@@ -118,6 +118,38 @@ await caso('NAO reserva com campo extra', async () => {
   );
 });
 
+console.log('--- acambarcamento de apelido ---');
+
+await caso('quem ainda nao tem perfil reserva UM apelido', async () => {
+  await assertSucceeds(
+    setDoc(doc(como('novato'), 'apelidos/novato_vz'), { uid: 'novato', criadoEm: serverTimestamp() }),
+  );
+});
+
+// LIMITE CONHECIDO, medido e nao escondido: quem NUNCA completa o cadastro
+// ainda reserva quantos apelidos quiser. As regras do Firestore avaliam cada
+// documento contra o estado ANTERIOR a escrita e nao sabem consultar "quantos
+// documentos este uid ja tem" -- entao "um apelido por pessoa" nao e
+// exprimivel aqui. Fecha de verdade so com Cloud Functions (D-012 proibe) ou
+// App Check. Registrado na D-030.
+await caso('LIMITE: conta sem perfil ainda reserva varios (esperado, ver D-030)', async () => {
+  await assertSucceeds(
+    setDoc(doc(como('novato'), 'apelidos/segundo_dele'), {
+      uid: 'novato',
+      criadoEm: serverTimestamp(),
+    }),
+  );
+});
+
+await caso('quem JA tem perfil nao reserva mais nenhum', async () => {
+  await assertSucceeds(setDoc(doc(como('comperfil'), 'usuarios/comperfil'), {
+    ...ADULTO, apelido: 'Com_Perfil', apelidoChave: 'com_perfil',
+  }));
+  await assertFails(
+    setDoc(doc(como('comperfil'), 'apelidos/neymar'), { uid: 'comperfil', criadoEm: serverTimestamp() }),
+  );
+});
+
 console.log('--- usuarios ---');
 
 await caso('perfil e publico (D-015)', async () => {

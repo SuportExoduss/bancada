@@ -567,6 +567,67 @@ parado é menor que esse risco.
 
 ---
 
+## D-030 — Acambarcamento de apelido: fechado pela metade, e por quê
+
+**Achado em 29/08/2026**, numa varredura do projeto. Foi medido, não suposto.
+
+A regra de `/apelidos` conferia apenas que o `uid` era o de quem pedia. Nada
+limitava **quantos** apelidos uma conta reservava. Um teste tentou dez nomes
+cobiçados — `pele`, `neymar`, `varzea`, `flamengo` — com uma conta só:
+**dez de dez passaram**. E pela D-029 apelido não volta a circular, então cada
+um ficaria preso para sempre.
+
+### O que foi feito
+
+A regra passou a exigir que quem reserva **ainda não tenha perfil**. Medido
+depois da correção:
+
+| Cenário | Antes | Depois |
+|---|---:|---:|
+| Conta **com** perfil acambarcando | 10/10 | **0/10** |
+| Conta que nunca completa o cadastro | 10/10 | 10/10 |
+| Tudo num lote só | 10/10 | 10/10 |
+
+### O que **não** foi fechado, e por que não dá
+
+Quem cria a autenticação e **nunca completa o perfil** continua reservando à
+vontade.
+
+Não é descuido: **as regras do Firestore não conseguem exprimir isso.** Elas
+avaliam cada documento contra o estado *anterior* à escrita e não sabem
+consultar "quantos documentos este uid já tem". Num lote, todas as escritas
+enxergam o mesmo estado anterior — então dez reservas de uma vez passam juntas,
+qualquer que seja a regra.
+
+Tentativas que não resolvem, e o motivo:
+
+- **marcador `apelidosPorDono/{uid}` no mesmo lote** — o `exists()` continua
+  vendo o estado pré-lote, e as dez passam;
+- **exigir que o perfil exista antes** — quebra o lote atômico da D-024 e traz
+  de volta a conta órfã, trocando um problema por outro.
+
+### O que fecha de verdade
+
+1. **Cloud Function** validando a reserva. É a solução correta e a D-012
+   proíbe (exige Blaze);
+2. **App Check** — não impede, mas encarece muito: só instância legítima do
+   app consegue escrever. Está na Fase 15 do roadmap e **vale antecipar**;
+3. **Faxina administrativa** — uma consulta por reservas cujo `uid` não tem
+   perfil acha os acambarcadores, e o SDK de administrador (que ignora as
+   regras) limpa. Serve enquanto o volume for pequeno.
+
+### Por que isso é aceitável agora
+
+A plataforma não tem usuário, e apelido cobiçado só vale quando há gente para
+cobiçar. O risco cresce junto com a base — e a mitigação (App Check) é barata e
+cabe antes do beta.
+
+**O que não é aceitável é chegar ao beta sem decidir isto.**
+
+**Status:** mitigado em parte; App Check antecipado para antes do beta.
+
+---
+
 # DECISÕES PENDENTES
 
 Estas decisões devem ser confirmadas pelo proprietário antes das partes afetadas:
@@ -604,5 +665,9 @@ Estas decisões devem ser confirmadas pelo proprietário antes das partes afetad
 
 23. ~~liberação de apelido de conta encerrada~~ → **decidido em D-029**: não
     volta a circular. Os documentos foram corrigidos.
+
+24. **App Check antes do beta** — ver D-030. É a mitigação prática contra
+    acambarcamento de apelido enquanto não houver Cloud Functions. Estava na
+    Fase 15; precisa vir antes.
 
 Quando uma pendência for decidida, registrar aqui com data e motivo.

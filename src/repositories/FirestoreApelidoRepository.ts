@@ -4,10 +4,10 @@ import { chaveDoApelido } from '../domain/profile';
 import { db } from '../infrastructure/firebase/app';
 import type { ApelidoRepository } from './ApelidoRepository';
 
-/** Coleção onde o ID do documento **é** o apelido em minúscula. */
-export const COLECAO_APELIDOS = 'apelidos';
+import { COLECAO_APELIDOS } from '../services/colecoes';
 
-export const refDoApelido = (chave: string) => doc(db, COLECAO_APELIDOS, chave);
+/** O ID do documento **é** o apelido em minúscula. */
+const refDoApelido = (chave: string) => doc(db, COLECAO_APELIDOS, chave);
 
 /**
  * Consulta de apelido no Firestore.
@@ -30,11 +30,5 @@ export function criarApelidoRepositoryFirestore(): ApelidoRepository {
       return !instantaneo.exists();
     },
 
-    async reservar() {
-      throw new Error(
-        'A reserva do apelido acontece dentro de criarConta(), em lote com o ' +
-          'perfil. Ver src/services/contaService.ts e a D-024.',
-      );
-    },
   };
 }

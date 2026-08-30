@@ -18,10 +18,10 @@ import {
 import { chaveDoApelido } from '../domain/profile';
 import type { FaixaEtaria } from '../domain/idade';
 import { auth as authPrincipal, db as dbPrincipal, firebaseSecundario } from '../infrastructure/firebase/app';
+import { COLECAO_APELIDOS, COLECAO_USUARIOS } from './colecoes';
 import { ApelidoTomadoNaCorrida, ContaSemPerfil } from './erros';
 
-export const COLECAO_USUARIOS = 'usuarios';
-export const COLECAO_APELIDOS = 'apelidos';
+export { COLECAO_APELIDOS, COLECAO_USUARIOS } from './colecoes';
 
 export interface DadosDaConta {
   email: string;

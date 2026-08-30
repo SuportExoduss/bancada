@@ -86,10 +86,24 @@ service cloud.firestore {
       // `create` só casa quando o documento NÃO existe. É o que impede tomar
       // o apelido de outra pessoa -- não por checagem nossa, mas porque a
       // operação em si não se aplica a documento existente.
+      //
+      // A última condição é a que impede ACAMBARCAMENTO: só reserva apelido
+      // quem ainda NÃO tem perfil. Sem ela, uma conta sozinha reservava
+      // quantos apelidos quisesse -- `pele`, `neymar`, `varzea` -- e como a
+      // D-029 diz que apelido não volta a circular, cada um ficaria preso
+      // para sempre. Foi medido: 10 de 10 tentativas passavam.
+      //
+      // Funciona porque a reserva e o perfil vão no mesmo lote: `exists()`
+      // enxerga o estado ANTES do lote, quando o perfil ainda não existe.
+      // Quem já tem perfil não reserva mais nada.
+      //
+      // Custo: uma leitura por cadastro. Barato perto de perder os apelidos
+      // bons da plataforma na primeira semana.
       allow create: if chegando().keys().hasOnly(['uid', 'criadoEm'])
                     && chegando().keys().hasAll(['uid', 'criadoEm'])
                     && souEu(chegando().uid)
-                    && chave.matches('^[a-z0-9_]{3,20}$');
+                    && chave.matches('^[a-z0-9_]{3,20}$')
+                    && !exists(/databases/$(database)/documents/usuarios/$(request.auth.uid));
 
       // Apelido não se transfere nem se rouba. Liberar a troca depois exige
       // mover a reserva antiga junto, e isso não é uma escrita só.
