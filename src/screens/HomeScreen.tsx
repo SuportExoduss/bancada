@@ -19,7 +19,7 @@ import { LARGURA_MAXIMA_CONTEUDO } from '../hooks/useLayout';
 import type { Perfil } from '../services/contaService';
 import { mensagemDoErro } from '../services/erros';
 import { apagarPost, carregarFeed, publicar, type Post } from '../services/postService';
-import { feedDeQuemSigo } from '../services/seguirService';
+import { feedDeQuemSigo, quemEuSigo, seguir } from '../services/seguirService';
 import { colors, radius, spacing, typography } from '../theme';
 
 export interface HomeScreenProps {
@@ -27,6 +27,7 @@ export interface HomeScreenProps {
   onSair?: () => void;
   saindo?: boolean;
   onAbrirPerfil?: (uid: string) => void;
+  onBuscar?: () => void;
 }
 
 /**
@@ -48,7 +49,13 @@ type Aba = 'tudo' | 'seguindo';
  * híbrido) segue aberta; híbrido precisa de sinais que ainda não existem —
  * seguidores, reações, histórico de leitura.
  */
-export function HomeScreen({ perfil, onSair, saindo = false, onAbrirPerfil }: HomeScreenProps) {
+export function HomeScreen({
+  perfil,
+  onSair,
+  saindo = false,
+  onAbrirPerfil,
+  onBuscar,
+}: HomeScreenProps) {
   const [aba, setAba] = useState<Aba>('tudo');
   const [posts, setPosts] = useState<Post[]>([]);
   const [cursor, setCursor] = useState<QueryDocumentSnapshot | null>(null);
@@ -57,6 +64,16 @@ export function HomeScreen({ perfil, onSair, saindo = false, onAbrirPerfil }: Ho
   const [atualizando, setAtualizando] = useState(false);
   const [carregandoMais, setCarregandoMais] = useState(false);
   const [erro, setErro] = useState<string | undefined>();
+
+  /**
+   * Quem eu sigo, carregado **uma vez** para o feed inteiro.
+   *
+   * A alternativa seria perguntar por post se eu sigo aquele autor — e um
+   * feed de 20 posts viraria 20 leituras extras. Aqui é uma consulta só, e o
+   * conjunto responde a todas as perguntas na memória.
+   */
+  const [sigo, setSigo] = useState<Set<string>>(new Set());
+  const [seguindoAgora, setSeguindoAgora] = useState<string | null>(null);
 
   const buscar = useCallback(async (recomecar: boolean) => {
     try {
@@ -84,6 +101,14 @@ export function HomeScreen({ perfil, onSair, saindo = false, onAbrirPerfil }: Ho
       setErro(mensagemDoErro(e));
     }
   }, [cursor, aba, perfil.uid]);
+
+  useEffect(() => {
+    quemEuSigo(perfil.uid)
+      .then((lista) => setSigo(new Set(lista)))
+      // Falhar aqui não pode derrubar o feed: sem a lista o botão Seguir
+      // simplesmente não aparece, e o resto continua funcionando.
+      .catch(() => setSigo(new Set()));
+  }, [perfil.uid]);
 
   useEffect(() => {
     setCarregando(true);
@@ -115,6 +140,25 @@ export function HomeScreen({ perfil, onSair, saindo = false, onAbrirPerfil }: Ho
     await buscar(true);
   }
 
+  async function seguirAutor(uid: string) {
+    setSeguindoAgora(uid);
+    // Entra no conjunto antes da rede: o botão some na hora, e é isso que faz
+    // o toque parecer instantâneo. Se falhar, volta.
+    setSigo((atual) => new Set(atual).add(uid));
+    try {
+      await seguir(perfil.uid, uid);
+    } catch (e) {
+      setSigo((atual) => {
+        const copia = new Set(atual);
+        copia.delete(uid);
+        return copia;
+      });
+      setErro(mensagemDoErro(e));
+    } finally {
+      setSeguindoAgora(null);
+    }
+  }
+
   async function removerPost(post: Post) {
     // Some da tela primeiro. Se a remoção falhar, ele volta — mas o caso comum
     // é dar certo, e esperar a rede para o item sumir faz o toque parecer
@@ -138,15 +182,28 @@ export function HomeScreen({ perfil, onSair, saindo = false, onAbrirPerfil }: Ho
             <Text style={styles.saudacao}>Oi, {perfil.nome}</Text>
             <Text style={styles.apelido}>@{perfil.apelido}</Text>
           </View>
-          <Pressable
-            onPress={onSair}
-            disabled={saindo}
-            hitSlop={12}
-            accessibilityRole="button"
-            accessibilityLabel="Sair da conta"
-          >
-            <Text style={styles.sair}>{saindo ? 'Saindo…' : 'Sair'}</Text>
-          </Pressable>
+          <View style={styles.acoesDaBarra}>
+            {onBuscar ? (
+              <Pressable
+                onPress={onBuscar}
+                hitSlop={12}
+                accessibilityRole="button"
+                accessibilityLabel="Procurar pessoas"
+              >
+                <Text style={styles.procurar}>Procurar</Text>
+              </Pressable>
+            ) : null}
+
+            <Pressable
+              onPress={onSair}
+              disabled={saindo}
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel="Sair da conta"
+            >
+              <Text style={styles.sair}>{saindo ? 'Saindo…' : 'Sair'}</Text>
+            </Pressable>
+          </View>
         </View>
 
         <FlatList
@@ -186,6 +243,15 @@ export function HomeScreen({ perfil, onSair, saindo = false, onAbrirPerfil }: Ho
               post={item}
               onApagar={item.autorUid === perfil.uid ? () => removerPost(item) : undefined}
               onAbrirAutor={onAbrirPerfil ? () => onAbrirPerfil(item.autorUid) : undefined}
+              // Três condições para o botão existir: não é meu post, ainda não
+              // sigo, e não estou na aba Seguindo -- onde por definição já
+              // sigo todo mundo.
+              onSeguir={
+                item.autorUid !== perfil.uid && !sigo.has(item.autorUid) && aba === 'tudo'
+                  ? () => seguirAutor(item.autorUid)
+                  : undefined
+              }
+              seguindoAgora={seguindoAgora === item.autorUid}
             />
           )}
           ItemSeparatorComponent={() => <View style={{ height: spacing.md }} />}
@@ -263,6 +329,8 @@ const styles = StyleSheet.create({
   },
   saudacao: { ...typography.bodyStrong, color: colors.text },
   apelido: { ...typography.caption, color: colors.green },
+  acoesDaBarra: { flexDirection: 'row', alignItems: 'center', gap: spacing.lg },
+  procurar: { ...typography.caption, color: colors.green, fontWeight: '600' },
   sair: { ...typography.caption, color: colors.textMuted },
 
   lista: {

@@ -10,6 +10,12 @@ export interface PostDoFeedProps {
   onApagar?: () => void;
   /** Abre o perfil de quem publicou */
   onAbrirAutor?: () => void;
+  /**
+   * Passado só quando faz sentido oferecer: quem lê está logado, não é o
+   * autor, e ainda não segue. Nos outros casos o botão não aparece.
+   */
+  onSeguir?: () => void;
+  seguindoAgora?: boolean;
 }
 
 /**
@@ -39,7 +45,13 @@ export function quandoFoi(data: Date | null, agora = new Date()): string {
   return data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
 }
 
-export function PostDoFeed({ post, onApagar, onAbrirAutor }: PostDoFeedProps) {
+export function PostDoFeed({
+  post,
+  onApagar,
+  onAbrirAutor,
+  onSeguir,
+  seguindoAgora = false,
+}: PostDoFeedProps) {
   return (
     <View style={styles.cartao}>
       <View style={styles.cabecalho}>
@@ -63,6 +75,26 @@ export function PostDoFeed({ post, onApagar, onAbrirAutor }: PostDoFeedProps) {
 
         <View style={styles.direita}>
           <Text style={styles.quando}>{quandoFoi(post.criadoEm)}</Text>
+
+          {/* Seguir aqui, e não só no perfil: quem acabou de ler um post bom é
+              quem mais quer seguir aquela pessoa, e obrigar a abrir o perfil
+              para isso é atrito no momento exato em que a vontade existe.
+              Some depois de seguir, como no Instagram -- botão que não faz
+              mais nada só ocupa espaço. */}
+          {onSeguir ? (
+            <Pressable
+              onPress={onSeguir}
+              disabled={seguindoAgora}
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel={`Seguir ${post.autorApelido}`}
+            >
+              <Text style={[styles.seguir, seguindoAgora && styles.seguirOcupado]}>
+                {seguindoAgora ? 'Seguindo…' : 'Seguir'}
+              </Text>
+            </Pressable>
+          ) : null}
+
           {onApagar ? (
             <Pressable
               onPress={onApagar}
@@ -96,6 +128,10 @@ const styles = StyleSheet.create({
   direita: { alignItems: 'flex-end', gap: spacing.xs },
   quando: { ...typography.caption, color: colors.textMuted },
   apagar: { ...typography.caption, color: colors.danger },
+  // Spread ANTES do fontWeight: ao contrário, typography.caption apagaria o
+  // peso logo abaixo dele.
+  seguir: { ...typography.caption, color: colors.green, fontWeight: '600' },
+  seguirOcupado: { color: colors.textMuted },
   // `lineHeight` folgado: post de várzea tem parágrafo, não frase solta.
   texto: { ...typography.body, color: colors.text, lineHeight: 23 },
 });

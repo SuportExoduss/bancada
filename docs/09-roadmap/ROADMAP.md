@@ -182,9 +182,11 @@ caminho — ranking sem volume produz resultado pior que ordem cronológica.
 **Fora desta fase, de propósito:** mídia no post (Fase 10) e time como autor
 (Fase 5).
 
-**Buraco aberto por "seguir":** só dá para achar alguém pelo post dela no feed.
-Quem não publica é invisível — não dá para seguir, nem convidar para time
-depois. **Busca de pessoas virou pré-requisito**, e não está em fase nenhuma.
+**Busca de pessoas** ✅ — não estava em fase nenhuma e virou pré-requisito
+quando "seguir" chegou: até então só dava para achar alguém pelo post dela no
+feed, e quem não publicava era invisível. Busca **por prefixo** do apelido;
+`rob` acha `roberth`, `berth` não acha. Busca tolerante a erro exigiria serviço
+à parte, que o `CLAUDE.md §7` proíbe sem decisão do proprietário.
 
 **Aberto:** a pendência 7 foi reformulada pela D-032 — são abas
 (FEED / SEGUINDO), não um algoritmo só.
