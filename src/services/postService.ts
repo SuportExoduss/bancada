@@ -9,6 +9,7 @@ import {
   query,
   serverTimestamp,
   startAfter,
+  where,
   type QueryConstraint,
   type QueryDocumentSnapshot,
 } from 'firebase/firestore';
@@ -105,6 +106,25 @@ export async function carregarFeed(
     cursor: instantaneo.docs[instantaneo.docs.length - 1] ?? null,
     acabou: instantaneo.docs.length < POSTS_POR_PAGINA,
   };
+}
+
+/**
+ * Posts de uma pessoa, do mais novo para o mais velho.
+ *
+ * Sem cursor: perfil não é feed infinito, e quem quiser ver mais fundo o
+ * histórico terá a tela de histórico da Fase 4. Aqui o teto existe para o
+ * perfil não custar caro em quem publica muito.
+ */
+export async function postsDe(uid: string, quantos = 20): Promise<Post[]> {
+  const instantaneo = await getDocs(
+    query(
+      collection(db, COLECAO_POSTS),
+      where('autorUid', '==', uid),
+      orderBy('criadoEm', 'desc'),
+      limit(quantos),
+    ),
+  );
+  return instantaneo.docs.map(paraPost);
 }
 
 export async function apagarPost(id: string): Promise<void> {

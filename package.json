@@ -31,7 +31,8 @@
     "emuladores": "firebase emulators:start",
     "testar:regras": "firebase emulators:exec --only firestore \"node testes/rules.test.mjs\"",
     "testar:conta": "firebase emulators:exec --only auth,firestore \"node testes/conta.test.mjs\"",
-    "testar": "npm run testar:regras && npm run testar:conta"
+    "testar": "npm run testar:regras && npm run testar:conta && npm run testar:seguir",
+    "testar:seguir": "firebase emulators:exec --only auth,firestore \"node testes/seguir.test.mjs\""
   },
   "private": true,
   "description": "BANCADA — a varzea conectada"

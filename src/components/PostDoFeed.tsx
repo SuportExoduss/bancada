@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { Avatar } from './Avatar';
 import type { Post } from '../services/postService';
 import { colors, radius, spacing, typography } from '../theme';
 
@@ -7,6 +8,8 @@ export interface PostDoFeedProps {
   post: Post;
   /** Passado só quando quem lê é o autor */
   onApagar?: () => void;
+  /** Abre o perfil de quem publicou */
+  onAbrirAutor?: () => void;
 }
 
 /**
@@ -36,16 +39,27 @@ export function quandoFoi(data: Date | null, agora = new Date()): string {
   return data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
 }
 
-export function PostDoFeed({ post, onApagar }: PostDoFeedProps) {
+export function PostDoFeed({ post, onApagar, onAbrirAutor }: PostDoFeedProps) {
   return (
     <View style={styles.cartao}>
       <View style={styles.cabecalho}>
-        <View style={styles.identidade}>
-          <Text style={styles.apelido}>@{post.autorApelido}</Text>
-          <Text style={styles.nome} numberOfLines={1}>
-            {post.autorNome}
-          </Text>
-        </View>
+        {/* O bloco inteiro do autor é tocável, não só o @: alvo de toque de
+            uma linha de texto é pequeno demais para o dedo. */}
+        <Pressable
+          onPress={onAbrirAutor}
+          disabled={!onAbrirAutor}
+          style={styles.identidade}
+          accessibilityRole={onAbrirAutor ? 'button' : undefined}
+          accessibilityLabel={onAbrirAutor ? `Ver o perfil de ${post.autorApelido}` : undefined}
+        >
+          <Avatar nome={post.autorNome} apelido={post.autorApelido} tamanho={40} />
+          <View style={styles.nomes}>
+            <Text style={styles.apelido}>@{post.autorApelido}</Text>
+            <Text style={styles.nome} numberOfLines={1}>
+              {post.autorNome}
+            </Text>
+          </View>
+        </Pressable>
 
         <View style={styles.direita}>
           <Text style={styles.quando}>{quandoFoi(post.criadoEm)}</Text>
@@ -75,7 +89,8 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   cabecalho: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.sm },
-  identidade: { flex: 1, gap: 2 },
+  identidade: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+  nomes: { flex: 1, gap: 2 },
   apelido: { ...typography.bodyStrong, color: colors.green },
   nome: { ...typography.caption, color: colors.textMuted },
   direita: { alignItems: 'flex-end', gap: spacing.xs },

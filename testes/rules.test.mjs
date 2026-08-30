@@ -290,6 +290,63 @@ await caso('o autor apaga o proprio post', async () => {
   await assertSucceeds(deleteDoc(doc(como('rob'), 'posts/p1')));
 });
 
+console.log('--- seguidores ---');
+
+const vinculo = (a, b) => 'seguidores/' + a + '_' + b;
+const dadosVinculo = (a, b) => ({ seguidorUid: a, alvoUid: b, criadoEm: serverTimestamp() });
+
+await caso('qualquer um le quem segue quem', async () => {
+  await assertSucceeds(getDoc(doc(anonimo(), vinculo('x', 'y'))));
+});
+
+await caso('logado segue outra pessoa', async () => {
+  await assertSucceeds(setDoc(doc(como('ana'), vinculo('ana', 'bruno')), dadosVinculo('ana', 'bruno')));
+});
+
+await caso('deslogado NAO segue', async () => {
+  await assertFails(setDoc(doc(anonimo(), vinculo('x', 'y')), dadosVinculo('x', 'y')));
+});
+
+await caso('NAO segue em nome de outra pessoa', async () => {
+  await assertFails(setDoc(doc(como('ana'), vinculo('carla', 'bruno')), dadosVinculo('carla', 'bruno')));
+});
+
+await caso('NAO segue a si mesmo', async () => {
+  await assertFails(setDoc(doc(como('ana'), vinculo('ana', 'ana')), dadosVinculo('ana', 'ana')));
+});
+
+await caso('NAO grava vinculo com ID que nao bate com o conteudo', async () => {
+  // ID diz ana->bruno, conteudo diz ana->carla. Se passasse, a contagem de
+  // seguidores mentiria.
+  await assertFails(setDoc(doc(como('ana'), vinculo('ana', 'bruno')), dadosVinculo('ana', 'carla')));
+});
+
+await caso('NAO grava vinculo com campo extra', async () => {
+  await assertFails(
+    setDoc(doc(como('ana'), vinculo('ana', 'diego')), { ...dadosVinculo('ana', 'diego'), peso: 99 }),
+  );
+});
+
+await caso('NAO grava vinculo com data forjada', async () => {
+  await assertFails(
+    setDoc(doc(como('ana'), vinculo('ana', 'elias')), {
+      seguidorUid: 'ana', alvoUid: 'elias', criadoEm: new Date(2020, 0, 1),
+    }),
+  );
+});
+
+await caso('ninguem edita um vinculo', async () => {
+  await assertFails(updateDoc(doc(como('ana'), vinculo('ana', 'bruno')), { alvoUid: 'outro' }));
+});
+
+await caso('o seguido NAO remove quem o segue', async () => {
+  await assertFails(deleteDoc(doc(como('bruno'), vinculo('ana', 'bruno'))));
+});
+
+await caso('quem segue deixa de seguir', async () => {
+  await assertSucceeds(deleteDoc(doc(como('ana'), vinculo('ana', 'bruno'))));
+});
+
 console.log('--- colecao nao prevista ---');
 
 await caso('colecao nova nasce fechada para leitura', async () => {

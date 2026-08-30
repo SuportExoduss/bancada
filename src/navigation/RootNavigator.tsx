@@ -11,6 +11,7 @@ import { GuardianFirstScreen } from '../screens/GuardianFirstScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { LegalDocumentScreen } from '../screens/LegalDocumentScreen';
 import { OnboardingScreen } from '../screens/OnboardingScreen';
+import { PerfilScreen } from '../screens/PerfilScreen';
 import { SignInScreen } from '../screens/SignInScreen';
 import { SignUpScreen } from '../screens/SignUpScreen';
 import { WelcomeScreen } from '../screens/WelcomeScreen';
@@ -42,6 +43,8 @@ export type RootStackParamList = {
   Onboarding: undefined;
   ContaCriada: undefined;
   Inicio: undefined;
+  /** Perfil publico de alguem. `uid` porque e o que o post carrega. */
+  Perfil: { uid: string };
   /** Termos de Uso e Política de Privacidade, lidos dentro do app */
   Documento: { documento: ChaveDocumento };
 };
@@ -323,6 +326,7 @@ function Rotas() {
           return (
             <HomeScreen
               perfil={sessao.perfil}
+              onAbrirPerfil={(uid) => navigation.navigate('Perfil', { uid })}
               saindo={ocupado}
               onSair={async () => {
                 setOcupado(true);
@@ -337,6 +341,18 @@ function Rotas() {
             />
           );
         }}
+      </Stack.Screen>
+
+      <Stack.Screen name="Perfil">
+        {({ navigation, route }) => (
+          <PerfilScreen
+            uid={route.params.uid}
+            // `sessao.usuario` em vez de `usuarioAtual()`: aqui a fonte da
+            // verdade e o estado da sessao, que ja foi resolvido.
+            meuUid={sessao.situacao === 'dentro' ? sessao.usuario.uid : null}
+            onBack={navigation.canGoBack() ? () => navigation.goBack() : undefined}
+          />
+        )}
       </Stack.Screen>
 
       {/* `slide_from_bottom`: ler os termos e uma pausa na leitura do

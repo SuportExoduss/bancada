@@ -154,7 +154,9 @@ acesso foi ligado ao Firebase antes de a Fase 3 começar.
 | Termos / Política | ✅ lendo do markdown, com aviso de rascunho |
 | Início | 🔄 virou feed na Fase 3 |
 
-**Nenhuma foi formalmente aprovada** no sentido da D-018 (aprovada congela).
+**Aprovação (D-018):** o proprietário confirmou os testes do primeiro acesso e
+do feed em 30/08/2026. As telas seguem sujeitas a mudança enquanto a fase não
+fechar — o que congela é a aprovação de fase, não o teste isolado.
 
 ---
 
@@ -167,8 +169,8 @@ caminho — ranking sem volume produz resultado pior que ordem cronológica.
 
 | Entregável | Estado |
 |---|---|
-| **post** | ✅ texto até 500, sem edição, só o autor apaga |
-| **feed** | ✅ cronológico, página de 20 com cursor, puxar para atualizar |
+| **post** | ✅ texto até 500, sem edição, só o autor apaga · **testado pelo proprietário em 30/08** |
+| **feed** | ✅ cronológico, página de 20 com cursor, puxar para atualizar · **testado pelo proprietário em 30/08** |
 | seguir | ⬜ **próximo item** — sem ele a aba SEGUINDO não existe |
 | comentário | ⬜ |
 | reação | ⬜ |

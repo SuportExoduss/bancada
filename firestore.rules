@@ -198,6 +198,37 @@ service cloud.firestore {
       allow delete: if resource != null && souEu(resource.data.autorUid);
     }
 
+    // ---------- seguidores ----------
+    //
+    // O ID do documento é `{seguidorUid}_{alvoUid}`. Isso faz o banco garantir
+    // que ninguém segue a mesma pessoa duas vezes -- não por checagem nossa,
+    // mas porque o documento já existiria.
+
+    match /seguidores/{vinculo} {
+      // Público: contagem de seguidores aparece no perfil, e o perfil é
+      // público (D-015).
+      allow read: if true;
+
+      allow create: if chegando().keys().hasOnly(['seguidorUid', 'alvoUid', 'criadoEm'])
+                    && chegando().keys().hasAll(['seguidorUid', 'alvoUid', 'criadoEm'])
+                    && souEu(chegando().seguidorUid)
+                    // O ID tem que bater com o conteúdo. Sem isto daria para
+                    // gravar um vínculo cujo ID diz uma coisa e os campos
+                    // dizem outra -- e a contagem de seguidores mentiria.
+                    && vinculo == chegando().seguidorUid + '_' + chegando().alvoUid
+                    // Seguir a si mesmo infla o próprio número e não significa
+                    // nada.
+                    && chegando().seguidorUid != chegando().alvoUid
+                    && chegando().criadoEm == request.time;
+
+      // Vínculo não se edita: ou existe ou não existe.
+      allow update: if false;
+
+      // Só quem segue desfaz. O seguido não pode remover seguidor por aqui --
+      // isso é bloqueio, que é outra função e ainda não existe.
+      allow delete: if resource != null && souEu(resource.data.seguidorUid);
+    }
+
     // ---------- tudo o mais ----------
     //
     // Negado. Coleção nova nasce fechada e só abre quando alguém escrever a
