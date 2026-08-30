@@ -234,6 +234,62 @@ await caso('dono apaga a propria conta', async () => {
   await assertSucceeds(deleteDoc(doc(como('rob'), 'usuarios/rob')));
 });
 
+console.log('--- posts ---');
+
+const POST = {
+  autorUid: 'rob',
+  autorApelido: 'Roberto_Silva',
+  autorNome: 'Roberto Silva',
+  texto: 'Jogo domingo 9h no campo do Vila Nova. Levem uniforme claro.',
+  criadoEm: serverTimestamp(),
+};
+
+await caso('qualquer um le o feed, ate deslogado (D-015)', async () => {
+  await assertSucceeds(getDoc(doc(anonimo(), 'posts/qualquer')));
+});
+
+await caso('logado publica no proprio nome', async () => {
+  await assertSucceeds(setDoc(doc(como('rob'), 'posts/p1'), POST));
+});
+
+await caso('deslogado NAO publica', async () => {
+  await assertFails(setDoc(doc(anonimo(), 'posts/p2'), POST));
+});
+
+await caso('NAO publica no nome de outra pessoa', async () => {
+  await assertFails(setDoc(doc(como('bruno'), 'posts/p3'), POST));
+});
+
+await caso('NAO publica texto vazio', async () => {
+  await assertFails(setDoc(doc(como('rob'), 'posts/p4'), { ...POST, texto: '' }));
+});
+
+await caso('NAO publica alem de 500 caracteres', async () => {
+  await assertFails(setDoc(doc(como('rob'), 'posts/p5'), { ...POST, texto: 'a'.repeat(501) }));
+});
+
+await caso('NAO publica com campo extra inventado', async () => {
+  await assertFails(setDoc(doc(como('rob'), 'posts/p6'), { ...POST, fixado: true }));
+});
+
+await caso('NAO publica com data forjada', async () => {
+  await assertFails(
+    setDoc(doc(como('rob'), 'posts/p7'), { ...POST, criadoEm: new Date(2020, 0, 1) }),
+  );
+});
+
+await caso('ninguem edita post, nem o autor', async () => {
+  await assertFails(updateDoc(doc(como('rob'), 'posts/p1'), { texto: 'mudei de ideia' }));
+});
+
+await caso('NAO apaga post alheio', async () => {
+  await assertFails(deleteDoc(doc(como('bruno'), 'posts/p1')));
+});
+
+await caso('o autor apaga o proprio post', async () => {
+  await assertSucceeds(deleteDoc(doc(como('rob'), 'posts/p1')));
+});
+
 console.log('--- colecao nao prevista ---');
 
 await caso('colecao nova nasce fechada para leitura', async () => {

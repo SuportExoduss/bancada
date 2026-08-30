@@ -156,6 +156,48 @@ service cloud.firestore {
       allow delete: if souEu(uid);
     }
 
+    // ---------- posts ----------
+
+    match /posts/{postId} {
+      // Público, como o perfil (D-015). A BANCADA existe para dar
+      // visibilidade; feed que só quem tem conta enxerga não dá visibilidade
+      // a ninguém.
+      allow read: if true;
+
+      // O autor é desnormalizado no post (apelido e nome junto do texto) para
+      // o feed não custar uma leitura por post. As regras conferem apenas o
+      // que dá para conferir sem ler outro documento: que o uid é de quem
+      // escreve, e que os campos são exatamente estes.
+      //
+      // O apelido gravado NÃO é verificado contra o perfil -- isso exigiria um
+      // `get()` por post publicado. Quem forjar o apelido no próprio post
+      // engana só a si mesmo: o uid continua sendo o dele, e é por ele que a
+      // moderação encontra o autor.
+      allow create: if chegando().keys().hasOnly([
+                         'autorUid', 'autorApelido', 'autorNome',
+                         'texto', 'criadoEm'
+                       ])
+                    && chegando().keys().hasAll([
+                         'autorUid', 'autorApelido', 'autorNome',
+                         'texto', 'criadoEm'
+                       ])
+                    && souEu(chegando().autorUid)
+                    && chegando().texto is string
+                    && chegando().texto.size() > 0
+                    && chegando().texto.size() <= 500
+                    && chegando().autorApelido is string
+                    && chegando().autorNome is string
+                    && chegando().criadoEm == request.time;
+
+      // Sem edição por enquanto. Post que muda depois de lido é post que
+      // engana quem leu, e tratar isso direito exige histórico de versões e
+      // marca de "editado" -- que não existem ainda.
+      allow update: if false;
+
+      // Só o autor apaga. Moderação virá pelo servidor, não por aqui.
+      allow delete: if resource != null && souEu(resource.data.autorUid);
+    }
+
     // ---------- tudo o mais ----------
     //
     // Negado. Coleção nova nasce fechada e só abre quando alguém escrever a

@@ -13,3 +13,4 @@
  */
 export const COLECAO_USUARIOS = 'usuarios';
 export const COLECAO_APELIDOS = 'apelidos';
+export const COLECAO_POSTS = 'posts';
