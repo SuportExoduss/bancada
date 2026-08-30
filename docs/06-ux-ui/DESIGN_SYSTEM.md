@@ -84,27 +84,20 @@ Toda tela que carrega dados deve considerar:
 - erro;
 - offline quando aplicável.
 
-## 6. Navegação inicial — ⚠️ **CONFLITO ABERTO**
+## 6. Navegação inicial — ✅ resolvida (D-032)
 
-Este documento propõe:
+**Resolvido em 30/08/2026 (D-032).** O conflito entre este documento e os
+mockups acabou: vale a dos mockups.
 
-```text
-Início · Explorar · Ao Vivo · Jogos · Perfil
-```
+**Início · Explorar · [+] · Atividades · Mensagens**
 
-Os **mockups do proprietário** mostram outra coisa:
+O `[+]` central é publicar, em destaque verde. A proposta antiga deste
+documento (*Início · Explorar · Ao Vivo · Jogos · Perfil*) fica registrada só
+como histórico.
 
-```text
-Início · Explorar · [ + ] · Atividades · Mensagens
-```
-
-São incompatíveis, e a diferença não é cosmética: a barra dos mockups tem um
-botão central de **criar**, não tem **Ao Vivo** nem **Jogos**, e tem
-**Mensagens** — que o `ROADMAP.md` só entrega na **FASE 13**.
-
-Se a barra nascer como nos mockups, ela nasce com dois botões que não levam a
-lugar nenhum por meses. **Decisão pendente do proprietário**; até lá, a
-navegação vai crescendo com as telas que existem de verdade.
+**A barra nasce com o que existe e cresce.** Mensagens é Fase 13; Atividades
+depende de notificações. Item que não leva a lugar nenhum é pior que item
+ausente.
 
 ### Navegação implementada hoje
 

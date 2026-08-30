@@ -664,6 +664,82 @@ ainda é verdade.
 
 ---
 
+## D-032 — Os mockups são a direção visual
+
+**Confirmado pelo proprietário — 30/08/2026:** "mais ou menos assim que eu
+tenho em mente", sobre `IMAGENS/bancada exemplo app.png` e
+`IMAGENS/bancada ex alll.png`.
+
+Isso fecha três coisas que estavam abertas.
+
+### Barra de navegação — conflito resolvido
+
+O `DESIGN_SYSTEM` propunha *Início · Explorar · Ao Vivo · Jogos · Perfil*. Os
+mockups mostram, nos três, a mesma coisa:
+
+**Início · Explorar · [+] · Atividades · Mensagens**
+
+Vale a dos mockups. O `[+]` central é o botão de publicar, em destaque verde.
+
+**Ressalva registrada:** Mensagens é Fase 13 e Atividades depende de
+notificações (Fase 3). Barra com cinco itens hoje deixaria três mortos por
+muito tempo. **A barra nasce com o que existe e cresce** — item que não leva a
+lugar nenhum é pior que item ausente, e já corrigimos isso antes com o "Já
+tenho conta" que não tinha destino.
+
+### Abas do feed — a pendência 7 muda de forma
+
+Os mockups mostram **FEED · SEGUINDO · COMUNIDADES · TRENDING**.
+
+A pendência 7 perguntava "feed cronológico **ou** híbrido". A resposta dos
+mockups é que a pergunta estava errada: **são abas diferentes**, não um
+algoritmo só. FEED é descoberta, SEGUINDO é a sua turma. Some a escolha
+excludente.
+
+### O cartão de post
+
+Avatar · nome · selo de verificado · tempo relativo · menu `...` · texto ·
+mídia · reações com contagem · contagem de comentários e compartilhamentos ·
+barra Curtir / Comentar / Compartilhar.
+
+O que existe hoje: apelido, nome, tempo relativo, texto, apagar. O resto entra
+por fatias.
+
+---
+
+## D-033 — O que os mockups pedem e o roadmap não previa
+
+**Registrado em 30/08/2026.** Os mockups mostram funções que **não estão em
+nenhuma fase** do roadmap:
+
+| O que aparece | Onde estaria |
+|---|---|
+| **Stories** no topo do feed | fase nova |
+| **Níveis e XP** ("NÍVEL BANCADER · 2.450 XP") | fase nova |
+| **Comunidades** como aba própria | fase nova |
+| **Selo de verificado** | fase nova, e exige critério de verificação |
+| **Enquete** no post | dentro da Fase 3 |
+| **Compartilhar** | dentro da Fase 3 |
+| **Trending** | precisa de sinal de engajamento |
+| **Ranking geral** com pontos | perto da Fase 8 |
+
+**Isto não é crítica ao mockup — é aviso de tamanho.** O roadmap tem 19 fases
+e leva a 100% da publicação; estes itens somam pelo menos mais quatro frentes.
+
+Duas coisas seguem daqui:
+
+1. **A primeira tela do mockup não é uma tela, são sete.** Stories, live,
+   próximos jogos, abas, publicar, feed e ranking — cada bloco é uma fase
+   inteira. Construir tudo de uma vez produziria sete cascas em vez de uma
+   coisa que funciona;
+2. **A ordem continua sendo a do roadmap**, com o mockup servindo de alvo
+   visual. Cada fatia entrega uma parte do desenho funcionando de verdade.
+
+**Status:** registrado. O proprietário decide se estas frentes entram no
+roadmap agora ou quando chegar a hora.
+
+---
+
 # DECISÕES PENDENTES
 
 Estas decisões devem ser confirmadas pelo proprietário antes das partes afetadas:
@@ -675,7 +751,9 @@ Estas decisões devem ser confirmadas pelo proprietário antes das partes afetad
    (13 anos) e **D-025** (supervisão por contato, não por conteúdo);
 5. ~~perfil público por padrão~~ → **decidido em D-015**;
 6. sistema de amizade além de seguir;
-7. feed cronológico ou híbrido;
+7. ~~feed cronológico ou híbrido~~ → **reformulada pela D-032**: são abas
+   (FEED / SEGUINDO), não um algoritmo só. Resta definir o critério de
+   ordenação de cada aba quando houver sinais para isso;
 8. regras exatas de campeonato;
 9. categorias esportivas;
 10. campos obrigatórios do jogador;
