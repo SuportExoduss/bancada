@@ -1,10 +1,10 @@
 # BANCADA — Roadmap
 
-> **Status atualizado em 29/08/2026.** Legenda: ✅ pronto · 🔄 em andamento ·
+> **Status atualizado em 30/08/2026.** Legenda: ✅ pronto · 🔄 em andamento ·
 > ⬜ não começou. Uma fase só avança quando a `DEFINITION_OF_DONE` for
 > satisfeita (`CLAUDE.md §3`).
 
-## Onde estamos: **11% do caminho até a publicação**
+## Onde estamos: **13% do caminho até a publicação**
 
 Ponderado por **esforço**, não por contagem de fases.
 
@@ -13,7 +13,7 @@ Ponderado por **esforço**, não por contagem de fases.
 | 0 · Especificação | 3 | 100% | 3,0 |
 | 1 · Fundação | 5 | 90% | 4,5 |
 | 2 · Auth e Perfil | 7 | 50% | 3,5 |
-| 3 · Social Core | 9 | 0% | 0 |
+| 3 · Social Core | 9 | 22% | 2,0 |
 | 4 · Jogador | 5 | 0% | 0 |
 | 5 · Time | 8 | 0% | 0 |
 | 6 · Jogo | 9 | 0% | 0 |
@@ -27,13 +27,17 @@ Ponderado por **esforço**, não por contagem de fases.
 | 15 · Segurança e produção | 6 | 0% | 0 |
 | 16 · Beta | 4 | 0% | 0 |
 | 17 · Publicação | 2 | 0% | 0 |
-| **Total** | **100** | | **≈ 11** |
+| **Total** | **100** | | **≈ 13** |
 
 Fase 12 (live real) está fora do MVP. Fases 18 e 19 são pós-publicação.
 
-**Saltou de 8,5% para 11%** porque o Firebase entrou: banco em São Paulo,
-Security Rules escritas e testadas, contas nascendo de verdade. A Fundação foi
-de 50% para 90% — só falta configuração de ambientes.
+**Saltou para 13%** com o começo da Fase 3: publicar e ler o feed. A Fundação
+está em 90% (falta separar ambiente de teste do de produção) e o Firebase
+inteiro — banco em São Paulo, Rules testadas, contas de verdade — já está no
+lugar.
+
+A Fase 3 está em 22% porque post e feed são dois dos seis itens dela, e os
+outros quatro (seguir, comentário, reação, notificações) não começaram.
 
 **A Fase 2 está em 50%, não mais.** As oito telas funcionam de ponta a ponta e
 foram verificadas em produção por duas pessoas reais. O que segura são coisas
@@ -43,8 +47,8 @@ hoje é promessa escrita e não função.
 
 ### Estado hoje
 
-31 commits · 37 arquivos de código · ~5.400 linhas · 15 documentos · 9 telas ·
-**43 testes automatizados** (33 de regras + 10 de conta) · Firestore em
+33 commits · 41 arquivos de código · ~6.000 linhas · 15 documentos · 9 telas ·
+**54 testes automatizados** (44 de regras + 10 de conta) · Firestore em
 `southamerica-east1` · 2 contas reais criadas por testadores.
 
 ### Testes
@@ -148,14 +152,23 @@ Nenhuma tela foi formalmente **aprovada** pelo proprietário no sentido da D-018
 (aprovada congela). Duas pessoas testaram e não relataram problema, mas o
 caminho do responsável e o ciclo sair/entrar não foram exercitados por elas.
 
-## FASE 3 — Social Core
+## FASE 3 — Social Core 🔄
 
-- seguir
-- post
-- feed
-- comentário
-- reação
-- notificações
+- ⬜ seguir
+- ✅ **post** — texto até 500 caracteres, sem edição (a regra nega `update`);
+  só o autor apaga
+- ✅ **feed** — cronológico, página de 20 com cursor, puxar para atualizar
+- ⬜ comentário
+- ⬜ reação
+- ⬜ notificações
+
+**Fora desta fatia, de propósito:** mídia no post (Fase 10) e time como autor
+(Fase 5). O `DOMAIN_MODEL` prevê `media` e `authorType`; os dois entram quando
+existirem de verdade.
+
+**Aberto:** a pendência 7 (feed cronológico ou híbrido) continua. Cronológico
+é o único implementável hoje — híbrido precisa de seguidores, reações e
+histórico de leitura, que não existem.
 
 ## FASE 4 — Jogador
 
