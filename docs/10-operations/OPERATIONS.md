@@ -236,3 +236,36 @@ exigiria domínio próprio — `bancada.com.br` ou `bancada.app` — que é pago
 Se um dia houver domínio, o Firebase Hosting aceita domínio próprio **sem
 cobrar nada a mais**, com certificado HTTPS automático, inclusive no plano
 Spark. O que se paga é o registro do domínio, não a hospedagem.
+
+---
+
+## App Check — passo a passo (pendente, D-030)
+
+Mitiga o acambarcamento de apelido que a D-030 registra: hoje quem cria conta
+e nunca completa o cadastro reserva quantos apelidos quiser, e as regras do
+Firestore não conseguem impedir. App Check não impede também — **encarece**:
+só instância legítima do app consegue escrever.
+
+**Não há comando de CLI.** É tudo no console, e depende de uma chave reCAPTCHA
+que só o dono da conta Google cria.
+
+### O que fazer, na ordem
+
+1. **Criar a chave reCAPTCHA v3** em
+   [google.com/recaptcha/admin](https://www.google.com/recaptcha/admin) —
+   tipo **v3**, domínios `bancada.web.app` e `bancada-2ce451.web.app`. Guardar
+   a *chave do site*.
+2. **Firebase Console → App Check → Apps → bancada-web → reCAPTCHA v3**, colar
+   a chave.
+3. **Deixar em "Não aplicado" (monitorar)** por alguns dias. Aplicar de cara
+   derruba o app inteiro se algo estiver errado, e o sintoma é "nada funciona"
+   sem explicação.
+4. Olhar as métricas: quando a fatia de requisições verificadas estiver alta,
+   aí sim **aplicar** em Firestore e Authentication.
+
+### Depois disso
+
+Avisar, que a integração no código são poucas linhas — `initializeAppCheck`
+em `src/infrastructure/firebase/app.ts`, com a chave vindo de variável de
+ambiente. **Não foi escrita ainda de propósito:** código inerte esperando
+configuração é código que ninguém testa e que quebra quando finalmente liga.
