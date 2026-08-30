@@ -88,6 +88,75 @@ export JAVA_HOME="/c/Program Files/Android/Android Studio/jbr"
 - ⬜ **CNPJ da Exoduss Tec** — sem parte identificada os termos não podem ser
   publicados (D-020).
 
+### Revisão de 30/08/2026 contra a pesquisa de redes sociais
+
+A pesquisa (`docs/13-pesquisa/REDES_SOCIAIS.md`) levantou quatro pontos que
+mexem com a ordem do roadmap. Nenhum deles é urgente; todos são decisão do
+proprietário.
+
+**1. A rede atômica da BANCADA é um time, não uma cidade.**
+
+O feed vazio é o maior risco do produto — o Google+ perdeu 90% das sessões em
+menos de cinco segundos porque as pessoas chegavam numa sala vazia. O jeito
+conhecido de resolver é construir a menor rede que funciona sozinha: onze a
+vinte pessoas que já se conhecem.
+
+Isso é **criar time e chamar o elenco**, que é a **Fase 5**. Hoje ela está
+depois de Social Core e Jogador. Vale perguntar se não deveria vir antes: um
+time com elenco traz onze pessoas de uma vez; um feed sem gente não traz
+ninguém.
+
+**2. O que os apps brasileiros de várzea resolvem não está no roadmap.**
+
+Futebolize, FutBora, Partida, Fut7Pro e Meu Ranking giram todos em torno de
+**confirmar presença · sortear times · controlar mensalidade**. Nenhum dos três
+aparece em fase alguma daqui.
+
+A BANCADA está posicionada como rede social; eles resolvem organização. São
+dores diferentes: rede social responde "o que está acontecendo na várzea";
+eles respondem "quem vai jogar domingo e quanto cada um deve" — que é dor
+semanal e concreta.
+
+**Não é argumento para virar app de pelada.** É aviso de que a dor que traz
+gente para dentro pode não ser a mesma que a visão descreve.
+
+**3. Falta responder o que o app faz por quem não conhece ninguém.**
+
+Hoje: nada. Ele vê um feed vazio. Produtos que venceram a sala vazia tinham
+utilidade para uma pessoa só — o Pinterest servia para você organizar suas
+coisas antes de servir de rede.
+
+Para a BANCADA, o candidato natural é **o próprio histórico e as estatísticas**
+(Fases 4 e 7). Se elas viessem antes, quem entra sozinho já teria o que fazer.
+
+**4. Algoritmo de feed não entra agora, e o gatilho é objetivo.**
+
+Ranking existe para escolher o que mostrar quando há mais conteúdo do que cabe.
+Com 2 usuários, ordenar é resolver problema que não existe.
+
+**Gatilho para reavaliar:** quando alguém tiver mais posts novos do que
+consegue ler numa sessão. Aí entra decaimento no estilo Hacker News — cinco
+linhas, sem servidor — e depois peso de relacionamento. Aprendizado de máquina
+não entra nesta década do projeto.
+
+### O que a pesquisa confirmou que já estava certo
+
+- **montar o feed na leitura** — é o que fazemos, e sem Cloud Functions é o
+  único caminho que não exige abrir as Security Rules;
+- **feed cronológico agora** — correto até haver volume;
+- **página de 20 com cursor** — evita o custo de carregar tudo;
+- **seguir como próximo item** — sem ele a aba SEGUINDO não existe.
+
+### Um limite técnico medido, que vale registrar
+
+O operador `in` do Firestore aceita **no máximo 30 valores** — medido contra o
+emulador, porque a documentação de quotas não traz o número. A aba SEGUINDO
+consulta "posts de quem eu sigo": até 30 seguidos cabe numa consulta; acima
+disso é preciso dividir em blocos. Quem segue 100 gera 4 consultas por página.
+
+Não é problema hoje. É o ponto onde reavaliar a arquitetura, e agora está
+escrito.
+
 ## FASE 0 — Especificação ✅
 
 - ✅ produto · personas · domínio · UX · arquitetura
