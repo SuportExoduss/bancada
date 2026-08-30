@@ -16,17 +16,14 @@
     "docs/10-operations/OPERATIONS.md",
     "docs/11-decisions/DECISIONS.md",
     "prompts/00_MASTER_PROMPT.md",
-    "prompts/01_PHASE_01_FOUNDATION.md",
-    "prompts/02_PHASE_02_AUTH_PROFILE.md",
-    "prompts/03_PHASE_03_SOCIAL.md",
-    "prompts/04_PHASE_04_PLAYER_TEAM.md",
-    "prompts/05_PHASE_06_MATCH.md",
-    "prompts/06_PHASE_07_CHAMPIONSHIP.md",
-    "prompts/07_PHASE_11_LIVE_SIMULATOR.md",
-    "prompts/08_PHASE_PRODUCTION.md"
+    "docs/12-legal/TERMOS_DE_USO.md",
+    "docs/12-legal/POLITICA_DE_PRIVACIDADE.md",
+    "docs/12-legal/TERMOS_PESQUISA.md",
+    "docs/13-pesquisa/REDES_SOCIAIS.md"
   ],
   "created_for": "Firebase-first development",
   "backend": "Firebase",
   "server_owned": false,
-  "cost_priority": "minimum"
+  "cost_priority": "minimum",
+  "roadmap_note": "ROADMAP.md e o arquivo unico do roadmap desde 30/08/2026. Os oito prompts de fase foram absorvidos nele."
 }

@@ -1,19 +1,27 @@
 # BANCADA — Roadmap
 
-> **Status atualizado em 30/08/2026.** Legenda: ✅ pronto · 🔄 em andamento ·
-> ⬜ não começou. Uma fase só avança quando a `DEFINITION_OF_DONE` for
-> satisfeita (`CLAUDE.md §3`).
+> **Arquivo único.** Substitui os dois roadmaps que existiam separados: este
+> documento e os oito arquivos de `prompts/`. Consolidado em 30/08/2026.
+>
+> O roadmap antigo dizia **o que** fazer. Os prompts diziam **o que não fazer**
+> e **como saber que terminou** — e essa metade estava sendo esquecida. As duas
+> agora vivem juntas, fase por fase.
+>
+> Legenda: ✅ pronto · 🔄 em andamento · ⬜ não começou.
 
-## Onde estamos: **13% do caminho até a publicação**
+---
 
-Ponderado por **esforço**, não por contagem de fases.
+## Onde estamos: **14% do caminho até a publicação**
+
+Ponderado por **esforço**, não por contagem de fases. E agora **contado contra
+os entregáveis de cada fase**, não estimado no olho — foi o que mudou o número.
 
 | Fase | Peso | Feito | Contribui |
 |---|---:|---:|---:|
 | 0 · Especificação | 3 | 100% | 3,0 |
-| 1 · Fundação | 5 | 90% | 4,5 |
-| 2 · Auth e Perfil | 7 | 50% | 3,5 |
-| 3 · Social Core | 9 | 22% | 2,0 |
+| 1 · Fundação | 5 | **75%** | 3,8 |
+| 2 · Auth e Perfil | 7 | **65%** | 4,6 |
+| 3 · Social Core | 9 | 33% | 3,0 |
 | 4 · Jogador | 5 | 0% | 0 |
 | 5 · Time | 8 | 0% | 0 |
 | 6 · Jogo | 9 | 0% | 0 |
@@ -27,342 +35,361 @@ Ponderado por **esforço**, não por contagem de fases.
 | 15 · Segurança e produção | 6 | 0% | 0 |
 | 16 · Beta | 4 | 0% | 0 |
 | 17 · Publicação | 2 | 0% | 0 |
-| **Total** | **100** | | **≈ 13** |
+| **Total** | **100** | | **≈ 14** |
 
 Fase 12 (live real) está fora do MVP. Fases 18 e 19 são pós-publicação.
 
-**Saltou para 13%** com o começo da Fase 3: publicar e ler o feed. A Fundação
-está em 90% (falta separar ambiente de teste do de produção) e o Firebase
-inteiro — banco em São Paulo, Rules testadas, contas de verdade — já está no
-lugar.
+### O que a consolidação corrigiu
 
-A Fase 3 está em 22% porque post e feed são dois dos seis itens dela, e os
-outros quatro (seguir, comentário, reação, notificações) não começaram.
+**A Fase 1 estava marcada como 90% e não está.** O prompt dela exige quatro
+entregáveis que nunca foram feitos: **Storage Emulator, seed inicial,
+configuração por ambiente e lint/format**. São 12 de 16 — 75%.
 
-**A Fase 2 está em 50%, não mais.** As oito telas funcionam de ponta a ponta e
-foram verificadas em produção por duas pessoas reais. O que segura são coisas
-que não existem: logout de outros aparelhos, avatar, tela de privacidade,
-recuperação de senha confirmada, e a supervisão do responsável (D-025), que
-hoje é promessa escrita e não função.
+**A Fase 2 subiu de 50% para 65%**, contada item a item em vez de estimada.
+
+Nos dois casos o erro veio do mesmo lugar: o roadmap listava tópicos soltos e
+os critérios de pronto moravam noutro arquivo que ninguém relia.
 
 ### Estado hoje
 
-33 commits · 41 arquivos de código · ~6.000 linhas · 15 documentos · 9 telas ·
-**54 testes automatizados** (44 de regras + 10 de conta) · Firestore em
-`southamerica-east1` · 2 contas reais criadas por testadores.
-
-### Testes
+35 commits · 41 arquivos de código · ~6.000 linhas · 18 documentos · 9 telas ·
+**54 testes automatizados** · Firestore em `southamerica-east1` · 2 contas
+reais.
 
 ```bash
-npm run testar          # tudo
-npm run testar:regras   # só as Security Rules
-npm run testar:conta    # só o fluxo de conta
-```
-
-Precisa de Java 11+ para o emulador. O PATH tem o 8; o JBR do Android Studio
-tem o 21:
-
-```bash
+npm run testar          # tudo (precisa de Java 11+)
 export JAVA_HOME="/c/Program Files/Android/Android Studio/jbr"
 ```
 
-### O que a varredura de 29/08 mudou
+---
 
-- 🔄 **acambarcamento de apelido** — fechado para quem tem perfil, aberto para
-  quem nunca completa o cadastro. As regras do Firestore não conseguem exprimir
-  "um apelido por pessoa" (D-030). Mitigação: **App Check antes do beta**;
-- ✅ código morto removido, nomes de coleção com fonte única.
+## Regras que valem para toda fase
 
-### O que falta e **não** estava no roadmap
+Vêm do prompt mestre e do `CLAUDE.md`. Não se repetem em cada fase abaixo.
 
-- ⬜ **denúncia de conteúdo** e **canal de atendimento** — exigência estrutural
-  da tese do STF de 26/06/2025, independente de porte;
-- ⬜ **App Check** — sobe da Fase 15 para antes do beta (D-030);
-- 🔄 **verificação de idade** — a data é coletada e as faixas aplicadas, mas
-  ainda é declarada. A Lei 15.211/2025 exige mecanismo confiável;
-- 🔄 **supervisão do responsável** — o vínculo é gravado; ver contatos e
-  bloquear ainda não existe (D-025);
-- ⬜ **anuência dos dois times** para transmitir (Lei 14.597/2023, art. 160 §6º);
-- ✅ **Termos e Política** legíveis dentro do app (CDC art. 46);
-- ⬜ **caminho para exercer direitos LGPD**;
-- ⬜ **CNPJ da Exoduss Tec** — sem parte identificada os termos não podem ser
-  publicados (D-020).
+- **Antes de mexer em código:** ler `CLAUDE.md`, `DECISIONS.md`,
+  `ARCHITECTURE.md`, o documento da funcionalidade e `DEFINITION_OF_DONE.md`;
+- **`UI → Caso de uso → Repositório → Firebase`.** Tela não fala com o Firebase;
+- **Segurança nas Rules**, nunca só no cliente. Sem Cloud Functions (D-012)
+  toda escrita vem do cliente, então elas são a única barreira que existe;
+- **Sem listener global** de Firestore. Sem lista sem paginação. Sem documento
+  gigante;
+- **Não implementar o roadmap inteiro de uma vez.** Uma fase avança quando a
+  `DEFINITION_OF_DONE` for satisfeita;
+- **Decisão de produto não documentada: parar e perguntar** (`CLAUDE.md §12`);
+- **Ciclo de conclusão (D-031):** ao terminar algo — perguntar se foi testado,
+  marcar aqui, varrer contra regressão, e só então seguir;
+- **Adaptação a tamanhos de tela é critério de aceite**, não polimento.
 
-### Revisão de 30/08/2026 contra a pesquisa de redes sociais
+---
 
-A pesquisa (`docs/13-pesquisa/REDES_SOCIAIS.md`) levantou quatro pontos que
-mexem com a ordem do roadmap. Nenhum deles é urgente; todos são decisão do
-proprietário.
-
-**1. A rede atômica da BANCADA é um time, não uma cidade.**
-
-O feed vazio é o maior risco do produto — o Google+ perdeu 90% das sessões em
-menos de cinco segundos porque as pessoas chegavam numa sala vazia. O jeito
-conhecido de resolver é construir a menor rede que funciona sozinha: onze a
-vinte pessoas que já se conhecem.
-
-Isso é **criar time e chamar o elenco**, que é a **Fase 5**. Hoje ela está
-depois de Social Core e Jogador. Vale perguntar se não deveria vir antes: um
-time com elenco traz onze pessoas de uma vez; um feed sem gente não traz
-ninguém.
-
-**2. O que os apps brasileiros de várzea resolvem não está no roadmap.**
-
-Futebolize, FutBora, Partida, Fut7Pro e Meu Ranking giram todos em torno de
-**confirmar presença · sortear times · controlar mensalidade**. Nenhum dos três
-aparece em fase alguma daqui.
-
-A BANCADA está posicionada como rede social; eles resolvem organização. São
-dores diferentes: rede social responde "o que está acontecendo na várzea";
-eles respondem "quem vai jogar domingo e quanto cada um deve" — que é dor
-semanal e concreta.
-
-**Não é argumento para virar app de pelada.** É aviso de que a dor que traz
-gente para dentro pode não ser a mesma que a visão descreve.
-
-**3. Falta responder o que o app faz por quem não conhece ninguém.**
-
-Hoje: nada. Ele vê um feed vazio. Produtos que venceram a sala vazia tinham
-utilidade para uma pessoa só — o Pinterest servia para você organizar suas
-coisas antes de servir de rede.
-
-Para a BANCADA, o candidato natural é **o próprio histórico e as estatísticas**
-(Fases 4 e 7). Se elas viessem antes, quem entra sozinho já teria o que fazer.
-
-**4. Algoritmo de feed não entra agora, e o gatilho é objetivo.**
-
-Ranking existe para escolher o que mostrar quando há mais conteúdo do que cabe.
-Com 2 usuários, ordenar é resolver problema que não existe.
-
-**Gatilho para reavaliar:** quando alguém tiver mais posts novos do que
-consegue ler numa sessão. Aí entra decaimento no estilo Hacker News — cinco
-linhas, sem servidor — e depois peso de relacionamento. Aprendizado de máquina
-não entra nesta década do projeto.
-
-### O que a pesquisa confirmou que já estava certo
-
-- **montar o feed na leitura** — é o que fazemos, e sem Cloud Functions é o
-  único caminho que não exige abrir as Security Rules;
-- **feed cronológico agora** — correto até haver volume;
-- **página de 20 com cursor** — evita o custo de carregar tudo;
-- **seguir como próximo item** — sem ele a aba SEGUINDO não existe.
-
-### Um limite técnico medido, que vale registrar
-
-O operador `in` do Firestore aceita **no máximo 30 valores** — medido contra o
-emulador, porque a documentação de quotas não traz o número. A aba SEGUINDO
-consulta "posts de quem eu sigo": até 30 seguidos cabe numa consulta; acima
-disso é preciso dividir em blocos. Quem segue 100 gera 4 consultas por página.
-
-Não é problema hoje. É o ponto onde reavaliar a arquitetura, e agora está
-escrito.
-
-## FASE 0 — Especificação ✅
+# FASE 0 — Especificação ✅
 
 - ✅ produto · personas · domínio · UX · arquitetura
-- ✅ decisões D-001 a D-033 registradas
+- ✅ decisões **D-001 a D-033** registradas
 - ⬜ permissões detalhadas por papel — entram com as telas que as usam
 
-## FASE 1 — Fundação 🔄
+---
 
-- ✅ criar projeto — Expo SDK 57, RN 0.86, React 19
-- ✅ TypeScript `strict`
-- ✅ estrutura de pastas — nasce conforme o uso (`CLAUDE.md §5`)
-- ✅ tema — paleta da marca, escala, tipografia, alvo de toque 44pt
-- ✅ navegação — React Navigation `native-stack`, tipada
-- ✅ repositories — porta e implementação do Firestore
-- ✅ **Firebase** — SDK, Auth e Firestore em `southamerica-east1`
-- ✅ **Emulator Suite** — configurado, com 54 testes rodando contra ele
-- ✅ **Security Rules** — escritas, testadas e publicadas
-- ⬜ configuração de ambientes — hoje é `__DEV__` decidindo entre emulador e
-  produção; falta separar projeto de teste do de produção
+# FASE 1 — Fundação 🔄 **75%**
 
-## FASE 2 — Auth e Perfil 🔄
+**Objetivo:** projeto React Native + Expo + TypeScript com arquitetura modular
+e Emulator Suite.
 
-**As telas persistem de verdade desde 23/08.** A D-018 foi cumprida: o fluxo
-de primeiro acesso está ligado ao Firebase antes de a Fase 3 começar.
+**Critério de sucesso (do prompt):** *o app inicia localmente, conecta ao
+Emulator e tem estrutura pronta para a Fase 2.*
 
-- ✅ cadastro — cria conta de verdade, verificado em produção
-- ✅ login — por e-mail (D-016), com sessão que sobrevive ao fechar o app
-- ✅ logout
-- 🔄 recuperação de senha — o link chama `sendPasswordResetEmail` de verdade,
-  mas **ninguém confirmou que o e-mail chega**. Até alguém receber, não conta
-- ✅ perfil — nome, sobrenome, apelido e nascimento gravados no Firestore
-- ⬜ avatar
-- ✅ apelido — unicidade garantida pelo banco: o ID do documento é o apelido
-  (D-014, D-017). Ver D-030 para o limite conhecido
-- 🔄 conta de menor — nasce ligada ao responsável; a supervisão em si (D-025)
-  ainda não existe
-- ⬜ privacidade — padrão público decidido (D-015), não implementado
+| Entregável | Estado |
+|---|---|
+| projeto inicial | ✅ Expo SDK 57, RN 0.86, React 19 |
+| TypeScript | ✅ `strict` |
+| estrutura de diretórios | ✅ nasce conforme o uso (`CLAUDE.md §5`) |
+| navegação base | ✅ `native-stack`, tipada |
+| tema | ✅ paleta, escala, tipografia, alvo de 44pt |
+| componentes base | ✅ Button, Input, Checkbox, TopBar, Fundo, TextoRico |
+| configuração Firebase | ✅ |
+| Auth Emulator | ✅ |
+| Firestore Emulator | ✅ |
+| **Storage Emulator** | ⬜ **não configurado** |
+| **seed inicial** | ⬜ **não existe** |
+| **configuração por ambiente** | ⬜ `__DEV__` decide emulador ou produção; falta projeto de teste separado |
+| repository base | ✅ porta + implementação Firestore |
+| tratamento de erros base | ✅ `services/erros.ts`, com tradução |
+| **lint/format** | ⬜ **ESLint não está instalado**; só `tsc` |
+| testes básicos | ✅ 54, contra o emulador |
+
+**Não implementar aqui:** feed completo, campeonato, live real, chat,
+marketplace.
+
+---
+
+# FASE 2 — Auth e Perfil 🔄 **65%**
+
+**As telas persistem de verdade desde 23/08.** A D-018 foi cumprida: o primeiro
+acesso foi ligado ao Firebase antes de a Fase 3 começar.
+
+| Entregável | Estado |
+|---|---|
+| cadastro | ✅ cria conta, verificado em produção |
+| login | ✅ por e-mail (D-016) |
+| logout | ✅ |
+| **recuperação de senha** | 🔄 chama `sendPasswordResetEmail`; **ninguém confirmou que o e-mail chega** |
+| sessão | ✅ sobrevive ao fechar o app |
+| criação de perfil | ✅ nome, sobrenome, apelido, nascimento |
+| **edição de perfil** | ⬜ **não existe** |
+| **avatar** | ⬜ **não existe** — depende do Storage |
+| apelido | ✅ único pelo ID do documento (D-014, D-017); limite na D-030 |
+| **privacidade básica** | ⬜ padrão público decidido (D-015), tela não existe |
+| Security Rules | ✅ escritas, testadas e publicadas |
+| testes de segurança | ✅ 44 casos |
+| conta de menor | 🔄 nasce ligada ao responsável; **a supervisão (D-025) não existe** |
 
 ### Telas construídas
 
 | Tela | Estado |
 |---|---|
-| Boas-vindas | ✅ verificada em produção |
-| Para quem é a conta | ✅ verificada em produção |
-| Primeiro, a sua conta | ✅ verificada em produção |
-| Criar conta | ✅ **cria conta de verdade** |
-| Onboarding | ✅ **grava perfil e reserva apelido**, em lote atômico |
-| Conta criada | ✅ verificada nos dois caminhos |
-| Entrar | ✅ **autentica**, com sessão que sobrevive ao fechar o app |
+| Boas-vindas · Para quem · Primeiro a sua conta | ✅ verificadas em produção |
+| Criar conta · Onboarding · Conta criada | ✅ criam conta de verdade |
+| Entrar | ✅ autentica |
 | Termos / Política | ✅ lendo do markdown, com aviso de rascunho |
-| Início | 🔄 **provisória** — é o lugar do Feed (Fase 3) |
+| Início | 🔄 virou feed na Fase 3 |
 
-As nove telas se ligam entre si e cobrem os dois caminhos: conta própria e
-conta de menor criada pelo responsável.
+**Nenhuma foi formalmente aprovada** no sentido da D-018 (aprovada congela).
 
-**A D-018 foi cumprida.** As telas foram ligadas ao Firebase antes de a Fase 3
-começar, que era o prazo. O fluxo inteiro foi verificado em produção — inclusive
-o caminho do responsável, onde a sessão do pai não cai ao criar a do filho, e a
-retomada de conta órfã da D-024.
+---
 
-Nenhuma tela foi formalmente **aprovada** pelo proprietário no sentido da D-018
-(aprovada congela). Duas pessoas testaram e não relataram problema, mas o
-caminho do responsável e o ciclo sair/entrar não foram exercitados por elas.
+# FASE 3 — Social Core 🔄 **33%**
 
-## FASE 3 — Social Core 🔄
+**Do prompt:** *feed simples no início, preferencialmente cronológico. **Não
+implementar algoritmo de recomendação complexo.*** A pesquisa de 30/08
+(`docs/13-pesquisa/REDES_SOCIAIS.md`) chegou à mesma conclusão por outro
+caminho — ranking sem volume produz resultado pior que ordem cronológica.
 
-- ⬜ seguir
-- ✅ **post** — texto até 500 caracteres, sem edição (a regra nega `update`);
-  só o autor apaga
-- ✅ **feed** — cronológico, página de 20 com cursor, puxar para atualizar
-- ⬜ comentário
-- ⬜ reação
-- ⬜ notificações
+| Entregável | Estado |
+|---|---|
+| **post** | ✅ texto até 500, sem edição, só o autor apaga |
+| **feed** | ✅ cronológico, página de 20 com cursor, puxar para atualizar |
+| seguir | ⬜ **próximo item** — sem ele a aba SEGUINDO não existe |
+| comentário | ⬜ |
+| reação | ⬜ |
+| notificações básicas | ⬜ |
+| paginação | ✅ |
+| sem listener global | ✅ |
+| regras de leitura/escrita | ✅ 11 testes |
 
-**Fora desta fatia, de propósito:** mídia no post (Fase 10) e time como autor
-(Fase 5). O `DOMAIN_MODEL` prevê `media` e `authorType`; os dois entram quando
-existirem de verdade.
+**Fora desta fase, de propósito:** mídia no post (Fase 10) e time como autor
+(Fase 5).
 
-**Aberto:** a pendência 7 (feed cronológico ou híbrido) continua. Cronológico
-é o único implementável hoje — híbrido precisa de seguidores, reações e
-histórico de leitura, que não existem.
+**Aberto:** a pendência 7 foi reformulada pela D-032 — são abas
+(FEED / SEGUINDO), não um algoritmo só.
 
-## FASE 4 — Jogador
+---
 
-- perfil esportivo
-- histórico
-- estatísticas
-- solicitação para time
-- convite
+# FASE 4 — Jogador ⬜
 
-## FASE 5 — Time
+**Do prompt (junto com a Fase 5):** perfil esportivo · histórico · estatísticas
+· solicitação para time · convite · histórico de vínculo.
 
-- criação
-- página
-- dono
-- administradores
-- permissões
-- elenco
-- conteúdo
+**Regra:** permissões verificadas pelas **Security Rules**, não só na tela.
 
-## FASE 6 — Jogo
+> **A pesquisa sugere antecipar esta fase.** É o candidato natural a "utilidade
+> para uma pessoa só" — quem entra sem conhecer ninguém teria o próprio
+> histórico para olhar, em vez de um feed vazio.
 
-- criação
-- agenda
-- adversário
-- local
-- escalação
-- início
-- eventos
-- placar
-- encerramento
+---
 
-## FASE 7 — Motor esportivo
+# FASE 5 — Time ⬜
 
-- gols
-- cartões
-- substituições
-- estatísticas
-- histórico
-- feed esportivo
+criação · página · dono · administradores · permissões · elenco · conteúdo ·
+convite · solicitação · aceitar/recusar.
 
-## FASE 8 — Campeonato
+**Não implementar campeonato aqui.**
 
-- criação
-- categorias
-- inscrições
-- grupos
-- rodadas
-- classificação
-- mata-mata
-- artilharia
+> **A pesquisa sugere antecipar esta fase, e é o argumento mais forte dela.**
+> A rede atômica da várzea é **um time**, não uma cidade. Um time com elenco
+> traz onze pessoas de uma vez; um feed sem gente não traz ninguém. O Google+
+> perdeu 90% das sessões em menos de cinco segundos por causa da sala vazia.
 
-## FASE 9 — Campos e árbitros
+---
 
-- venues
-- árbitros
-- designações
-- histórico
+# FASE 6 — Jogo ⬜
 
-## FASE 10 — Mídia
+criação · agenda · adversário · local · escalação · titulares · reservas ·
+capitão · início · eventos · gol · cartões · substituição · placar ·
+encerramento.
 
-- fotos
-- vídeos
-- galerias
+**Restrições do prompt, e elas são duras:**
 
-## FASE 11 — Live Simulator
+- criar o **motor de transição de status**;
+- **não permitir alteração arbitrária do placar pelo cliente** — e sem Cloud
+  Functions isso tem que sair das Rules;
+- **idempotência** e validações — o mesmo gol registrado duas vezes não pode
+  virar dois;
+- executar o **teste vertical completo**.
 
-- live
-- cronômetro
-- eventos
-- placar
-- espectador
-- chat simulado
+---
 
-## FASE 12 — Live real
+# FASE 7 — Motor esportivo ⬜
 
-Somente após decisão específica.
+gols · cartões · substituições · estatísticas · histórico · feed esportivo.
 
-Firebase continuará sendo usado para metadados e estado. O mecanismo de vídeo real exigirá avaliação técnica própria.
+Pela D-012, sem Cloud Functions: **derivar na leitura em vez de manter
+contador**. O placar é a contagem dos gols confirmados, não um número guardado
+que pode divergir.
 
-## FASE 13 — Chat
+---
 
-- DM
-- grupos
-- time
-- partida
+# FASE 8 — Campeonato ⬜
 
-## FASE 14 — Administração
+criação · categorias · inscrições · grupos · rodadas · classificação ·
+mata-mata · artilharia.
 
-- dashboard
-- moderação
-- denúncias
-- auditoria
+**Restrições do prompt:**
 
-## FASE 15 — Segurança e preparação de produção
+- **regras de classificação configuráveis**;
+- **não assumir um regulamento único** — cada campeonato de várzea tem o seu;
+- **criar testes para critérios de desempate.**
 
-- App Check
-- Rules finais
-- Crashlytics
-- Performance
-- Analytics
-- backups/exportações conforme estratégia
-- LGPD
-- políticas
+---
 
-## FASE 16 — Beta
+# FASE 9 — Campos e árbitros ⬜
 
-- poucos usuários
-- poucos times
-- primeiros jogos
-- feedback
-- correções
+venues · árbitros · designações · histórico. *(Sem prompt próprio.)*
 
-## FASE 17 — Produção
+---
 
-- publicação
-- monitoramento
-- suporte
+# FASE 10 — Mídia ⬜
 
-## FASE 18 — Crescimento
+fotos · vídeos · galerias. *(Sem prompt próprio.)*
 
-- patrocinadores
-- premium
-- marketplace
-- anúncios
+Depende do **Storage**, que a Fase 1 já pedia e não foi feito. O **avatar** da
+Fase 2 também depende daqui.
 
-## FASE 19 — IA
+---
+
+# FASE 11 — Live Simulator ⬜
+
+partida · cronômetro · placar · eventos · gols · cartões · substituições ·
+**espectadores simulados** · timeline · estado ao vivo · encerramento.
+
+**Objetivo:** validar a experiência de live e o motor de partida **antes** de
+qualquer infraestrutura de vídeo. **Não adicionar provedor externo.**
+
+---
+
+# FASE 12 — Live real ⬜ *(fora do MVP)*
+
+Somente após decisão específica. O Firebase segue para metadados e estado; o
+mecanismo de vídeo exige avaliação própria.
+
+**Lembrete legal:** transmitir jogo exige anuência dos **dois times** quando não
+há mando definido (Lei 14.597/2023, art. 160 §6º) — decidido na D-023.
+
+---
+
+# FASE 13 — Chat ⬜
+
+DM · grupos · time · partida. *(Sem prompt próprio.)*
+
+**Duas restrições que já existem:**
+
+- mensagem privada mantém a proteção do art. 19 do Marco Civil — **exige ordem
+  judicial**, ao contrário de conteúdo público;
+- a supervisão do menor (D-025) é **por contato, não por conteúdo**: o
+  responsável vê com quem o filho fala e bloqueia, mas não lê. E o menor sabe.
+
+---
+
+# FASE 14 — Administração ⬜
+
+dashboard · moderação · denúncias · auditoria. *(Sem prompt próprio.)*
+
+**Parte disto subiu de fase** — ver "obrigações fora do roadmap" abaixo.
+
+---
+
+# FASE 15 — Segurança e preparação para produção ⬜
+
+**Do prompt:** *não publicar automaticamente. Apresentar relatório antes de
+qualquer ativação definitiva.*
+
+Auditar: projetos Firebase · regras · Authentication · Storage · **App Check** ·
+Analytics · Crashlytics · Performance · notificações · segurança · LGPD ·
+**exclusão de conta** · custos · backups · logs · política de mídia · limites de
+upload.
+
+---
+
+# FASE 16 — Beta ⬜
+
+poucos usuários · poucos times · primeiros jogos · feedback · correções.
+
+> **Da pesquisa:** o erro mais comum é tratar o lançamento como linha de
+> chegada. O pico do dia do lançamento costuma ser a melhor chance de massa
+> crítica — e se gasta numa sala vazia. Antes do beta, ter conteúdo dentro.
+
+---
+
+# FASE 17 — Publicação ⬜
+
+publicação · monitoramento · suporte.
+
+---
+
+# FASE 18 — Crescimento ⬜ *(pós-publicação)*
+
+patrocinadores · premium · marketplace · anúncios.
+
+# FASE 19 — IA ⬜ *(pós-publicação)*
 
 Somente quando houver dados e caso de uso comprovado.
+
+---
+
+# Obrigações que não estavam em fase nenhuma
+
+Achadas na pesquisa jurídica de 14/08 e na varredura de 29/08. **Todas precisam
+existir antes da publicação**, e várias subiram de fase.
+
+| Item | Onde estava | Onde precisa estar |
+|---|---|---|
+| **Denúncia de conteúdo** e canal de atendimento | Fase 14 | **antes da publicação** — exigência estrutural da tese do STF de 26/06/2025, independente de porte |
+| **App Check** | Fase 15 | **antes do beta** — mitigação do acambarcamento de apelido (D-030) |
+| **Verificação de idade** sem autodeclaração | — | Lei 15.211/2025; hoje a data é só declarada |
+| **Supervisão do responsável** | — | D-025; o vínculo é gravado, a supervisão não existe |
+| **Anuência dos dois times** para transmitir | — | Lei 14.597/2023 (D-023) |
+| **Caminho para exercer direitos LGPD** | — | acesso, correção, eliminação, portabilidade |
+| **CNPJ da Exoduss Tec** | — | sem parte identificada os termos não podem ser publicados (D-020) |
+
+---
+
+# O que os mockups pedem e o roadmap não previa
+
+Registrado na **D-033**. Nenhum destes tem fase:
+
+**Stories · Níveis e XP · Comunidades · Selo de verificado · Enquete ·
+Compartilhar · Trending · Ranking com pontos**
+
+E a **barra de navegação** foi decidida na D-032 —
+*Início · Explorar · [+] · Atividades · Mensagens* — com a ressalva de que
+**nasce com o que existe e cresce**.
+
+---
+
+# O que a pesquisa de redes sociais sugere mudar
+
+Detalhe em `docs/13-pesquisa/REDES_SOCIAIS.md`. Em resumo, quatro pontos —
+**todos decisão do proprietário**:
+
+1. **Antecipar a Fase 5 (Time).** A rede atômica é um time, não uma cidade;
+2. **Antecipar a Fase 4 (Jogador).** É a resposta para "o que o app faz por
+   quem não conhece ninguém";
+3. **Confirmar presença · sortear times · mensalidade** não estão em fase
+   nenhuma, e são o que todo app brasileiro de várzea resolve
+   (Futebolize, FutBora, Partida, Fut7Pro, Meu Ranking);
+4. **Algoritmo de feed não entra agora.** Gatilho objetivo para reavaliar:
+   quando alguém tiver mais posts novos do que consegue ler numa sessão.
+
+**Limite técnico medido:** o operador `in` do Firestore aceita **30 valores**.
+A aba SEGUINDO consulta "posts de quem eu sigo" — até 30 seguidos numa
+consulta, acima disso em blocos.
