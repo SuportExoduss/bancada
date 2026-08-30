@@ -160,7 +160,7 @@ escrito.
 ## FASE 0 — Especificação ✅
 
 - ✅ produto · personas · domínio · UX · arquitetura
-- ✅ decisões D-001 a D-030 registradas
+- ✅ decisões D-001 a D-033 registradas
 - ⬜ permissões detalhadas por papel — entram com as telas que as usam
 
 ## FASE 1 — Fundação 🔄
@@ -172,7 +172,7 @@ escrito.
 - ✅ navegação — React Navigation `native-stack`, tipada
 - ✅ repositories — porta e implementação do Firestore
 - ✅ **Firebase** — SDK, Auth e Firestore em `southamerica-east1`
-- ✅ **Emulator Suite** — configurado, com 43 testes rodando contra ele
+- ✅ **Emulator Suite** — configurado, com 54 testes rodando contra ele
 - ✅ **Security Rules** — escritas, testadas e publicadas
 - ⬜ configuração de ambientes — hoje é `__DEV__` decidindo entre emulador e
   produção; falta separar projeto de teste do de produção
