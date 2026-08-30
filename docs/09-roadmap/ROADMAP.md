@@ -11,7 +11,7 @@
 
 ---
 
-## Onde estamos: **14% do caminho até a publicação**
+## Onde estamos: **15,5% do caminho até a publicação**
 
 Ponderado por **esforço**, não por contagem de fases. E agora **contado contra
 os entregáveis de cada fase**, não estimado no olho — foi o que mudou o número.
@@ -21,7 +21,7 @@ os entregáveis de cada fase**, não estimado no olho — foi o que mudou o núm
 | 0 · Especificação | 3 | 100% | 3,0 |
 | 1 · Fundação | 5 | **75%** | 3,8 |
 | 2 · Auth e Perfil | 7 | **65%** | 4,6 |
-| 3 · Social Core | 9 | 33% | 3,0 |
+| 3 · Social Core | 9 | 50% | 4,5 |
 | 4 · Jogador | 5 | 0% | 0 |
 | 5 · Time | 8 | 0% | 0 |
 | 6 · Jogo | 9 | 0% | 0 |
@@ -35,7 +35,7 @@ os entregáveis de cada fase**, não estimado no olho — foi o que mudou o núm
 | 15 · Segurança e produção | 6 | 0% | 0 |
 | 16 · Beta | 4 | 0% | 0 |
 | 17 · Publicação | 2 | 0% | 0 |
-| **Total** | **100** | | **≈ 14** |
+| **Total** | **100** | | **≈ 15,5** |
 
 Fase 12 (live real) está fora do MVP. Fases 18 e 19 são pós-publicação.
 
@@ -171,7 +171,7 @@ caminho — ranking sem volume produz resultado pior que ordem cronológica.
 |---|---|
 | **post** | ✅ texto até 500, sem edição, só o autor apaga · **testado pelo proprietário em 30/08** |
 | **feed** | ✅ cronológico, página de 20 com cursor, puxar para atualizar · **testado pelo proprietário em 30/08** |
-| seguir | ⬜ **próximo item** — sem ele a aba SEGUINDO não existe |
+| **seguir** | ✅ vínculo pelo ID do documento, abas Tudo/Seguindo, perfil público · **aguardando teste do proprietário** |
 | comentário | ⬜ |
 | reação | ⬜ |
 | notificações básicas | ⬜ |
@@ -181,6 +181,10 @@ caminho — ranking sem volume produz resultado pior que ordem cronológica.
 
 **Fora desta fase, de propósito:** mídia no post (Fase 10) e time como autor
 (Fase 5).
+
+**Buraco aberto por "seguir":** só dá para achar alguém pelo post dela no feed.
+Quem não publica é invisível — não dá para seguir, nem convidar para time
+depois. **Busca de pessoas virou pré-requisito**, e não está em fase nenhuma.
 
 **Aberto:** a pendência 7 foi reformulada pela D-032 — são abas
 (FEED / SEGUINDO), não um algoritmo só.
