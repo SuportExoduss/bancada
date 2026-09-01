@@ -666,6 +666,10 @@ ainda é verdade.
 
 ## D-032 — Os mockups são a direção visual
 
+> **A barra desta decisão foi substituída pela D-036 em 01/09/2026.** O resto
+> — os mockups como direção visual, as abas do feed, o cartão de post —
+> continua valendo.
+
 **Confirmado pelo proprietário — 30/08/2026:** "mais ou menos assim que eu
 tenho em mente", sobre `IMAGENS/bancada exemplo app.png` e
 `IMAGENS/bancada ex alll.png`.
@@ -740,6 +744,135 @@ roadmap agora ou quando chegar a hora.
 
 ---
 
+## D-034 — Os nomes são MOMENT e ROLLS, não story e reels
+
+**Decidido pelo proprietário — 01/09/2026**, na especificação da navegação:
+*"A BANCADA NÃO utilizará o termo 'Story'. O nome oficial será MOMENT"* e
+*"Não utilizar 'Reels'. O nome correto é ROLLS"*.
+
+| Conceito | Nome na BANCADA | O que é |
+|---|---|---|
+| Publicação que expira | **MOMENT** | o círculo no topo, o equivalente ao story |
+| Vídeo curto vertical | **ROLLS** | a aba do meio, o equivalente ao reels |
+| Feed principal | **HOME** | onde o app abre |
+| Descoberta | **EXPLORAR** | a antiga lupa, agora seção própria |
+| Conversas | **MENSAGENS** | |
+| Conta da pessoa | **PERFIL** | |
+
+**Por que importa mais do que parece.** "Stories" e "Reels" são marcas
+registradas da Meta. Um app brasileiro que os usa como nome de seção não está
+se inspirando — está usando marca alheia na própria interface. E, do lado do
+produto, o app que copia o vocabulário assume o lugar de cópia: a
+especificação é explícita em não querer parecer "um clone literal do
+Instagram".
+
+**Onde isso é aplicado no código:** `src/navigation/abas.ts` é a fonte dos
+rótulos, e nenhuma tela escreve o nome da seção à mão.
+
+---
+
+## D-035 — Perfil aberto por padrão, privado por escolha; seguir vira pedido
+
+**Decidido pelo proprietário — 01/09/2026**, respondendo à pergunta sobre
+"pedidos de amizade": *"seguir para quem tem perfil aberto e pedido de seguir
+para quem tem perfil privado! inicialmente todos os perfis são abertos e na
+seção de privacidade haverá a opção de privar o perfil"*.
+
+Isso encerra a **pendência 6** ("sistema de amizade além de seguir"): **não
+haverá amizade**. O vínculo continua sendo o de seguir — assimétrico, um lado
+segue o outro — com um estado a mais.
+
+| Perfil | O que acontece ao tocar em Seguir |
+|---|---|
+| aberto (padrão) | segue na hora, como hoje |
+| privado | vira **pedido**, e o dono aceita ou recusa |
+
+**O que muda no que já existe:**
+
+- o vínculo `seguidores/{seguidorUid}_{alvoUid}` ganha um estado — hoje ele só
+  existe ou não existe;
+- as Rules passam a precisar **ler o perfil do alvo** para saber se a criação
+  direta é permitida. Hoje elas não leem nada além do próprio documento, e
+  cada `get()` numa regra é uma leitura cobrada;
+- a tela de privacidade da Fase 2, que está como ⬜, ganha o interruptor.
+
+**Confirma a D-015** (perfil público por padrão) em vez de contradizê-la: o
+padrão continua aberto. O que a D-035 acrescenta é a saída para quem não quer.
+
+---
+
+## D-036 — A barra tem cinco abas, e substitui a D-032
+
+**Decidido pelo proprietário — 01/09/2026**, com uma nova referência visual
+(`IMAGENS/bancada exemplo app.png`, atualizada) e a especificação escrita da
+navegação.
+
+### O que muda em relação à D-032
+
+A D-032 registrou *Início · Explorar · [+] · Atividades · Mensagens*. A
+especificação nova diz outra coisa, e ela vale:
+
+**HOME · EXPLORAR · ROLLS · MENSAGENS · PERFIL**
+
+Três diferenças, cada uma com motivo:
+
+1. **o `[+]` sai da barra de baixo e sobe para o topo, à esquerda.** Publicar
+   deixa de disputar espaço com navegação;
+2. **Atividades sai da barra** — as notificações viram o sino do canto
+   superior direito;
+3. **Perfil entra na barra.** É o destino mais visitado que não tinha atalho.
+
+O topo fica assim: `[+] BANCADA` à esquerda, `[sino] [hambúrguer]` à direita.
+**Sem lupa no topo** — a descoberta é a aba Explorar, e ter as duas faria a
+mesma função morar em dois lugares.
+
+### A ressalva da D-032 continua valendo, com um ajuste
+
+A D-032 dizia que a barra "nasce com o que existe e cresce". A especificação
+nova pede as **cinco posições de uma vez**, e o motivo é bom: a ordem dos
+ícones é o que a mão decora, e mudar a posição depois quebra esse aprendizado
+em quem já usava.
+
+O acordo, então, é outro: **a barra nasce inteira, o conteúdo não**. Rolls e
+Mensagens mostram uma tela que diz o que vão ter e de que fase dependem. Não é
+o "item sem destino" que a D-032 proibia — aquele não avisava nada; este
+avisa.
+
+### Estado dos ícones — a regra
+
+Verde é ativo, cinza é inativo, e vale para os oito ícones. Duas exceções, as
+duas por estado real do aplicativo e nunca por efeito visual:
+
+| Elemento | Cinza | Verde |
+|---|---|---|
+| aba comum | não selecionada | selecionada |
+| **Mensagens** | não selecionada e sem mensagem por ler | selecionada **ou** com mensagem por ler (+ bolinha) |
+| **sino** | nada por ver | tem notificação por ver (+ contador) |
+| **`+`** | ainda não publicou hoje | já publicou hoje |
+
+O `+` consulta o Firestore de verdade (`publiqueiHoje`): uma leitura, com
+`limit(1)`, sobre o índice que já existia. "Hoje" é a meia-noite do relógio do
+aparelho — quem publicou às 23h e abre o app à 00h30 tem que ver o botão
+apagado, porque para ele virou outro dia.
+
+### Os assets são oficiais
+
+Oito ícones, quatro tamanhos (16/24/32/64), duas cores. Ficam em
+`assets/icones/`, gerados por `scripts/gerar-icones.mjs` a partir de
+`IMAGENS/icones/`. **Não redesenhar em código, não trocar por emoji, não
+importar biblioteca de ícones.** O componente `Icone` escolhe o arquivo pelo
+tamanho de tela: um ícone de 26 pontos numa tela 3x precisa de 78 pixels, e
+serve o arquivo de 64 reduzido em vez do de 32 ampliado.
+
+**A marca do topo teve que ser recuperada.** O arquivo entregue
+(`nome+logo top hambuerguer.png`) veio sem canal alfa, com fundo preto chapado
+— colado sobre o grafite ele apareceria como um retângulo. O script reconstrói
+a transparência: como a arte é clara sobre preto, o alfa de cada pixel é o
+próprio brilho dele (`max(r,g,b)`), e a cor é dividida por esse alfa para
+virar alfa reto. O resultado está em `assets/marca/marca-topo.png`.
+
+---
+
 # DECISÕES PENDENTES
 
 Estas decisões devem ser confirmadas pelo proprietário antes das partes afetadas:
@@ -750,7 +883,9 @@ Estas decisões devem ser confirmadas pelo proprietário antes das partes afetad
 4. ~~idade mínima e política de menores~~ → **decidido em D-026**
    (13 anos) e **D-025** (supervisão por contato, não por conteúdo);
 5. ~~perfil público por padrão~~ → **decidido em D-015**;
-6. sistema de amizade além de seguir;
+6. ~~sistema de amizade além de seguir~~ → **decidido em D-035**: não
+   haverá amizade. Segue valendo o seguir, com pedido quando o perfil for
+   privado;
 7. ~~feed cronológico ou híbrido~~ → **reformulada pela D-032**: são abas
    (FEED / SEGUINDO), não um algoritmo só. Resta definir o critério de
    ordenação de cada aba quando houver sinais para isso;

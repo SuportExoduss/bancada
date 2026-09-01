@@ -136,12 +136,17 @@ src/
 **Pasta nasce quando é usada, não antes.** Diretório vazio é ruído: quem abre
 o projeto não sabe se está vazio porque não é usado ou porque alguém esqueceu.
 
-Existem hoje: `components/` · `domain/` · `hooks/` · `navigation/` ·
-`repositories/` · `screens/` · `theme/`.
+Existem hoje: `assets/` · `components/` · `content/` · `domain/` · `hooks/` ·
+`infrastructure/firebase/` · `navigation/` · `repositories/` · `screens/` ·
+`services/` · `state/` · `theme/`.
 
 Faltam, e entram quando o primeiro caso de uso pedir: `app/` ·
-`application/` · `infrastructure/firebase/` · `services/` · `state/` ·
-`utils/`.
+`application/` · `utils/`.
+
+Duas nasceram fora da lista de exemplo, e o motivo fica registrado:
+`content/` guarda os documentos legais gerados a partir do markdown, e
+`assets/` guarda as tabelas de `require` dos arquivos de imagem — o Metro só
+resolve caminho literal, então a tabela tem que ser código.
 
 ---
 

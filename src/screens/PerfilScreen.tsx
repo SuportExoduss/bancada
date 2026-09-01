@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, StatusBar, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 
 import { Avatar } from '../components/Avatar';
 import { Button } from '../components/Button';
-import { Fundo } from '../components/Fundo';
 import { PostDoFeed } from '../components/PostDoFeed';
 import { TopBar } from '../components/TopBar';
 import { LARGURA_MAXIMA_CONTEUDO } from '../hooks/useLayout';
@@ -34,6 +32,11 @@ export interface PerfilScreenProps {
  * Público mesmo sem conta (D-015) — a BANCADA existe para dar visibilidade, e
  * perfil que só quem tem conta enxerga não dá visibilidade a ninguém. O botão
  * de seguir é o único que exige estar logado.
+ *
+ * Vive em dois lugares: como **aba** (o próprio perfil, dentro da casca) e
+ * como **tela empilhada** (o perfil de outra pessoa, aberto do feed). Por isso
+ * não desenha fundo nem área segura — quem monta é que sabe qual dos dois é —
+ * e a barra com a seta de voltar só aparece quando existe para onde voltar.
  */
 export function PerfilScreen({ uid, meuUid, onBack }: PerfilScreenProps) {
   const [perfil, setPerfil] = useState<Perfil | null>(null);
@@ -92,107 +95,101 @@ export function PerfilScreen({ uid, meuUid, onBack }: PerfilScreenProps) {
     }
   }
 
+  // A barra com a seta só existe quando a tela foi empilhada. Como aba, ela
+  // seria uma seta que não leva a lugar nenhum.
+  const barra = onBack ? <TopBar onBack={onBack} title={perfil ? `@${perfil.apelido}` : 'Perfil'} /> : null;
+
   if (carregando) {
     return (
-      <Fundo variante="app">
-        <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-          <TopBar onBack={onBack} />
-          <View style={styles.centro}>
-            <ActivityIndicator color={colors.green} />
-          </View>
-        </SafeAreaView>
-      </Fundo>
+      <View style={styles.raiz}>
+        {barra}
+        <View style={styles.centro}>
+          <ActivityIndicator color={colors.green} />
+        </View>
+      </View>
     );
   }
 
   if (!perfil) {
     return (
-      <Fundo variante="app">
-        <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-          <TopBar onBack={onBack} title="Perfil" />
-          <View style={styles.centro}>
-            <Text style={styles.vazioTitulo}>Este perfil não existe</Text>
-            <Text style={styles.vazioTexto}>
-              Ou a conta foi encerrada, ou o endereço está errado.
-            </Text>
-          </View>
-        </SafeAreaView>
-      </Fundo>
+      <View style={styles.raiz}>
+        {barra}
+        <View style={styles.centro}>
+          <Text style={styles.vazioTitulo}>Este perfil não existe</Text>
+          <Text style={styles.vazioTexto}>
+            Ou a conta foi encerrada, ou o endereço está errado.
+          </Text>
+        </View>
+      </View>
     );
   }
 
   const nomeCompleto = `${perfil.nome} ${perfil.sobrenome}`;
 
   return (
-    <Fundo variante="app">
-      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-        <StatusBar barStyle="light-content" backgroundColor={colors.black} />
-        <TopBar onBack={onBack} title={`@${perfil.apelido}`} />
+    <View style={styles.raiz}>
+      {barra}
 
-        <FlatList
-          data={posts}
-          keyExtractor={(p) => p.id}
-          contentContainerStyle={styles.lista}
-          showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={() => <View style={styles.espaco} />}
-          ListHeaderComponent={
-            <View style={styles.cabecalho}>
-              <View style={styles.identidade}>
-                <Avatar nome={nomeCompleto} apelido={perfil.apelido} tamanho={72} />
-                <View style={styles.nomes}>
-                  <Text style={styles.nome}>{nomeCompleto}</Text>
-                  <Text style={styles.apelido}>@{perfil.apelido}</Text>
-                </View>
+      <FlatList
+        data={posts}
+        keyExtractor={(p) => p.id}
+        contentContainerStyle={styles.lista}
+        showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={() => <View style={styles.espaco} />}
+        ListHeaderComponent={
+          <View style={styles.cabecalho}>
+            <View style={styles.identidade}>
+              <Avatar nome={nomeCompleto} apelido={perfil.apelido} tamanho={72} />
+              <View style={styles.nomes}>
+                <Text style={styles.nome}>{nomeCompleto}</Text>
+                <Text style={styles.apelido}>@{perfil.apelido}</Text>
               </View>
-
-              <View style={styles.numeros}>
-                <Numero
-                  valor={posts.length}
-                  rotulo={posts.length === 1 ? 'publicação' : 'publicações'}
-                />
-                <Numero
-                  valor={seguidores}
-                  rotulo={seguidores === 1 ? 'seguidor' : 'seguidores'}
-                />
-                <Numero valor={seguindo} rotulo="seguindo" />
-              </View>
-
-              {souEu ? (
-                <Text style={styles.souEu}>Este é o seu perfil.</Text>
-              ) : meuUid ? (
-                <Button
-                  label={euSigo ? 'Seguindo' : 'Seguir'}
-                  variant={euSigo ? 'secondary' : 'primary'}
-                  onPress={alternarVinculo}
-                  loading={mudandoVinculo}
-                />
-              ) : (
-                <Text style={styles.souEu}>Entre para seguir.</Text>
-              )}
-
-              {erro ? (
-                <Text style={styles.erro} accessibilityRole="alert">
-                  {erro}
-                </Text>
-              ) : null}
             </View>
-          }
-          renderItem={({ item }) => <PostDoFeed post={item} />}
-          ListEmptyComponent={
-            <View style={styles.vazio}>
-              <Text style={styles.vazioTitulo}>
-                {souEu ? 'Você ainda não publicou nada' : 'Ainda não publicou nada'}
-              </Text>
-              <Text style={styles.vazioTexto}>
-                {souEu
-                  ? 'O que você publicar aparece aqui e no feed.'
-                  : 'Quando publicar, aparece aqui.'}
-              </Text>
+
+            <View style={styles.numeros}>
+              <Numero
+                valor={posts.length}
+                rotulo={posts.length === 1 ? 'publicação' : 'publicações'}
+              />
+              <Numero valor={seguidores} rotulo={seguidores === 1 ? 'seguidor' : 'seguidores'} />
+              <Numero valor={seguindo} rotulo="seguindo" />
             </View>
-          }
-        />
-      </SafeAreaView>
-    </Fundo>
+
+            {souEu ? (
+              <Text style={styles.souEu}>Este é o seu perfil.</Text>
+            ) : meuUid ? (
+              <Button
+                label={euSigo ? 'Seguindo' : 'Seguir'}
+                variant={euSigo ? 'secondary' : 'primary'}
+                onPress={alternarVinculo}
+                loading={mudandoVinculo}
+              />
+            ) : (
+              <Text style={styles.souEu}>Entre para seguir.</Text>
+            )}
+
+            {erro ? (
+              <Text style={styles.erro} accessibilityRole="alert">
+                {erro}
+              </Text>
+            ) : null}
+          </View>
+        }
+        renderItem={({ item }) => <PostDoFeed post={item} />}
+        ListEmptyComponent={
+          <View style={styles.vazio}>
+            <Text style={styles.vazioTitulo}>
+              {souEu ? 'Você ainda não publicou nada' : 'Ainda não publicou nada'}
+            </Text>
+            <Text style={styles.vazioTexto}>
+              {souEu
+                ? 'O que você publicar aparece aqui e no feed.'
+                : 'Quando publicar, aparece aqui.'}
+            </Text>
+          </View>
+        }
+      />
+    </View>
   );
 }
 
@@ -206,7 +203,7 @@ function Numero({ valor, rotulo }: { valor: number; rotulo: string }) {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: 'transparent' },
+  raiz: { flex: 1 },
   centro: {
     flex: 1,
     alignItems: 'center',
@@ -217,7 +214,6 @@ const styles = StyleSheet.create({
   espaco: { height: spacing.md },
 
   lista: {
-    paddingHorizontal: spacing.xl,
     paddingBottom: spacing.xxxl,
     alignSelf: 'center',
     width: '100%',

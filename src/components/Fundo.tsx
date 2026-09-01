@@ -29,25 +29,32 @@ export interface FundoProps {
 /**
  * Véu escuro sobre a imagem, para o texto continuar legível.
  *
- * **Estes números foram medidos, não escolhidos a olho.** Amostrando os pixels
- * de cada imagem e aplicando o véu, procurou-se o menor valor em que o texto
- * secundário (`colors.textOverPhoto`) ainda alcança os 4,5:1 que a WCAG exige
- * para texto corrido — contra o pixel mais claro da imagem, não contra a média.
+ * **Estes números são medidos**, por `scripts/medir-veu.mjs`. Ele procura o
+ * menor véu em que o texto secundário (`colors.textOverPhoto`) e o link
+ * (`colors.greenOverPhoto`) ainda alcançam os 4,5:1 que a WCAG pede — e mede
+ * só a **faixa da imagem onde texto solto de fato cai**, não a imagem inteira.
  *
- * Uma surpresa útil apareceu aí: a foto da noite precisa do **mesmo** véu da
- * foto de dia. Ela parece escura, mas os refletores da quadra são quase
- * brancos, e é sobre eles que o texto pode cair. Um véu leve deixaria a frase
- * ilegível justamente em cima da luz.
+ * Essa distinção não é detalhe. Na foto de dia o pedaço mais claro é o céu do
+ * terço de cima, onde não passa uma letra; exigir véu para o céu apagaria a
+ * foto sem melhorar a leitura de nada.
  *
- * A arte do app pede menos porque foi desenhada com o miolo escuro.
+ * ## A arte do app mudou de número em 01/09/2026
+ *
+ * As artes GRAFIT novas são quase pretas, com faíscas de um ou dois pixels.
+ * O véu antigo (0,46 no retrato, 0,67 na paisagem) foi medido contra as artes
+ * anteriores, mais claras; aplicado nestas, a paisagem virava um retângulo
+ * preto — foi o que apareceu na primeira montagem em tela larga.
+ *
+ * Medido: 0,29 no retrato, **zero** na paisagem. A paisagem fica em 0,18
+ * mesmo assim, e por decisão de desenho e não de contraste: a especificação
+ * pede que o fundo "não compita com os posts", e sem véu nenhum a diagonal
+ * clara da arte passa por trás do cartão e disputa a leitura.
  */
 const VEU = {
   loginDia: 'rgba(10, 12, 10, 0.66)',
   loginNoite: 'rgba(10, 12, 10, 0.66)',
-  appRetrato: 'rgba(10, 12, 10, 0.46)',
-  // A arte deitada precisa de bem mais: ela tem o estouro de luz do refletor
-  // no canto superior, e sobre aquele ponto o texto reprovava em 3,3:1.
-  appPaisagem: 'rgba(10, 12, 10, 0.67)',
+  appRetrato: 'rgba(10, 12, 10, 0.30)',
+  appPaisagem: 'rgba(10, 12, 10, 0.18)',
 } as const;
 
 export function Fundo({ variante = 'app', children, style }: FundoProps) {

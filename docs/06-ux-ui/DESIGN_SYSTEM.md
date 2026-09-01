@@ -84,33 +84,82 @@ Toda tela que carrega dados deve considerar:
 - erro;
 - offline quando aplicável.
 
-## 6. Navegação inicial — ✅ resolvida (D-032)
+## 6. Navegação — ✅ construída (D-036)
 
-**Resolvido em 30/08/2026 (D-032).** O conflito entre este documento e os
-mockups acabou: vale a dos mockups.
+**Redecidida em 01/09/2026 (D-036).** A barra da D-032 foi substituída.
 
-**Início · Explorar · [+] · Atividades · Mensagens**
+### Barra de baixo — cinco seções, nesta ordem
 
-O `[+]` central é publicar, em destaque verde. A proposta antiga deste
-documento (*Início · Explorar · Ao Vivo · Jogos · Perfil*) fica registrada só
-como histórico.
+**HOME · EXPLORAR · ROLLS · MENSAGENS · PERFIL**
 
-**A barra nasce com o que existe e cresce.** Mensagens é Fase 13; Atividades
-depende de notificações. Item que não leva a lugar nenhum é pior que item
-ausente.
+Ícone com o rótulo embaixo. A ordem é parte da especificação: é o que a mão
+decora, e trocar duas de lugar depois quebra esse aprendizado.
 
-### Navegação implementada hoje
-
-Pilha de primeiro acesso, sem barra inferior ainda:
+### Barra de cima
 
 ```text
-BoasVindas → Cadastro → Onboarding
+[ + ]  BANCADA                        [ sino ]  [ ≡ ]
 ```
+
+**Sem lupa no topo.** A descoberta é a aba Explorar; ter as duas faria a mesma
+função morar em dois lugares. O ícone de Explorar é uma **bússola**, não uma
+lupa — e isso saiu do próprio desenho entregue.
+
+### Verde é ativo, cinza é inativo
+
+Vale para os oito ícones, sempre por estado real da aplicação:
+
+| Elemento | Cinza | Verde |
+|---|---|---|
+| aba comum | não selecionada | selecionada |
+| Mensagens | não selecionada e sem nada por ler | selecionada **ou** com mensagem por ler (+ bolinha) |
+| sino | nada por ver | tem notificação por ver (+ contador, "9+" acima de nove) |
+| `+` | ainda não publicou hoje | já publicou hoje |
+
+### Termos oficiais (D-034)
+
+**MOMENT** (não "story") · **ROLLS** (não "reels") · HOME · EXPLORAR ·
+MENSAGENS · PERFIL. Os rótulos vêm de `src/navigation/abas.ts`; nenhuma tela
+escreve o nome da seção à mão.
+
+### Assets
+
+Oito ícones × quatro tamanhos (16/24/32/64) × duas cores, em `assets/icones/`,
+gerados por `scripts/gerar-icones.mjs`. **Não redesenhar em código, não trocar
+por emoji, não importar biblioteca de ícones.** O componente `Icone` escolhe o
+arquivo pela densidade da tela: 26 pontos numa tela 3x precisa de 78 pixels, e
+serve o de 64 reduzido em vez do de 32 ampliado.
+
+### Espaçamento — mudou em 01/09/2026
+
+A margem lateral caiu de 24 para **14 / 16 / 20 pontos**, por largura de
+aparelho (`margemLateral`). Em celular de 360, 24 de cada lado consumia 13% da
+tela. Menos margem por fora, mais respiro por dentro dos cartões.
+
+### Estrutura implementada
+
+```text
+Tela (fundo · área segura · margem)
+ └── CascaDoApp
+      ├── BarraSuperior      + · marca · sino · ≡
+      ├── conteúdo da aba    Home | Explorar | Rolls | Mensagens | Perfil
+      ├── BarraDeAbas        fixa, com o recorte do aparelho por dentro
+      └── MenuPrincipal      gaveta pela direita
+```
+
+**Trocar de aba não empilha rota.** A pilha continua para o que é um passo
+adiante: perfil de outra pessoa, documento legal, notificações. Como rota,
+cada toque na barra empilharia uma tela e o botão voltar do Android
+desmontaria a barra em ordem inversa.
 
 React Navigation (`native-stack`), tipada em
 `src/navigation/RootNavigator.tsx`: rota inexistente vira erro de compilação
 em vez de botão que não faz nada. Tema escuro aplicado no próprio navegador,
 senão a transição pisca branco.
+
+**A proposta antiga deste documento** (*Início · Explorar · Ao Vivo · Jogos ·
+Perfil*) e a da D-032 (*Início · Explorar · [+] · Atividades · Mensagens*)
+ficam registradas só como histórico.
 
 ## 7. Acessibilidade
 
@@ -150,27 +199,53 @@ tablet em tela dividida as duas não coincidem.
 
 ### O véu, e por que estes números
 
-Cada imagem recebe um véu escuro por cima. Os valores **foram medidos**, não
-escolhidos a olho — amostrando os pixels de cada imagem e procurando o menor
-véu em que o texto secundário ainda alcança os 4,5:1 que a WCAG exige, contra
-o **pixel mais claro** da imagem.
+Cada imagem recebe um véu escuro por cima. Os valores **são medidos** por
+`scripts/medir-veu.mjs`, que procura o menor véu em que o texto secundário e o
+link ainda alcançam os 4,5:1 que a WCAG exige. Ele roda de novo sempre que uma
+arte mudar.
 
-| Imagem | Véu | Branco | Secundário | Link verde |
-|---|---:|---:|---:|---:|
-| Login dia | 0,66 | 6,56 | 4,51 | 4,76 |
-| Login noite | 0,66 | 6,69 | 4,60 | 4,86 |
-| App retrato | 0,46 | 6,97 | 4,79 | 5,06 |
-| App paisagem | 0,67 | 6,75 | 4,64 | 4,90 |
+Ele mede a **faixa da imagem onde texto solto de fato cai**, não a imagem
+inteira. Nas telas de entrada isso é o meio (35–78% da altura): título,
+subtítulo e botões. No app é o topo e o rodapé — marca, rótulos dos Moments,
+abas do feed, rótulos da barra de baixo; o resto do conteúdo mora dentro de
+cartões opacos.
 
-Duas descobertas que a medição trouxe e que a intuição erraria:
+| Imagem | Véu | Critério |
+|---|---:|---|
+| Login dia | 0,66 | ver a ressalva abaixo |
+| Login noite | 0,66 | ver a ressalva abaixo |
+| App retrato | **0,30** | medido 0,29 |
+| App paisagem | **0,18** | medido 0,00; o valor é de desenho, não de contraste |
 
-**A foto da noite precisa do mesmo véu da foto de dia.** Ela parece escura,
-mas os refletores da quadra são quase brancos, e é sobre eles que uma frase
-pode cair. Com véu leve o texto ficava em 2,99:1 — ilegível justamente em cima
-da luz.
+**A arte GRAFIT mudou os números em 01/09/2026.** As artes novas são quase
+pretas, com faíscas de um ou dois pixels. O véu antigo (0,46 e 0,67) tinha sido
+medido contra as artes anteriores, mais claras; aplicado nestas, a paisagem
+virava um retângulo preto — foi exatamente o que apareceu na primeira montagem
+em tela larga.
 
-**A arte de paisagem precisa de bem mais véu que a de retrato** (0,67 contra
-0,46), pelo mesmo motivo: ela tem o estouro do refletor no canto superior.
+Nelas o critério passou a ser o **percentil 99,95** do brilho, e não o pixel
+mais claro. Contra o pixel mais claro, o retrato pediria 0,81 e a arte sumiria.
+99,95% da área fica coberta; o que sobra são faíscas menores que uma letra.
+É uma troca consciente entre um caso extremo de contraste e a arte existir.
+
+A paisagem fica em 0,18 mesmo sem precisar: a especificação pede que o fundo
+"não compita com os posts", e sem véu nenhum a diagonal clara passa por trás
+do cartão e disputa a leitura.
+
+> **⚠️ Pendência achada em 01/09/2026, nas telas de entrada.** Medindo com o
+> mesmo script, a **foto de dia pede 0,89** de véu na faixa do texto, e a
+> **foto de noite pede 0,82** — as duas estão em 0,66. Ou seja, o texto
+> secundário sobre elas fica **abaixo** dos 4,5:1 exigidos.
+>
+> Não foram alteradas aqui de propósito: são telas já aprovadas em teste
+> (D-018), e mexer nelas no meio da entrega da navegação misturaria dois
+> assuntos. **Fica registrado como correção pendente da Fase 2** — as opções
+> são subir o véu (a foto perde muito), escurecer só a faixa do texto com um
+> degradê local, ou trocar a foto por uma com o miolo mais escuro.
+>
+> A tabela antiga afirmava 4,51 e 4,60 para essas duas linhas. O número estava
+> errado, não a medição de hoje: ele tinha sido calculado contra a média da
+> faixa e não contra o pior ponto dela.
 
 ### Duas cores nasceram daí
 

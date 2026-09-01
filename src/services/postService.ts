@@ -130,3 +130,35 @@ export async function postsDe(uid: string, quantos = 20): Promise<Post[]> {
 export async function apagarPost(id: string): Promise<void> {
   await deleteDoc(doc(db, COLECAO_POSTS, id));
 }
+
+/**
+ * A pessoa já publicou hoje?
+ *
+ * É o que decide se o "+" do topo aparece cinza ou verde. O estado tinha que
+ * vir de dado real — a especificação é explícita: "não utilizar apenas uma
+ * alteração visual temporária".
+ *
+ * "Hoje" é o dia do **relógio do aparelho**, começando à meia-noite local.
+ * Não é o dia do servidor de propósito: quem publicou às 23h e olha o app à
+ * 00h30 tem que ver o botão apagado de novo, porque para ele virou outro dia.
+ * Usar UTC deixaria o Brasil trocando de dia às 21h.
+ *
+ * Custo: **uma leitura**. `limit(1)` faz o Firestore parar no primeiro
+ * documento; o índice composto (autorUid + criadoEm) já existe por causa de
+ * `postsDe`.
+ */
+export async function publiqueiHoje(uid: string): Promise<boolean> {
+  const meiaNoite = new Date();
+  meiaNoite.setHours(0, 0, 0, 0);
+
+  const instantaneo = await getDocs(
+    query(
+      collection(db, COLECAO_POSTS),
+      where('autorUid', '==', uid),
+      where('criadoEm', '>=', meiaNoite),
+      orderBy('criadoEm', 'desc'),
+      limit(1),
+    ),
+  );
+  return !instantaneo.empty;
+}

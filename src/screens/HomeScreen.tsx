@@ -4,15 +4,13 @@ import {
   FlatList,
   Pressable,
   RefreshControl,
-  StatusBar,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import type { QueryDocumentSnapshot } from 'firebase/firestore';
 
-import { Fundo } from '../components/Fundo';
+import { Moments } from '../components/Moments';
 import { PostDoFeed } from '../components/PostDoFeed';
 import { Publicar } from '../components/Publicar';
 import { LARGURA_MAXIMA_CONTEUDO } from '../hooks/useLayout';
@@ -24,37 +22,45 @@ import { colors, radius, spacing, typography } from '../theme';
 
 export interface HomeScreenProps {
   perfil: Perfil;
-  onSair?: () => void;
-  saindo?: boolean;
+  /** Margem lateral da casca, para o conteúdo alinhar com a barra de cima */
+  margem: number;
+  /**
+   * Contador de pedidos do "+" da barra de cima.
+   *
+   * Cada toque incrementa. A caixa de escrever abre quando o número muda, e
+   * não quando ele é verdadeiro — assim tocar duas vezes seguidas funciona.
+   */
+  abrirPublicar?: number;
   onAbrirPerfil?: (uid: string) => void;
-  onBuscar?: () => void;
+  /** Avisa a casca que houve publicação, para o "+" ficar verde */
+  onPublicou?: () => void;
 }
 
 /**
  * As abas do feed.
  *
- * Vêm dos mockups (D-032), que reformularam a pendência 7: não é
- * "cronológico OU híbrido", são superfícies diferentes. TUDO é descoberta,
- * SEGUINDO é a turma da pessoa.
- *
- * COMUNIDADES e TRENDING existem no desenho e ainda não têm o que mostrar --
- * entram quando houver comunidade e sinal de engajamento.
+ * TUDO é descoberta, SEGUINDO é a turma da pessoa. Não confundir com a barra
+ * de baixo: aquela troca de seção do app, esta troca a fonte do mesmo feed.
  */
 type Aba = 'tudo' | 'seguindo';
 
 /**
- * Início — o feed da várzea.
+ * Home — o feed da várzea, e a tela em que o app abre.
  *
  * Cronológico, do mais novo para o mais velho. A pendência 7 (cronológico ou
  * híbrido) segue aberta; híbrido precisa de sinais que ainda não existem —
- * seguidores, reações, histórico de leitura.
+ * reações e histórico de leitura.
+ *
+ * A tela **não** desenha fundo, área segura nem barra: quem cuida disso é a
+ * `CascaDoApp`. Aqui é só o conteúdo, para o feed poder rolar por baixo das
+ * barras em vez de ficar preso numa caixa entre elas.
  */
 export function HomeScreen({
   perfil,
-  onSair,
-  saindo = false,
+  margem,
+  abrirPublicar = 0,
   onAbrirPerfil,
-  onBuscar,
+  onPublicou,
 }: HomeScreenProps) {
   const [aba, setAba] = useState<Aba>('tudo');
   const [posts, setPosts] = useState<Post[]>([]);
@@ -64,6 +70,7 @@ export function HomeScreen({
   const [atualizando, setAtualizando] = useState(false);
   const [carregandoMais, setCarregandoMais] = useState(false);
   const [erro, setErro] = useState<string | undefined>();
+  const [escrevendo, setEscrevendo] = useState(false);
 
   /**
    * Quem eu sigo, carregado **uma vez** para o feed inteiro.
@@ -119,6 +126,11 @@ export function HomeScreen({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aba]);
 
+  useEffect(() => {
+    // Zero é o valor de partida do contador: significa "ninguém tocou no +".
+    if (abrirPublicar > 0) setEscrevendo(true);
+  }, [abrirPublicar]);
+
   async function atualizar() {
     setAtualizando(true);
     await buscar(true);
@@ -134,10 +146,13 @@ export function HomeScreen({
 
   async function enviarPost(texto: string) {
     await publicar(perfil, texto);
+    setEscrevendo(false);
     // Recarrega do começo em vez de inserir na mão: o carimbo de hora vem do
     // servidor, e montar o post localmente mostraria uma hora que pode não ser
     // a que ficou gravada.
     await buscar(true);
+    // O "+" da barra de cima fica verde a partir daqui.
+    onPublicou?.();
   }
 
   async function seguirAutor(uid: string) {
@@ -173,122 +188,113 @@ export function HomeScreen({
   }
 
   return (
-    <Fundo variante="app">
-      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-        <StatusBar barStyle="light-content" backgroundColor={colors.black} />
-
-        <View style={styles.barra}>
-          <View>
-            <Text style={styles.saudacao}>Oi, {perfil.nome}</Text>
-            <Text style={styles.apelido}>@{perfil.apelido}</Text>
-          </View>
-          <View style={styles.acoesDaBarra}>
-            {onBuscar ? (
-              <Pressable
-                onPress={onBuscar}
-                hitSlop={12}
-                accessibilityRole="button"
-                accessibilityLabel="Procurar pessoas"
-              >
-                <Text style={styles.procurar}>Procurar</Text>
-              </Pressable>
-            ) : null}
-
-            <Pressable
-              onPress={onSair}
-              disabled={saindo}
-              hitSlop={12}
-              accessibilityRole="button"
-              accessibilityLabel="Sair da conta"
-            >
-              <Text style={styles.sair}>{saindo ? 'Saindo…' : 'Sair'}</Text>
-            </Pressable>
-          </View>
-        </View>
-
-        <FlatList
-          data={posts}
-          keyExtractor={(p) => p.id}
-          contentContainerStyle={styles.lista}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={atualizando}
-              onRefresh={atualizar}
-              tintColor={colors.green}
-              colors={[colors.green]}
-            />
-          }
-          ListHeaderComponent={
-            <View style={styles.cabecalho}>
-              <View style={styles.abas}>
-                <AbaBotao rotulo="Tudo" ativa={aba === 'tudo'} onPress={() => setAba('tudo')} />
-                <AbaBotao
-                  rotulo="Seguindo"
-                  ativa={aba === 'seguindo'}
-                  onPress={() => setAba('seguindo')}
-                />
-              </View>
-
-              <Publicar onPublicar={enviarPost} nome={perfil.nome} />
-              {erro ? (
-                <Text style={styles.erro} accessibilityRole="alert">
-                  {erro}
-                </Text>
-              ) : null}
-            </View>
-          }
-          renderItem={({ item }) => (
-            <PostDoFeed
-              post={item}
-              onApagar={item.autorUid === perfil.uid ? () => removerPost(item) : undefined}
-              onAbrirAutor={onAbrirPerfil ? () => onAbrirPerfil(item.autorUid) : undefined}
-              // Três condições para o botão existir: não é meu post, ainda não
-              // sigo, e não estou na aba Seguindo -- onde por definição já
-              // sigo todo mundo.
-              onSeguir={
-                item.autorUid !== perfil.uid && !sigo.has(item.autorUid) && aba === 'tudo'
-                  ? () => seguirAutor(item.autorUid)
-                  : undefined
-              }
-              seguindoAgora={seguindoAgora === item.autorUid}
-            />
-          )}
-          ItemSeparatorComponent={() => <View style={{ height: spacing.md }} />}
-          ListEmptyComponent={
-            carregando ? (
-              <View style={styles.centro}>
-                <ActivityIndicator color={colors.green} />
-              </View>
-            ) : (
-              <View style={styles.vazio}>
-                <Text style={styles.vazioTitulo}>
-                  {aba === 'seguindo'
-                    ? 'Você ainda não segue ninguém'
-                    : 'Ainda não tem nada por aqui'}
-                </Text>
-                <Text style={styles.vazioTexto}>
-                  {aba === 'seguindo'
-                    ? 'Toque no nome de alguém em Tudo para ver o perfil e seguir. O que essa pessoa publicar aparece aqui.'
-                    : 'Seja o primeiro. Conte o resultado do jogo, chame a galera para a pelada de domingo, mostre o gol que você fez.'}
-                </Text>
-              </View>
-            )
-          }
-          onEndReached={maisUmaPagina}
-          onEndReachedThreshold={0.4}
-          ListFooterComponent={
-            carregandoMais ? (
-              <View style={styles.centro}>
-                <ActivityIndicator color={colors.textMuted} />
-              </View>
-            ) : posts.length > 0 && acabou ? (
-              <Text style={styles.fim}>Você chegou ao começo de tudo.</Text>
-            ) : null
-          }
+    <FlatList
+      data={posts}
+      keyExtractor={(p) => p.id}
+      contentContainerStyle={[styles.lista, { paddingHorizontal: margem }]}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={atualizando}
+          onRefresh={atualizar}
+          tintColor={colors.green}
+          colors={[colors.green]}
         />
-      </SafeAreaView>
-    </Fundo>
+      }
+      ListHeaderComponent={
+        <View style={styles.cabecalho}>
+          <Moments
+            meuNome={perfil.nome}
+            meuApelido={perfil.apelido}
+            // A faixa chega vazia: Moment depende de a BANCADA guardar foto e
+            // vídeo, que é a Fase 10. O primeiro círculo explica.
+            momentos={[]}
+            onMeuMoment={() =>
+              setErro('Moment chega junto com foto e vídeo. Por enquanto, publique em texto.')
+            }
+          />
+
+          <View style={styles.abas}>
+            <AbaBotao rotulo="Tudo" ativa={aba === 'tudo'} onPress={() => setAba('tudo')} />
+            <AbaBotao
+              rotulo="Seguindo"
+              ativa={aba === 'seguindo'}
+              onPress={() => setAba('seguindo')}
+            />
+          </View>
+
+          {/* A caixa de escrever só aparece quando pedida pelo "+" do topo.
+              Fixa no cabeçalho, ela empurrava o primeiro post para fora da
+              tela em todo carregamento — e a maior parte das aberturas do app
+              é para ler, não para escrever. */}
+          {escrevendo ? (
+            <View style={styles.caixaDeEscrever}>
+              <Publicar onPublicar={enviarPost} nome={perfil.nome} />
+              <Pressable
+                onPress={() => setEscrevendo(false)}
+                hitSlop={10}
+                accessibilityRole="button"
+                accessibilityLabel="Fechar a caixa de escrever"
+              >
+                <Text style={styles.cancelar}>Agora não</Text>
+              </Pressable>
+            </View>
+          ) : null}
+
+          {erro ? (
+            <Text style={styles.erro} accessibilityRole="alert">
+              {erro}
+            </Text>
+          ) : null}
+        </View>
+      }
+      renderItem={({ item }) => (
+        <PostDoFeed
+          post={item}
+          onApagar={item.autorUid === perfil.uid ? () => removerPost(item) : undefined}
+          onAbrirAutor={onAbrirPerfil ? () => onAbrirPerfil(item.autorUid) : undefined}
+          // Três condições para o botão existir: não é meu post, ainda não
+          // sigo, e não estou na aba Seguindo -- onde por definição já
+          // sigo todo mundo.
+          onSeguir={
+            item.autorUid !== perfil.uid && !sigo.has(item.autorUid) && aba === 'tudo'
+              ? () => seguirAutor(item.autorUid)
+              : undefined
+          }
+          seguindoAgora={seguindoAgora === item.autorUid}
+        />
+      )}
+      ItemSeparatorComponent={() => <View style={{ height: spacing.md }} />}
+      ListEmptyComponent={
+        carregando ? (
+          <View style={styles.centro}>
+            <ActivityIndicator color={colors.green} />
+          </View>
+        ) : (
+          <View style={styles.vazio}>
+            <Text style={styles.vazioTitulo}>
+              {aba === 'seguindo' ? 'Você ainda não segue ninguém' : 'Ainda não tem nada por aqui'}
+            </Text>
+            <Text style={styles.vazioTexto}>
+              {aba === 'seguindo'
+                ? 'Toque no nome de alguém em Tudo para ver o perfil e seguir. O que essa pessoa publicar aparece aqui.'
+                : 'Seja o primeiro. Toque no + lá em cima: conte o resultado do jogo, chame a galera para a pelada de domingo, mostre o gol que você fez.'}
+            </Text>
+          </View>
+        )
+      }
+      onEndReached={maisUmaPagina}
+      onEndReachedThreshold={0.4}
+      ListFooterComponent={
+        carregandoMais ? (
+          <View style={styles.centro}>
+            <ActivityIndicator color={colors.textMuted} />
+          </View>
+        ) : posts.length > 0 && acabou ? (
+          <Text style={styles.fim}>Você chegou ao começo de tudo.</Text>
+        ) : null
+      }
+    />
   );
 }
 
@@ -318,23 +324,7 @@ function AbaBotao({
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: 'transparent' },
-
-  barra: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-  },
-  saudacao: { ...typography.bodyStrong, color: colors.text },
-  apelido: { ...typography.caption, color: colors.green },
-  acoesDaBarra: { flexDirection: 'row', alignItems: 'center', gap: spacing.lg },
-  procurar: { ...typography.caption, color: colors.green, fontWeight: '600' },
-  sair: { ...typography.caption, color: colors.textMuted },
-
   lista: {
-    paddingHorizontal: spacing.xl,
     paddingBottom: spacing.xxxl,
     alignSelf: 'center',
     width: '100%',
@@ -348,6 +338,10 @@ const styles = StyleSheet.create({
   abaTextoAtiva: { color: colors.text },
   abaBarra: { height: 2, borderRadius: 1, backgroundColor: 'transparent' },
   abaBarraAtiva: { backgroundColor: colors.green },
+
+  caixaDeEscrever: { gap: spacing.sm, alignItems: 'flex-start' },
+  cancelar: { ...typography.caption, color: colors.textMuted, paddingVertical: spacing.xs },
+
   erro: { ...typography.caption, color: colors.danger },
 
   centro: { paddingVertical: spacing.xxl, alignItems: 'center' },

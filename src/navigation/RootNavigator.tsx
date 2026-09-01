@@ -7,15 +7,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import type { ChaveDocumento } from '../content/documentosLegais';
 import { AccountChoiceScreen } from '../screens/AccountChoiceScreen';
 import { AccountCreatedScreen } from '../screens/AccountCreatedScreen';
-import { BuscarScreen } from '../screens/BuscarScreen';
+import { EmBreve } from '../components/EmBreve';
+import { Tela } from '../components/Tela';
 import { GuardianFirstScreen } from '../screens/GuardianFirstScreen';
-import { HomeScreen } from '../screens/HomeScreen';
 import { LegalDocumentScreen } from '../screens/LegalDocumentScreen';
 import { OnboardingScreen } from '../screens/OnboardingScreen';
 import { PerfilScreen } from '../screens/PerfilScreen';
+import { TopBar } from '../components/TopBar';
 import { SignInScreen } from '../screens/SignInScreen';
 import { SignUpScreen } from '../screens/SignUpScreen';
 import { WelcomeScreen } from '../screens/WelcomeScreen';
+import { CascaDoApp } from './CascaDoApp';
 import { criarApelidoRepositoryFirestore } from '../repositories/FirestoreApelidoRepository';
 import { criarConta, entrar, recuperarSenha, sair, usuarioAtual } from '../services/contaService';
 import { mensagemDoErro } from '../services/erros';
@@ -43,10 +45,11 @@ export type RootStackParamList = {
   Cadastro: undefined;
   Onboarding: undefined;
   ContaCriada: undefined;
+  /** A casca com as cinco abas. Trocar de aba NAO empilha rota. */
   Inicio: undefined;
   /** Perfil publico de alguem. `uid` porque e o que o post carrega. */
   Perfil: { uid: string };
-  Buscar: undefined;
+  Notificacoes: undefined;
   /** Termos de Uso e Política de Privacidade, lidos dentro do app */
   Documento: { documento: ChaveDocumento };
 };
@@ -326,10 +329,12 @@ function Rotas() {
           // TypeScript, que nao sabe disso.
           if (sessao.situacao !== 'dentro') return <View />;
           return (
-            <HomeScreen
+            <CascaDoApp
               perfil={sessao.perfil}
               onAbrirPerfil={(uid) => navigation.navigate('Perfil', { uid })}
-              onBuscar={() => navigation.navigate('Buscar')}
+              onNotificacoes={() => navigation.navigate('Notificacoes')}
+              onTermos={() => navigation.navigate('Documento', { documento: 'termos' })}
+              onPrivacidade={() => navigation.navigate('Documento', { documento: 'privacidade' })}
               saindo={ocupado}
               onSair={async () => {
                 setOcupado(true);
@@ -346,27 +351,33 @@ function Rotas() {
         }}
       </Stack.Screen>
 
-      <Stack.Screen name="Buscar">
+      {/* Empilhada, e nao uma aba: as notificacoes sao um desvio da leitura,
+          e quem termina de ver volta para onde estava. */}
+      <Stack.Screen name="Notificacoes">
         {({ navigation }) => (
-          <BuscarScreen
-            onBack={navigation.canGoBack() ? () => navigation.goBack() : undefined}
-            meuUid={sessao.situacao === 'dentro' ? sessao.usuario.uid : null}
-            // `replace` nao: quem vem da busca quer poder voltar para ela e
-            // procurar outra pessoa.
-            onAbrirPerfil={(uid) => navigation.navigate('Perfil', { uid })}
-          />
+          <Tela>
+            <TopBar onBack={() => navigation.goBack()} title="Notificações" />
+            <EmBreve
+              icone="notificacao"
+              titulo="Notificações"
+              promessa="Curtidas, comentários, marcações, convites, novos seguidores e o aviso de quando alguém que você segue entra ao vivo ou marca um jogo."
+              quando="É a Fase 3 do roadmap, junto com curtir e comentar"
+            />
+          </Tela>
         )}
       </Stack.Screen>
 
       <Stack.Screen name="Perfil">
         {({ navigation, route }) => (
-          <PerfilScreen
-            uid={route.params.uid}
-            // `sessao.usuario` em vez de `usuarioAtual()`: aqui a fonte da
-            // verdade e o estado da sessao, que ja foi resolvido.
-            meuUid={sessao.situacao === 'dentro' ? sessao.usuario.uid : null}
-            onBack={navigation.canGoBack() ? () => navigation.goBack() : undefined}
-          />
+          <Tela>
+            <PerfilScreen
+              uid={route.params.uid}
+              // `sessao.usuario` em vez de `usuarioAtual()`: aqui a fonte da
+              // verdade e o estado da sessao, que ja foi resolvido.
+              meuUid={sessao.situacao === 'dentro' ? sessao.usuario.uid : null}
+              onBack={navigation.canGoBack() ? () => navigation.goBack() : undefined}
+            />
+          </Tela>
         )}
       </Stack.Screen>
 

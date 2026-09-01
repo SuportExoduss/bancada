@@ -11,31 +11,46 @@
 
 ---
 
-## Onde estamos: **15,5% do caminho até a publicação**
+## Onde estamos: **16,5% do caminho até a publicação**
 
-Ponderado por **esforço**, não por contagem de fases. E agora **contado contra
-os entregáveis de cada fase**, não estimado no olho — foi o que mudou o número.
+Ponderado por **esforço**, não por contagem de fases. E **contado contra os
+entregáveis de cada fase**, não estimado no olho.
+
+> **01/09/2026 — a soma dos pesos passou de 100 para 104.** A Fase 2.5 (casca
+> de navegação) não existia quando os pesos foram distribuídos, e ela é
+> trabalho real. Diluir os outros pesos para forçar o total em 100 faria as
+> fases prontas parecerem menores do que são. 17,6 sobre 107 é **≈ 16,5%**.
+>
+> A Fase 3 caiu de 50% para 33% na tabela: era um número estimado, e a
+> contagem item a item — agora com curtida, marcação, lembrete e hashtag
+> listados — mostrou o tamanho real dela.
+>
+> A Fase 10 (Mídia) subiu de peso 5 para **8**. Ela era "fotos, vídeos,
+> galerias"; passou a carregar também **Moment** e **Rolls**, e Rolls é vídeo
+> — com limite de tamanho, transcodagem e custo por gigabyte servido. Isso não
+> cabia no peso antigo.
 
 | Fase | Peso | Feito | Contribui |
 |---|---:|---:|---:|
 | 0 · Especificação | 3 | 100% | 3,0 |
 | 1 · Fundação | 5 | **75%** | 3,8 |
 | 2 · Auth e Perfil | 7 | **65%** | 4,6 |
-| 3 · Social Core | 9 | 50% | 4,5 |
+| 2.5 · Casca de navegação | 4 | **80%** | 3,2 |
+| 3 · Social Core | 9 | 33% | 3,0 |
 | 4 · Jogador | 5 | 0% | 0 |
 | 5 · Time | 8 | 0% | 0 |
 | 6 · Jogo | 9 | 0% | 0 |
 | 7 · Motor esportivo | 9 | 0% | 0 |
 | 8 · Campeonato | 9 | 0% | 0 |
 | 9 · Campos e árbitros | 4 | 0% | 0 |
-| 10 · Mídia | 5 | 0% | 0 |
+| 10 · Mídia | **8** | 0% | 0 |
 | 11 · Live Simulator | 6 | 0% | 0 |
 | 13 · Chat | 4 | 0% | 0 |
 | 14 · Administração | 5 | 0% | 0 |
 | 15 · Segurança e produção | 6 | 0% | 0 |
 | 16 · Beta | 4 | 0% | 0 |
 | 17 · Publicação | 2 | 0% | 0 |
-| **Total** | **100** | | **≈ 15,5** |
+| **Total** | **107** | | **≈ 17,6** |
 
 Fase 12 (live real) está fora do MVP. Fases 18 e 19 são pós-publicação.
 
@@ -52,9 +67,12 @@ os critérios de pronto moravam noutro arquivo que ninguém relia.
 
 ### Estado hoje
 
-35 commits · 41 arquivos de código · ~6.000 linhas · 18 documentos · 9 telas ·
-**54 testes automatizados** · Firestore em `southamerica-east1` · 2 contas
-reais.
+37 commits · 52 arquivos de código · 18 documentos · 10 telas · **5 seções na
+barra** · **70 testes automatizados** (55 de regras + 10 de conta + 5 de
+seguir) · Firestore em `southamerica-east1`.
+
+> O número de testes estava escrito como 54 e são **70**. Contado rodando
+> `npm run testar` em 01/09/2026, não estimado.
 
 ```bash
 npm run testar          # tudo (precisa de Java 11+)
@@ -139,9 +157,11 @@ acesso foi ligado ao Firebase antes de a Fase 3 começar.
 | **edição de perfil** | ⬜ **não existe** |
 | **avatar** | ⬜ **não existe** — depende do Storage |
 | apelido | ✅ único pelo ID do documento (D-014, D-017); limite na D-030 |
-| **privacidade básica** | ⬜ padrão público decidido (D-015), tela não existe |
+| **privacidade básica** | ⬜ padrão público decidido (D-015), tela não existe. **A D-035 definiu o conteúdo dela:** um interruptor para privar o perfil |
+| **perfil privado + pedido de seguir** | ⬜ D-035; o vínculo ganha estado e as Rules passam a ler o perfil do alvo |
 | Security Rules | ✅ escritas, testadas e publicadas |
-| testes de segurança | ✅ 44 casos |
+| testes de segurança | ✅ 55 casos |
+| **contraste do fundo nas telas de entrada** | ⬜ **achado em 01/09/2026**: o véu está em 0,66 e a medição pede 0,89 (dia) e 0,82 (noite). Detalhe no `DESIGN_SYSTEM` |
 | conta de menor | 🔄 nasce ligada ao responsável; **a supervisão (D-025) não existe** |
 
 ### Telas construídas
@@ -160,6 +180,66 @@ fechar — o que congela é a aprovação de fase, não o teste isolado.
 
 ---
 
+# FASE 2.5 — Casca de navegação ✅
+
+Não existia no roadmap. Nasceu da especificação visual de **01/09/2026** e das
+decisões **D-034**, **D-035** e **D-036**. Fica entre as Fases 2 e 3 porque é
+o esqueleto onde as duas moram: sem ela, cada tela nova inventava o próprio
+cabeçalho.
+
+| Entregável | Estado |
+|---|---|
+| assets oficiais de ícone — 8 × 4 tamanhos × 2 cores | ✅ `assets/icones/`, gerados por script |
+| marca do topo com transparência recuperada | ✅ o arquivo veio sem canal alfa |
+| fundos GRAFIT novos | ✅ 1,3 MB → 31 KB e 19 KB em WebP |
+| barra superior — `+` · marca · sino · hambúrguer | ✅ |
+| barra de abas — 5 seções, ícone + rótulo | ✅ |
+| estado verde/cinza por dado real | ✅ o `+` consulta `publiqueiHoje` |
+| faixa de Moments | 🔄 desenhada e vazia — depende da Fase 10 |
+| menu do hambúrguer | 🔄 abre; Campeonatos, Lives e Calendário estão apagados com o motivo |
+| Explorar com filtros | 🔄 Perfis funciona; os outros quatro estão desenhados e desligados |
+| moldura padrão de tela (`Tela`) | ✅ fundo, área segura e margem num lugar só |
+| margem lateral por largura de aparelho | ✅ 14 / 16 / 20 pontos |
+
+**A regra que a fase implementa:** a barra nasce com as cinco posições porque
+a ordem dos ícones é o que a mão decora, e mudar de lugar depois quebra esse
+aprendizado. O que **não** nasce inteiro é o conteúdo — Rolls e Mensagens
+mostram uma tela dizendo o que vão ter e de que fase dependem.
+
+**O que esta fase mexeu no que já existia:**
+
+- `HomeScreen` e `PerfilScreen` deixaram de desenhar fundo, área segura e
+  barra própria — quem faz isso agora é a casca. `PerfilScreen` passou a viver
+  em dois lugares: aba (sem seta de voltar) e tela empilhada (com);
+- `BuscarScreen` virou `ExplorarScreen`, com os filtros no topo;
+- a caixa de escrever saiu do cabeçalho fixo do feed e passou a abrir pelo
+  `+`. Ela empurrava o primeiro post para fora da tela em toda abertura, e a
+  maior parte das aberturas é para ler;
+- **Sair** saiu do topo do feed e foi para o menu. Ação rara e definitiva não
+  fica a um toque das ações do dia a dia;
+- a margem lateral caiu de 24 para 16 pontos em celular comum, a pedido: 24 de
+  cada lado tirava 13% da largura de um aparelho de 360.
+
+**Verificado em 01/09/2026, no navegador, com o emulador semeado:** as cinco
+abas trocam e pintam o ícone certo; o menu abre e fecha; publicar pelo `+`
+grava e **o `+` fica verde na volta**; o post aparece no feed e no perfil; os
+filtros do Explorar mostram o cartão de "o que vai ter aqui"; o layout se
+comporta em 375×812 e em 1280×760. `npx tsc --noEmit` limpo e **70/70 testes
+passando** — sem regressão.
+
+**Dois defeitos achados e corrigidos no caminho:**
+
+1. o `animationType="slide"` do `Modal` deixava o menu inteiro travado em
+   `translateY(100%)` no react-native-web — ele abria 812 pontos abaixo do
+   topo, fora da tela. Virou `fade`, que além disso é o certo para uma gaveta
+   que entra pela lateral;
+2. as pílulas de filtro do Explorar esticavam até o fim da coluna e viravam
+   cinco faixas de tela inteira — faltava `flexGrow: 0` no `ScrollView`.
+
+**Falta nesta fase:** teste do proprietário no aparelho.
+
+---
+
 # FASE 3 — Social Core 🔄 **33%**
 
 **Do prompt:** *feed simples no início, preferencialmente cronológico. **Não
@@ -174,7 +254,11 @@ caminho — ranking sem volume produz resultado pior que ordem cronológica.
 | **seguir** | ✅ vínculo pelo ID do documento, abas Tudo/Seguindo, perfil público · **aguardando teste do proprietário** |
 | comentário | ⬜ |
 | reação | ⬜ |
-| notificações básicas | ⬜ |
+| notificações básicas | ⬜ **a casca já tem o sino e o contador** (D-036); falta o que contar |
+| curtida | ⬜ pré-requisito da notificação "curtiu seu post" |
+| marcação de pessoa | ⬜ pedida na especificação da central de notificações |
+| lembrete de quem eu sigo | ⬜ live, jogo marcado, publicação — opt-in ao seguir |
+| hashtag e busca por assunto | ⬜ é o que liga o filtro **Posts** do Explorar |
 | paginação | ✅ |
 | sem listener global | ✅ |
 | regras de leitura/escrita | ✅ 11 testes |
@@ -213,6 +297,8 @@ convite · solicitação · aceitar/recusar.
 
 **Não implementar campeonato aqui.**
 
+**Liga o filtro TIMES do Explorar** — a pílula já está desenhada e desligada.
+
 > **A pesquisa sugere antecipar esta fase, e é o argumento mais forte dela.**
 > A rede atômica da várzea é **um time**, não uma cidade. Um time com elenco
 > traz onze pessoas de uma vez; um feed sem gente não traz ninguém. O Google+
@@ -225,6 +311,10 @@ convite · solicitação · aceitar/recusar.
 criação · agenda · adversário · local · escalação · titulares · reservas ·
 capitão · início · eventos · gol · cartões · substituição · placar ·
 encerramento.
+
+**Liga duas coisas da casca:** o **Calendário** do menu do hambúrguer — os
+eventos do dia de quem a pessoa segue — e o lembrete de "fulano marcou um
+jogo" da Fase 3.
 
 **Restrições do prompt, e elas são duras:**
 
@@ -258,6 +348,8 @@ mata-mata · artilharia.
 - **não assumir um regulamento único** — cada campeonato de várzea tem o seu;
 - **criar testes para critérios de desempate.**
 
+**Liga o filtro CAMPEONATOS do Explorar e o item Campeonatos do menu.**
+
 ---
 
 # FASE 9 — Campos e árbitros ⬜
@@ -273,6 +365,20 @@ fotos · vídeos · galerias. *(Sem prompt próprio.)*
 Depende do **Storage**, que a Fase 1 já pedia e não foi feito. O **avatar** da
 Fase 2 também depende daqui.
 
+**Esta fase virou a mais bloqueante do desenho.** A casca de navegação
+(Fase 2.5) tem três lugares esperando por ela:
+
+| O que espera | Onde está desenhado | O que falta |
+|---|---|---|
+| **MOMENT** (D-034) | a faixa de círculos no topo da Home | publicar foto/vídeo que expira, marcar como visto, contar quem viu |
+| **ROLLS** (D-034) | a terceira aba, e o filtro Rolls do Explorar | vídeo curto vertical, feed em tela cheia |
+| mídia no post | o cartão do feed | foto e vídeo dentro da publicação |
+
+**Ordem sugerida dentro da fase:** Storage e foto no post primeiro — é o que
+o avatar da Fase 2 também destrava —, depois Moment, depois Rolls. Rolls é o
+mais caro dos três: exige vídeo, e vídeo exige limite de tamanho, transcodagem
+e uma política de custo que ainda não existe.
+
 ---
 
 # FASE 11 — Live Simulator ⬜
@@ -282,6 +388,9 @@ partida · cronômetro · placar · eventos · gols · cartões · substituiçõ
 
 **Objetivo:** validar a experiência de live e o motor de partida **antes** de
 qualquer infraestrutura de vídeo. **Não adicionar provedor externo.**
+
+**Liga o item Lives do menu do hambúrguer** e o lembrete de "fulano entrou ao
+vivo" da Fase 3.
 
 ---
 
@@ -298,6 +407,11 @@ há mando definido (Lei 14.597/2023, art. 160 §6º) — decidido na D-023.
 # FASE 13 — Chat ⬜
 
 DM · grupos · time · partida. *(Sem prompt próprio.)*
+
+**Liga a aba MENSAGENS**, que já existe na barra com a tela de "o que vai ter
+aqui". A barra também já sabe desenhar a exceção de estado: com mensagem por
+ler o ícone fica verde e ganha bolinha mesmo sem a aba estar selecionada
+(D-036).
 
 **Duas restrições que já existem:**
 
@@ -378,9 +492,15 @@ Registrado na **D-033**. Nenhum destes tem fase:
 **Stories · Níveis e XP · Comunidades · Selo de verificado · Enquete ·
 Compartilhar · Trending · Ranking com pontos**
 
-E a **barra de navegação** foi decidida na D-032 —
-*Início · Explorar · [+] · Atividades · Mensagens* — com a ressalva de que
-**nasce com o que existe e cresce**.
+**Stories virou MOMENT e ganhou casa: Fase 10** (D-034). O mesmo vale para
+**Rolls**. Sobram sem fase: **Níveis e XP · Comunidades · Selo de verificado ·
+Enquete · Compartilhar · Trending · Ranking com pontos**.
+
+A **barra de navegação** foi redecidida na **D-036** —
+*HOME · EXPLORAR · ROLLS · MENSAGENS · PERFIL*, com `+` e sino no topo. A
+D-032 propunha outra, e foi substituída. A ressalva mudou de forma: a barra
+nasce com as **cinco posições**, porque a ordem é o que a mão decora; o que
+não nasce inteiro é o **conteúdo**.
 
 ---
 
